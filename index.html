@@ -3,1809 +3,1578 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>尹澤鎂研 Meiy An｜頂級車體美研｜專業一站式車體服務</title>
+  <title>尹澤鎂研 Meiy An｜頂級車體美研</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Noto+Serif+TC:wght@300;400;700&family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400;700&family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
   <style>
-    /* ========== CSS VARIABLES - BRONZE PALETTE ========== */
+    /* ─── CSS Reset & Variables ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bronze-darkest: #3D1F00;
-      --bronze-dark: #6B4226;
-      --bronze-primary: #8B5E3C;
-      --bronze-mid: #A0693A;
-      --bronze-peru: #CD853F;
-      --bronze-gold: #B8860B;
-      --bronze-bright: #DAA520;
-      --bronze-light: #D4A96A;
-      --bronze-pale: #E8C98A;
-      --copper: #C47722;
-      --dark-bg: #1A0E05;
-      --dark-section: #251409;
-      --dark-card: #2E1A0C;
-      --warm-white: #FAF7F2;
-      --cream: #F5EDD8;
-      --cream-light: #FBF6EC;
-      --text-dark: #1C1208;
-      --text-mid: #5C3D1E;
-      --text-light: #F5E6C8;
-      --text-muted: #9B8060;
-      --gold-line: #B8860B;
-      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --bg:         #F0EDE7;
+      --bg-alt:     #E8E4DC;
+      --bg-dark:    #3B4C3C;
+      --bg-darker:  #2C3A2D;
+      --sage:       #8FA48E;
+      --sage-dark:  #5F7560;
+      --sage-deep:  #3B4C3C;
+      --sage-lt:    #B8CBB9;
+      --sage-mist:  #D4E0D5;
+      --taupe:      #A89070;
+      --cream:      #F5F2EC;
+      --text:       #2C3A2D;
+      --text-mid:   #5C6E5C;
+      --text-mute:  #8A9E8A;
+      --text-inv:   #EEF2EE;
+      --border:     rgba(95,117,96,0.18);
+      --shadow:     0 4px 32px rgba(44,58,45,0.10);
+      --r:          4px;
+      --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    /* ========== RESET & BASE ========== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
     body {
-      font-family: 'Noto Serif TC', 'Cormorant Garamond', serif;
-      color: var(--text-dark);
-      background: var(--warm-white);
+      font-family: 'Noto Serif TC', 'Cormorant Garamond', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
       overflow-x: hidden;
+      line-height: 1.7;
     }
-    a { text-decoration: none; color: inherit; }
-    img { max-width: 100%; display: block; }
+
+    img { display: block; width: 100%; object-fit: cover; }
+    a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
 
-    /* ========== SCROLLBAR ========== */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--dark-bg); }
-    ::-webkit-scrollbar-thumb { background: var(--bronze-peru); border-radius: 3px; }
+    .container {
+      width: min(1200px, 90vw);
+      margin-inline: auto;
+    }
 
-    /* ========== TYPOGRAPHY ========== */
-    .font-en { font-family: 'Cormorant Garamond', serif; }
-    .font-sans { font-family: 'Montserrat', sans-serif; }
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
 
-    /* ========== SECTION LABEL ========== */
-    .section-label {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--bronze-peru);
-    }
-    .section-title-en {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 5vw, 4rem);
-      font-weight: 300;
-      letter-spacing: 0.05em;
-      line-height: 1.1;
-      color: var(--text-dark);
-    }
-    .section-title-en span {
-      font-style: italic;
-      color: var(--bronze-peru);
-    }
-    .gold-divider {
-      width: 60px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--bronze-bright), transparent);
-      margin: 1.2rem auto;
-    }
-    .gold-divider.left { margin-left: 0; }
-
-    /* ========== NAVBAR ========== */
-    #navbar {
+    /* ─── Navbar ─── */
+    .nav {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
-      transition: var(--transition);
-      padding: 0 2rem;
-    }
-    #navbar.transparent {
-      background: rgba(26,14,5,0.0);
-      border-bottom: 1px solid rgba(184,134,11,0.0);
-    }
-    #navbar.scrolled {
-      background: rgba(26,14,5,0.96);
-      border-bottom: 1px solid rgba(184,134,11,0.3);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .nav-inner {
+      padding: 0 5vw;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 72px;
-      max-width: 1400px;
-      margin: 0 auto;
+      transition: background var(--transition), box-shadow var(--transition);
     }
+    .nav.scrolled {
+      background: var(--bg-darker);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.18);
+    }
+    .nav.light {
+      background: var(--cream);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
     .nav-logo {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      cursor: pointer;
+      line-height: 1.1;
     }
-    .nav-logo-zh {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--bronze-pale);
-      letter-spacing: 0.15em;
-      line-height: 1.2;
-    }
-    .nav-logo-en {
+    .nav-logo span:first-child {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 0.75rem;
+      font-size: 1.35rem;
+      letter-spacing: 0.12em;
+      color: var(--sage-mist);
       font-weight: 300;
-      color: var(--bronze-light);
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
     }
-    .nav-logo-icon {
-      width: 44px;
-      height: 44px;
-      border: 1.5px solid var(--bronze-peru);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      flex-shrink: 0;
+    .nav.light .nav-logo span:first-child { color: var(--sage-dark); }
+    .nav-logo span:last-child {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--sage-lt);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
     }
-    .nav-logo-icon span {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--bronze-bright);
-      font-style: italic;
-    }
-    .nav-logo-wrap { display: flex; align-items: center; }
+    .nav.light .nav-logo span:last-child { color: var(--text-mute); }
+
     .nav-links {
       display: flex;
+      gap: 2.2rem;
       align-items: center;
-      gap: 0.2rem;
     }
     .nav-links a {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.82rem;
-      font-weight: 400;
-      color: rgba(245,230,200,0.85);
-      padding: 0.4rem 0.9rem;
-      letter-spacing: 0.05em;
-      position: relative;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      color: var(--sage-mist);
+      font-weight: 300;
       transition: color 0.3s;
+      text-transform: uppercase;
     }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 50%; right: 50%;
-      height: 1px;
-      background: var(--bronze-bright);
-      transition: left 0.3s, right 0.3s;
-    }
-    .nav-links a:hover { color: var(--bronze-pale); }
-    .nav-links a:hover::after { left: 0.9rem; right: 0.9rem; }
-    .nav-links a.active { color: var(--bronze-bright); }
-    .nav-links a.active::after { left: 0.9rem; right: 0.9rem; }
-    .nav-cta {
-      background: transparent;
-      border: 1px solid var(--bronze-bright);
-      color: var(--bronze-bright) !important;
-      padding: 0.45rem 1.2rem !important;
-      transition: var(--transition) !important;
-    }
-    .nav-cta:hover {
-      background: var(--bronze-bright) !important;
-      color: var(--dark-bg) !important;
-    }
-    .nav-cta::after { display: none !important; }
-    .nav-social {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-left: 1rem;
-    }
-    .nav-social a {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.78rem;
-      transition: var(--transition);
-      border: 1px solid rgba(184,134,11,0.4);
-      color: var(--bronze-light);
-    }
-    .nav-social a:hover {
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
-      border-color: var(--bronze-bright);
-      transform: translateY(-2px);
-    }
-    /* Mobile menu button */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-    }
-    .hamburger span {
-      display: block;
-      width: 24px;
-      height: 1.5px;
-      background: var(--bronze-light);
-      transition: var(--transition);
-    }
-    /* Mobile nav */
-    .mobile-nav {
-      display: none;
-      position: fixed;
-      top: 72px; left: 0; right: 0;
-      background: rgba(26,14,5,0.98);
-      border-top: 1px solid rgba(184,134,11,0.2);
-      z-index: 999;
-      padding: 1.5rem 2rem;
-      flex-direction: column;
-      gap: 0.2rem;
-      backdrop-filter: blur(10px);
-    }
-    .mobile-nav.open { display: flex; }
-    .mobile-nav a {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.9rem;
-      color: var(--text-light);
-      padding: 0.8rem 0;
-      border-bottom: 1px solid rgba(184,134,11,0.15);
-      letter-spacing: 0.05em;
-      transition: color 0.3s;
-    }
-    .mobile-nav a:hover { color: var(--bronze-bright); }
+    .nav.light .nav-links a { color: var(--text-mid); }
+    .nav-links a:hover { color: var(--sage-lt); }
+    .nav.light .nav-links a:hover { color: var(--sage-dark); }
 
-    /* ========== HERO SLIDER ========== */
-    .hero {
-      position: relative;
-      height: 100vh;
-      min-height: 600px;
-      overflow: hidden;
-    }
-    .hero-slides {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-    }
-    .hero-slide {
-      min-width: 100%;
-      height: 100%;
-      position: relative;
-      background: var(--dark-bg);
-    }
-    .hero-slide-bg {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      transform: scale(1.05);
-      transition: transform 8s ease;
-    }
-    .hero-slide.active .hero-slide-bg { transform: scale(1); }
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(26,14,5,0.72) 0%,
-        rgba(26,14,5,0.35) 50%,
-        rgba(26,14,5,0.55) 100%
-      );
-    }
-    .hero-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      width: 90%;
-      max-width: 860px;
-      opacity: 0;
-      transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
-    }
-    .hero-slide.active .hero-content {
-      opacity: 1;
-      transform: translate(-50%, -50%) translateY(0);
-    }
-    .hero-tag {
-      display: inline-block;
+    .nav-book {
       font-family: 'Montserrat', sans-serif;
       font-size: 0.7rem;
-      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: var(--sage-dark);
+      color: var(--text-inv);
+      padding: 0.55rem 1.4rem;
+      border-radius: 2px;
+      cursor: pointer;
+      border: none;
+      transition: background 0.3s;
+    }
+    .nav-book:hover { background: var(--sage-deep); }
+
+    .nav-mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--sage-mist);
+      font-size: 1.3rem;
+    }
+    .nav.light .nav-mobile-btn { color: var(--text); }
+
+    /* ─── Hero Split Screen ─── */
+    .hero {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-text {
+      background: var(--bg-darker);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 10vh 6vw 8vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-text::before {
+      content: 'MEIY AN';
+      position: absolute;
+      top: 14vh;
+      left: -0.5rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(5rem, 10vw, 10rem);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: rgba(143,164,142,0.07);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
       letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: var(--bronze-bright);
-      border: 1px solid var(--bronze-bright);
-      padding: 0.35rem 1.2rem;
-      margin-bottom: 1.5rem;
+      color: var(--sage);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
     }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--sage);
+    }
+
     .hero-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-size: clamp(2.5rem, 4vw, 4rem);
       font-weight: 300;
-      color: #fff;
-      line-height: 1.05;
-      letter-spacing: 0.04em;
-      margin-bottom: 1rem;
+      line-height: 1.2;
+      color: var(--text-inv);
+      margin-bottom: 1.5rem;
     }
     .hero-title em {
       font-style: italic;
-      color: var(--bronze-pale);
+      color: var(--sage-lt);
     }
-    .hero-subtitle {
-      font-family: 'Noto Serif TC', serif;
-      font-size: clamp(0.9rem, 2vw, 1.05rem);
-      color: rgba(245,230,200,0.8);
-      font-weight: 300;
-      letter-spacing: 0.12em;
-      line-height: 1.8;
-      margin-bottom: 2.5rem;
+
+    .hero-desc {
+      font-size: 0.9rem;
+      color: var(--sage-lt);
+      max-width: 320px;
+      line-height: 1.85;
+      margin-bottom: 3rem;
     }
-    .hero-actions { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      padding: 0.9rem 2.5rem;
-      border: 1px solid var(--bronze-bright);
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-block;
-    }
-    .btn-primary:hover {
-      background: transparent;
-      color: var(--bronze-bright);
-    }
-    .btn-outline {
-      background: transparent;
-      color: rgba(245,230,200,0.9);
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      font-weight: 400;
-      letter-spacing: 0.15em;
-      padding: 0.9rem 2.5rem;
-      border: 1px solid rgba(245,230,200,0.4);
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-block;
-    }
-    .btn-outline:hover {
-      border-color: var(--bronze-bright);
-      color: var(--bronze-bright);
-    }
-    /* Slider controls */
-    .hero-prev, .hero-next {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px; height: 48px;
-      border: 1px solid rgba(184,134,11,0.5);
-      background: rgba(26,14,5,0.4);
-      color: var(--bronze-light);
-      font-size: 1.1rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      z-index: 10;
-      transition: var(--transition);
-      backdrop-filter: blur(4px);
-    }
-    .hero-prev { left: 2rem; }
-    .hero-next { right: 2rem; }
-    .hero-prev:hover, .hero-next:hover {
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
-      border-color: var(--bronze-bright);
-    }
-    .hero-dots {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
+
+    .hero-actions {
       display: flex;
-      gap: 0.6rem;
-      z-index: 10;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
-    .hero-dot {
-      width: 28px; height: 2px;
-      background: rgba(255,255,255,0.3);
+
+    .btn-primary {
+      background: var(--sage-dark);
+      color: var(--text-inv);
+      border: none;
+      padding: 0.85rem 2.2rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: var(--transition);
+      border-radius: 2px;
+      transition: background 0.3s, transform 0.2s;
     }
-    .hero-dot.active { background: var(--bronze-bright); }
-    .hero-scroll-hint {
+    .btn-primary:hover { background: var(--sage); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--sage-lt);
+      border: 1px solid rgba(184,203,185,0.4);
+      padding: 0.85rem 2.2rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .btn-ghost:hover { border-color: var(--sage-lt); color: #fff; }
+
+    .hero-scroll {
       position: absolute;
-      bottom: 2.5rem;
-      right: 3rem;
+      bottom: 4rem;
+      right: 2.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.5rem;
-      opacity: 0.6;
+      color: var(--text-mid);
     }
-    .hero-scroll-hint span {
+    .hero-scroll span {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.3em;
-      color: var(--bronze-light);
-      writing-mode: vertical-lr;
-      text-orientation: mixed;
+      font-size: 0.55rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
     }
     .scroll-line {
       width: 1px;
-      height: 50px;
-      background: linear-gradient(to bottom, var(--bronze-bright), transparent);
-      animation: scrollLine 2s infinite;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--sage-dark), transparent);
+      animation: scrollLine 1.8s ease-in-out infinite;
     }
     @keyframes scrollLine {
-      0% { transform: scaleY(0); transform-origin: top; }
-      50% { transform: scaleY(1); transform-origin: top; }
-      50.001% { transform: scaleY(1); transform-origin: bottom; }
-      100% { transform: scaleY(0); transform-origin: bottom; }
+      0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+      50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
     }
 
-    /* ========== PROMISE SECTION ========== */
-    .promise-section {
-      padding: 7rem 2rem;
-      background: var(--cream-light);
-      text-align: center;
+    .hero-image {
+      position: relative;
+      overflow: hidden;
     }
-    .promise-header { margin-bottom: 4rem; }
-    .promise-header .section-label { margin-bottom: 0.8rem; }
-    .promise-title-small {
+    .hero-image img {
+      height: 100%;
+      object-fit: cover;
+      transition: transform 8s ease;
+    }
+    .hero-image:hover img { transform: scale(1.04); }
+
+    .hero-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(44,58,45,0.25) 0%, transparent 60%);
+    }
+
+    .hero-slide-counter {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      font-weight: 300;
-      color: var(--text-mid);
-      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+    }
+    .hero-slide-counter .current { font-size: 1.8rem; color: #fff; }
+
+    /* ─── Ticker ─── */
+    .ticker {
+      background: var(--sage-dark);
+      padding: 0.8rem 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-flex;
+      gap: 0;
+      animation: ticker 28s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 1.6rem;
+      padding-right: 3rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      margin-bottom: 0.3rem;
+      color: var(--sage-mist);
     }
-    .promise-title-big {
+    .ticker-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--sage-lt);
+      flex-shrink: 0;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─── Section Common ─── */
+    section { padding: 7rem 0; }
+
+    .section-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .section-tag::before {
+      content: '';
+      display: block;
+      width: 1.5rem;
+      height: 1px;
+      background: var(--sage-dark);
+    }
+
+    .section-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
       font-weight: 300;
-      color: var(--text-dark);
-      letter-spacing: 0.03em;
-      line-height: 1;
-      margin-bottom: 1.5rem;
+      line-height: 1.25;
+      color: var(--text);
     }
-    .promise-subtitle {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      letter-spacing: 0.15em;
+    .section-title em { font-style: italic; color: var(--sage-dark); }
+
+    /* ─── About / Intro ─── */
+    .about {
+      background: var(--bg);
     }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .about-left .big-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(5rem, 10vw, 9rem);
+      font-weight: 300;
+      line-height: 0.85;
+      color: var(--sage-mist);
+      letter-spacing: -0.02em;
+    }
+    .about-left .big-number span { display: block; font-size: 0.9rem; letter-spacing: 0.2em; color: var(--sage-dark); font-family: 'Montserrat', sans-serif; margin-top: 1rem; }
+
+    .about-right {}
+    .about-right .section-title { margin-bottom: 2rem; }
+    .about-right .about-lead {
+      font-size: 1rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin-bottom: 2.5rem;
+      max-width: 560px;
+    }
+
     .promise-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3rem;
-      max-width: 1100px;
-      margin: 0 auto;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
     }
-    .promise-card {
-      padding: 2.5rem 2rem;
-      position: relative;
-      transition: var(--transition);
+    .promise-item {
+      background: var(--bg);
+      padding: 1.8rem 1.4rem;
+      transition: background 0.3s;
     }
-    .promise-card::before {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 0; height: 2px;
-      background: var(--bronze-bright);
-      transition: width 0.4s ease;
-    }
-    .promise-card:hover::before { width: 60%; }
+    .promise-item:hover { background: var(--sage-mist); }
     .promise-icon {
-      width: 70px; height: 70px;
-      margin: 0 auto 1.8rem;
-      border: 1px solid rgba(139,94,60,0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-      color: var(--bronze-mid);
-      background: linear-gradient(135deg, rgba(212,169,106,0.08), rgba(139,94,60,0.04));
-      transition: var(--transition);
-    }
-    .promise-card:hover .promise-icon {
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
-      border-color: var(--bronze-bright);
-      transform: scale(1.08);
-    }
-    .promise-name {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      letter-spacing: 0.15em;
-      margin-bottom: 1.2rem;
-    }
-    .promise-desc {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.82rem;
-      color: var(--text-mid);
-      line-height: 2;
-      font-weight: 300;
-    }
-
-    /* ========== SERVICES SECTION ========== */
-    .services-section {
-      padding: 7rem 2rem;
-      background: var(--warm-white);
-    }
-    .services-inner { max-width: 1300px; margin: 0 auto; }
-    .services-header { margin-bottom: 3rem; }
-    .services-header .section-label { margin-bottom: 0.5rem; }
-    .services-title-row {
-      display: flex;
-      align-items: baseline;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .services-title-en {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.4rem);
-      font-weight: 300;
-      color: var(--text-dark);
-      letter-spacing: 0.04em;
-    }
-    .services-subtitle {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      letter-spacing: 0.08em;
-    }
-    .services-intro {
-      max-width: 800px;
-    }
-    .services-intro p {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      color: var(--text-mid);
-      line-height: 2.1;
+      font-size: 1.4rem;
+      color: var(--sage-dark);
       margin-bottom: 0.8rem;
     }
-    .services-list-inline {
-      margin-top: 1.2rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-    .service-tag {
+    .promise-item h4 {
       font-family: 'Noto Serif TC', serif;
-      font-size: 0.76rem;
-      color: var(--bronze-dark);
-      border: 1px solid rgba(184,134,11,0.4);
-      padding: 0.3rem 0.9rem;
-      letter-spacing: 0.05em;
-      background: rgba(218,165,32,0.05);
-    }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5px;
-      margin: 3rem 0;
-      background: rgba(139,94,60,0.12);
-    }
-    .service-card {
-      position: relative;
-      overflow: hidden;
-      aspect-ratio: 3/4;
-      cursor: pointer;
-      background: var(--dark-section);
-    }
-    .service-card-bg {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      transition: transform 0.6s ease;
-    }
-    .service-card:hover .service-card-bg { transform: scale(1.08); }
-    .service-card-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(26,14,5,0.85) 0%, rgba(26,14,5,0.2) 60%, transparent 100%);
-      transition: var(--transition);
-    }
-    .service-card:hover .service-card-overlay {
-      background: linear-gradient(to top, rgba(26,14,5,0.92) 0%, rgba(26,14,5,0.5) 60%, rgba(184,134,11,0.1) 100%);
-    }
-    .service-card-content {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 1.8rem 1.5rem;
-      transform: translateY(0);
-      transition: var(--transition);
-    }
-    .service-card-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.72rem;
-      font-weight: 300;
-      color: var(--bronze-bright);
-      letter-spacing: 0.2em;
-      margin-bottom: 0.4rem;
-    }
-    .service-card-name {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.6rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
     }
-    .service-card-desc {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.75rem;
-      color: rgba(245,230,200,0.75);
-      line-height: 1.8;
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: opacity 0.4s ease, max-height 0.4s ease;
-    }
-    .service-card:hover .service-card-desc {
-      opacity: 1;
-      max-height: 80px;
-    }
-    .service-card-line {
-      width: 0;
-      height: 1px;
-      background: var(--bronze-bright);
-      margin-bottom: 0.6rem;
-      transition: width 0.4s ease;
-    }
-    .service-card:hover .service-card-line { width: 40px; }
-    .services-cta {
-      text-align: center;
-      margin-top: 2.5rem;
-    }
-    .btn-view-more {
-      display: inline-block;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--text-dark);
-      border: 1px solid rgba(139,94,60,0.5);
-      padding: 0.85rem 3rem;
-      transition: var(--transition);
-    }
-    .btn-view-more:hover {
-      background: var(--dark-bg);
-      color: var(--bronze-bright);
-      border-color: var(--bronze-bright);
-    }
-
-    /* ========== ONE-STOP BANNER ========== */
-    .onestop-banner {
-      position: relative;
-      min-height: 560px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-    }
-    .onestop-bg {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center 40%;
-      background-attachment: fixed;
-    }
-    .onestop-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(26,14,5,0.92) 35%, rgba(26,14,5,0.55) 100%);
-    }
-    .onestop-content {
-      position: relative;
-      z-index: 1;
-      padding: 5rem 2rem 5rem 8%;
-      max-width: 700px;
-    }
-    .onestop-label {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: var(--bronze-bright);
-      margin-bottom: 1.2rem;
-    }
-    .onestop-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 300;
-      color: #fff;
-      letter-spacing: 0.04em;
-      line-height: 1.15;
-      margin-bottom: 0.8rem;
-    }
-    .onestop-title-zh {
-      font-family: 'Noto Serif TC', serif;
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      font-weight: 300;
-      color: var(--bronze-pale);
-      letter-spacing: 0.2em;
-      margin-bottom: 1.8rem;
-      display: block;
-    }
-    .onestop-desc {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      color: rgba(245,230,200,0.75);
-      line-height: 2.1;
-      font-weight: 300;
-      margin-bottom: 2.5rem;
-      max-width: 520px;
-    }
-
-    /* ========== NEWS SECTION ========== */
-    .news-section {
-      padding: 7rem 2rem;
-      background: var(--cream-light);
-    }
-    .news-inner { max-width: 1300px; margin: 0 auto; }
-    .news-header {
-      display: flex;
-      align-items: baseline;
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-      flex-wrap: wrap;
-    }
-    .news-title-en {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 300;
-      color: var(--text-dark);
-      letter-spacing: 0.05em;
-    }
-    .news-title-zh {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      color: var(--bronze-peru);
-      letter-spacing: 0.1em;
-    }
-    .news-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-    }
-    .news-card {
-      background: #fff;
-      cursor: pointer;
-      transition: var(--transition);
-      box-shadow: 0 2px 20px rgba(139,94,60,0.06);
-      overflow: hidden;
-    }
-    .news-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 40px rgba(139,94,60,0.15);
-    }
-    .news-card-img {
-      aspect-ratio: 16/9;
-      overflow: hidden;
-      background: var(--dark-card);
-    }
-    .news-card-img-inner {
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      transition: transform 0.5s ease;
-    }
-    .news-card:hover .news-card-img-inner { transform: scale(1.06); }
-    .news-card-body {
-      padding: 1.8rem;
-    }
-    .news-card-date {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 400;
-      color: var(--bronze-peru);
-      letter-spacing: 0.08em;
-      margin-bottom: 0.7rem;
-    }
-    .news-card-title {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      line-height: 1.7;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.9rem;
-    }
-    .news-card-excerpt {
-      font-family: 'Noto Serif TC', serif;
+    .promise-item p {
       font-size: 0.78rem;
       color: var(--text-mid);
-      line-height: 1.9;
+      line-height: 1.7;
+    }
+
+    /* ─── Services Bento ─── */
+    .services {
+      background: var(--bg-alt);
+    }
+    .services-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3.5rem;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: 260px 260px;
+      gap: 12px;
+    }
+
+    .bento-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--r);
+      cursor: pointer;
+      background: var(--bg-dark);
+    }
+    .bento-card img {
+      height: 100%;
+      transition: transform var(--transition);
+    }
+    .bento-card:hover img { transform: scale(1.06); }
+
+    .bento-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(44,58,45,0.88) 0%, rgba(44,58,45,0.1) 55%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.6rem;
+      transition: background 0.4s;
+    }
+    .bento-card:hover .bento-card-overlay {
+      background: linear-gradient(to top, rgba(44,58,45,0.95) 0%, rgba(44,58,45,0.2) 60%, transparent 100%);
+    }
+
+    .bento-card-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
       font-weight: 300;
+      color: rgba(184,203,185,0.3);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .bento-card h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.05rem;
+      color: #fff;
+      margin-bottom: 0.4rem;
+      font-weight: 400;
+    }
+    .bento-card p {
+      font-size: 0.78rem;
+      color: var(--sage-lt);
+      line-height: 1.6;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+    .bento-card:hover p { max-height: 4rem; opacity: 1; }
+
+    .bento-card:nth-child(1) { grid-column: 1 / 5; grid-row: 1 / 2; }
+    .bento-card:nth-child(2) { grid-column: 5 / 9; grid-row: 1 / 2; }
+    .bento-card:nth-child(3) { grid-column: 9 / 13; grid-row: 1 / 3; }
+    .bento-card:nth-child(4) { grid-column: 1 / 4; grid-row: 2 / 3; }
+    .bento-card:nth-child(5) { grid-column: 4 / 7; grid-row: 2 / 3; }
+    .bento-card:nth-child(6) { grid-column: 7 / 9; grid-row: 2 / 3; }
+
+    /* ─── Feature Banner / Stats ─── */
+    .feature {
+      background: var(--bg-dark);
+      padding: 0;
+      min-height: 480px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .feature-img {
+      height: 480px;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-img img { height: 100%; }
+    .feature-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 70%, var(--bg-dark));
+    }
+
+    .feature-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 6vw 5rem 4rem;
+    }
+    .feature-content .section-tag { color: var(--sage); }
+    .feature-content .section-tag::before { background: var(--sage); }
+    .feature-content .section-title { color: var(--text-inv); margin-bottom: 1.5rem; }
+    .feature-content .section-title em { color: var(--sage-lt); }
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--sage-lt);
+      line-height: 1.85;
+      margin-bottom: 3rem;
+      max-width: 420px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .stat-item {
+      border-left: 1px solid var(--border);
+      padding-left: 1.2rem;
+    }
+    .stat-item .num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--sage-lt);
+      line-height: 1;
+    }
+    .stat-item .num sup { font-size: 1rem; }
+    .stat-item .label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-mute);
+      margin-top: 0.3rem;
+    }
+
+    /* ─── News ─── */
+    .news {
+      background: var(--bg);
+    }
+    .news-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .link-more {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: gap 0.3s;
+    }
+    .link-more::after { content: '→'; }
+    .link-more:hover { gap: 1rem; }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.5rem;
+    }
+    .news-card-big { grid-row: 1 / 3; }
+
+    .news-card {
+      background: var(--cream);
+      border-radius: var(--r);
+      overflow: hidden;
+      transition: box-shadow var(--transition), transform var(--transition);
+      cursor: pointer;
+    }
+    .news-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+
+    .news-card-big .news-card-img { height: 320px; }
+    .news-card .news-card-img { height: 160px; }
+    .news-card-img { overflow: hidden; }
+    .news-card-img img { height: 100%; transition: transform 0.5s ease; }
+    .news-card:hover .news-card-img img { transform: scale(1.05); }
+
+    .news-card-body { padding: 1.5rem; }
+    .news-card-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      background: var(--sage-mist);
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      display: inline-block;
+      margin-bottom: 0.8rem;
+    }
+    .news-card-big .news-card-body h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.7rem;
+      line-height: 1.5;
+    }
+    .news-card .news-card-body h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+    .news-card-body p {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.75;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .news-card-read {
-      display: inline-flex;
+    .news-card-meta {
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--bronze-gold);
+      gap: 0.8rem;
       margin-top: 1.2rem;
-      transition: gap 0.3s;
     }
-    .news-card:hover .news-card-read { gap: 0.9rem; }
-
-    /* ========== STORES/PARTNERS SECTION ========== */
-    .stores-section {
-      padding: 5rem 2rem;
-      background: var(--warm-white);
-      border-top: 1px solid rgba(139,94,60,0.12);
-    }
-    .stores-inner { max-width: 1300px; margin: 0 auto; }
-    .stores-header {
-      display: flex;
-      align-items: baseline;
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-      flex-wrap: wrap;
-    }
-    .stores-title-en {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 300;
-      color: var(--text-dark);
-      letter-spacing: 0.05em;
-    }
-    .stores-title-zh {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      color: var(--bronze-peru);
+    .news-card-meta time {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
       letter-spacing: 0.1em;
+      color: var(--text-mute);
     }
-    .partners-track-wrap {
-      overflow: hidden;
-      position: relative;
+
+    /* ─── Partners ─── */
+    .partners {
+      background: var(--bg-darker);
+      padding: 5rem 0;
     }
-    .partners-track-wrap::before, .partners-track-wrap::after {
-      content: '';
-      position: absolute;
-      top: 0; bottom: 0;
-      width: 80px;
-      z-index: 1;
-      pointer-events: none;
+    .partners-header {
+      text-align: center;
+      margin-bottom: 3rem;
     }
-    .partners-track-wrap::before {
-      left: 0;
-      background: linear-gradient(to right, var(--warm-white), transparent);
+    .partners-header .section-tag {
+      justify-content: center;
     }
-    .partners-track-wrap::after {
-      right: 0;
-      background: linear-gradient(to left, var(--warm-white), transparent);
-    }
-    .partners-track {
-      display: flex;
-      gap: 3rem;
-      animation: scrollPartners 22s linear infinite;
-      width: max-content;
-    }
-    .partners-track:hover { animation-play-state: paused; }
-    @keyframes scrollPartners {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .partners-header .section-tag::before { display: none; }
+    .partners-header .section-title { color: var(--text-inv); }
+    .partners-header .section-title em { color: var(--sage-lt); }
+
+    .partners-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(184,203,185,0.12);
     }
     .partner-item {
+      background: var(--bg-darker);
+      padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      min-width: 130px;
-      padding: 1.2rem 1.5rem;
-      border: 1px solid rgba(139,94,60,0.15);
-      background: rgba(245,237,216,0.3);
-      cursor: default;
-      transition: var(--transition);
-    }
-    .partner-item:hover {
-      border-color: var(--bronze-bright);
-      background: rgba(218,165,32,0.06);
-    }
-    .partner-logo {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: var(--dark-section);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--bronze-bright);
-      letter-spacing: 0.1em;
-    }
-    .partner-name {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.72rem;
-      font-weight: 400;
-      color: var(--text-mid);
-      letter-spacing: 0.05em;
-      text-align: center;
-    }
-
-    /* ========== STORE GALLERY ========== */
-    .gallery-section {
-      padding: 0 0 5rem;
-      background: var(--warm-white);
-    }
-    .gallery-inner { max-width: 1300px; margin: 0 auto; padding: 0 2rem; }
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5px;
-      background: rgba(139,94,60,0.1);
-    }
-    .gallery-item {
-      aspect-ratio: 4/3;
-      overflow: hidden;
-      cursor: pointer;
-      position: relative;
-    }
-    .gallery-item-bg {
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      transition: transform 0.6s ease;
-    }
-    .gallery-item:hover .gallery-item-bg { transform: scale(1.06); }
-    .gallery-item-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(26,14,5,0);
-      transition: background 0.4s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .gallery-item:hover .gallery-item-overlay { background: rgba(184,134,11,0.15); }
-    .gallery-item-overlay i {
-      font-size: 2rem;
-      color: var(--bronze-bright);
-      opacity: 0;
-      transform: scale(0.7);
-      transition: var(--transition);
-    }
-    .gallery-item:hover .gallery-item-overlay i {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    /* ========== FOOTER ========== */
-    footer {
-      background: var(--dark-bg);
-      border-top: 1px solid rgba(184,134,11,0.25);
-      padding: 4rem 2rem 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-    footer::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--bronze-bright), transparent);
-    }
-    .footer-inner {
-      max-width: 1300px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 3rem;
-    }
-    .footer-brand {}
-    .footer-logo-zh {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--bronze-pale);
-      letter-spacing: 0.2em;
-      margin-bottom: 0.3rem;
-    }
-    .footer-logo-en {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.75rem;
-      color: var(--bronze-light);
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-    }
-    .footer-desc {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.78rem;
-      color: rgba(245,230,200,0.5);
-      line-height: 2;
-      font-weight: 300;
-      margin-bottom: 1.8rem;
-      max-width: 280px;
-    }
-    .footer-social {
-      display: flex;
-      gap: 0.7rem;
-    }
-    .footer-social a {
-      width: 36px; height: 36px;
-      border: 1px solid rgba(184,134,11,0.35);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      color: var(--bronze-light);
-      transition: var(--transition);
-    }
-    .footer-social a:hover {
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
-      border-color: var(--bronze-bright);
-      transform: translateY(-3px);
-    }
-    .footer-col-title {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--bronze-pale);
-      letter-spacing: 0.15em;
-      margin-bottom: 1.2rem;
-      padding-bottom: 0.7rem;
-      border-bottom: 1px solid rgba(184,134,11,0.25);
-    }
-    .footer-nav-links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-    }
-    .footer-nav-links a {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.78rem;
-      color: rgba(245,230,200,0.5);
-      letter-spacing: 0.05em;
-      transition: color 0.3s;
-    }
-    .footer-nav-links a:hover { color: var(--bronze-bright); }
-    .footer-info-item {
-      display: flex;
-      align-items: flex-start;
       gap: 0.8rem;
-      margin-bottom: 0.9rem;
+      transition: background 0.3s;
     }
-    .footer-info-item i {
-      font-size: 0.82rem;
-      color: var(--bronze-gold);
-      margin-top: 0.15rem;
-      flex-shrink: 0;
-    }
-    .footer-info-item span {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.78rem;
-      color: rgba(245,230,200,0.55);
-      line-height: 1.7;
-      font-weight: 300;
-    }
-    .footer-bottom {
-      max-width: 1300px;
-      margin: 3rem auto 0;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(184,134,11,0.12);
+    .partner-item:hover { background: rgba(143,164,142,0.12); }
+    .partner-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(143,164,142,0.18);
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--sage-lt);
+    }
+    .partner-item span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--text-mute);
+      text-transform: uppercase;
+    }
+
+    /* ─── Gallery ─── */
+    .gallery {
+      background: var(--bg-alt);
+    }
+    .gallery-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
-    .footer-copyright {
+    .gallery-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--r);
+      cursor: pointer;
+    }
+    .gallery-item:nth-child(1),
+    .gallery-item:nth-child(3) { aspect-ratio: 3/4; }
+    .gallery-item:nth-child(2),
+    .gallery-item:nth-child(4) { aspect-ratio: 4/5; }
+
+    .gallery-item img { height: 100%; transition: transform 0.6s ease; }
+    .gallery-item:hover img { transform: scale(1.07); }
+
+    .gallery-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(44,58,45,0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s;
+    }
+    .gallery-item:hover .gallery-item-overlay { background: rgba(44,58,45,0.45); }
+    .gallery-item-overlay i {
+      color: white;
+      font-size: 1.5rem;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .gallery-item:hover .gallery-item-overlay i { opacity: 1; transform: scale(1); }
+
+    /* ─── Footer ─── */
+    .footer {
+      background: var(--bg-darker);
+      padding: 5rem 0 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 3.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .footer-brand .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--sage-lt);
+      margin-bottom: 0.3rem;
+    }
+    .footer-brand .brand-sub {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.68rem;
-      color: rgba(245,230,200,0.3);
-      letter-spacing: 0.1em;
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--text-mute);
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+    }
+    .footer-brand p {
+      font-size: 0.82rem;
+      color: var(--text-mute);
+      line-height: 1.8;
+    }
+    .footer-social {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+    .footer-social a {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      color: var(--text-mute);
+      font-size: 0.8rem;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .footer-social a:hover { border-color: var(--sage); color: var(--sage-lt); }
+
+    .footer-col h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-inv);
+      margin-bottom: 1.3rem;
+    }
+    .footer-col ul li {
+      margin-bottom: 0.65rem;
+    }
+    .footer-col ul li a {
+      font-size: 0.82rem;
+      color: var(--text-mute);
+      transition: color 0.3s;
+    }
+    .footer-col ul li a:hover { color: var(--sage-lt); }
+    .footer-col .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
+    }
+    .footer-col .contact-item i {
+      color: var(--sage);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      flex-shrink: 0;
+    }
+    .footer-col .contact-item span {
+      font-size: 0.8rem;
+      color: var(--text-mute);
+      line-height: 1.6;
     }
 
-    /* ========== FLOATING ELEMENTS ========== */
-    .floating-cta {
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .footer-bottom p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--text-mute);
+    }
+
+    /* ─── Floating / Back to Top ─── */
+    .floating-btns {
       position: fixed;
       right: 1.5rem;
-      bottom: 5rem;
-      z-index: 100;
+      bottom: 6rem;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
+      z-index: 500;
     }
-    .floating-btn {
-      width: 50px; height: 50px;
+    .float-btn {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
-      transition: var(--transition);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-    .floating-btn-label {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.55rem;
-      color: var(--bronze-bright);
-      letter-spacing: 0.05em;
-      writing-mode: vertical-lr;
-    }
-    .floating-reserve {
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
       border: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.18);
     }
-    .floating-reserve:hover {
-      background: var(--bronze-peru);
-      transform: scale(1.1);
-    }
-    .floating-line {
-      background: #06c755;
-      color: #fff;
-      border: none;
-    }
-    .floating-line:hover { transform: scale(1.1); }
-    .back-to-top {
+    .float-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.24); }
+    .float-line { background: #25D366; color: white; }
+    .float-ig { background: #C13584; color: white; }
+    .float-fb { background: #1877F2; color: white; }
+
+    .back-top {
       position: fixed;
       right: 1.5rem;
-      bottom: 1.5rem;
-      z-index: 100;
-      width: 44px; height: 44px;
-      background: rgba(26,14,5,0.85);
-      border: 1px solid rgba(184,134,11,0.4);
+      bottom: 1.8rem;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
+      background: var(--sage-dark);
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--bronze-light);
+      font-size: 1rem;
       cursor: pointer;
-      font-size: 0.9rem;
-      transition: var(--transition);
-      backdrop-filter: blur(6px);
+      border: none;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+      z-index: 500;
       opacity: 0;
       pointer-events: none;
+      transition: opacity 0.3s, transform 0.2s;
     }
-    .back-to-top.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .back-to-top:hover {
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
-      border-color: var(--bronze-bright);
-    }
+    .back-top.visible { opacity: 1; pointer-events: auto; }
+    .back-top:hover { transform: translateY(-2px); }
 
-    /* ========== SCROLL REVEAL ========== */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-
-    /* ========== BOOKING MODAL ========== */
+    /* ─── Booking Modal ─── */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(26,14,5,0.9);
+      background: rgba(44,58,45,0.6);
+      backdrop-filter: blur(4px);
       z-index: 2000;
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(4px);
+      padding: 1rem;
     }
     .modal-box {
-      background: var(--cream-light);
-      width: 90%;
-      max-width: 560px;
+      background: var(--cream);
+      width: min(560px, 95vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 6px;
       padding: 3rem;
       position: relative;
-      border-top: 3px solid var(--bronze-bright);
     }
     .modal-close {
       position: absolute;
-      top: 1.2rem; right: 1.5rem;
+      top: 1.2rem;
+      right: 1.2rem;
       background: none;
       border: none;
-      font-size: 1.2rem;
-      color: var(--text-mid);
       cursor: pointer;
-      transition: color 0.3s;
+      font-size: 1.1rem;
+      color: var(--text-mid);
+      transition: color 0.2s;
     }
-    .modal-close:hover { color: var(--bronze-bright); }
+    .modal-close:hover { color: var(--text); }
+    .modal-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      margin-bottom: 0.8rem;
+    }
     .modal-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: 2rem;
       font-weight: 300;
-      color: var(--text-dark);
-      letter-spacing: 0.05em;
+      color: var(--text);
       margin-bottom: 0.5rem;
     }
     .modal-subtitle {
-      font-family: 'Noto Serif TC', serif;
       font-size: 0.82rem;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
+      color: var(--text-mid);
       margin-bottom: 2rem;
     }
-    .form-group { margin-bottom: 1.2rem; }
-    .form-label {
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
       display: block;
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.78rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
       color: var(--text-mid);
-      letter-spacing: 0.1em;
       margin-bottom: 0.4rem;
     }
-    .form-input {
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
       width: 100%;
-      padding: 0.7rem 1rem;
-      border: 1px solid rgba(139,94,60,0.3);
-      background: #fff;
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.85rem;
-      color: var(--text-dark);
-      outline: none;
+      padding: 0.75rem 0.9rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 0.88rem;
+      color: var(--text);
+      font-family: inherit;
       transition: border-color 0.3s;
+      outline: none;
     }
-    .form-input:focus { border-color: var(--bronze-bright); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .btn-submit {
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--sage-dark); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-submit {
       width: 100%;
-      padding: 0.9rem;
-      background: var(--bronze-bright);
-      color: var(--dark-bg);
+      background: var(--sage-dark);
+      color: var(--text-inv);
       border: none;
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.9rem;
-      font-weight: 700;
+      padding: 0.95rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
       letter-spacing: 0.2em;
+      text-transform: uppercase;
       cursor: pointer;
-      margin-top: 1rem;
-      transition: var(--transition);
+      border-radius: 3px;
+      margin-top: 0.5rem;
+      transition: background 0.3s;
     }
-    .btn-submit:hover { background: var(--bronze-dark); color: var(--bronze-pale); }
+    .form-submit:hover { background: var(--sage-deep); }
 
-    /* ========== RESPONSIVE ========== */
-    @media (max-width: 1100px) {
-      .footer-inner { grid-template-columns: 1fr 1fr; }
+    /* Fade Transition */
+    .fade-enter-active, .fade-leave-active { transition: opacity 0.25s; }
+    .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 1024px) {
+      .bento {
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: 220px 220px 220px;
+      }
+      .bento-card:nth-child(1) { grid-column: 1 / 4; grid-row: 1; }
+      .bento-card:nth-child(2) { grid-column: 4 / 7; grid-row: 1; }
+      .bento-card:nth-child(3) { grid-column: 1 / 3; grid-row: 2; }
+      .bento-card:nth-child(4) { grid-column: 3 / 5; grid-row: 2; }
+      .bento-card:nth-child(5) { grid-column: 5 / 7; grid-row: 2; }
+      .bento-card:nth-child(6) { grid-column: 1 / 7; grid-row: 3; }
+      .feature { grid-template-columns: 1fr; }
+      .feature-img { height: 320px; }
+      .feature-img::after { background: linear-gradient(to top, var(--bg-dark) 0%, transparent 50%); }
     }
+
     @media (max-width: 900px) {
-      .promise-grid { grid-template-columns: 1fr; max-width: 500px; }
-      .services-grid { grid-template-columns: repeat(2, 1fr); }
-      .news-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-image { height: 45vh; }
+      .hero-text { padding: 8rem 6vw 4vh; min-height: 55vh; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .news-grid { grid-template-columns: 1fr; }
+      .news-card-big { grid-row: auto; }
+      .gallery-strip { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
       .nav-links { display: none; }
-      .nav-social { display: none; }
-      .hamburger { display: flex; }
-      .onestop-content { padding-left: 5%; }
-      .footer-inner { grid-template-columns: 1fr; }
+      .nav-mobile-btn { display: flex; }
     }
+
     @media (max-width: 600px) {
-      .services-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
-      .gallery-grid { grid-template-columns: 1fr; }
+      .promise-grid { grid-template-columns: 1fr; }
+      .bento {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(6, 220px);
+      }
+      .bento-card { grid-column: 1 / -1 !important; grid-row: auto !important; }
+      .partners-grid { grid-template-columns: 1fr 1fr; }
+      .stats-row { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .gallery-strip { grid-template-columns: 1fr 1fr; }
       .form-row { grid-template-columns: 1fr; }
-      .hero-prev { left: 0.8rem; }
-      .hero-next { right: 0.8rem; }
+      section { padding: 4.5rem 0; }
     }
   </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ===== NAVBAR ===== -->
-  <nav id="navbar" :class="{ scrolled: isScrolled, transparent: !isScrolled }">
-    <div class="nav-inner">
-      <div class="nav-logo-wrap" @click="scrollToTop" style="cursor:pointer">
-        <div class="nav-logo-icon"><span>M</span></div>
-        <div class="nav-logo">
-          <span class="nav-logo-zh">尹澤鎂研</span>
-          <span class="nav-logo-en">Meiy An</span>
-        </div>
-      </div>
-      <div class="nav-links">
-        <a href="#hero" :class="{active: activeSection==='hero'}">首頁</a>
-        <a href="#promise" :class="{active: activeSection==='promise'}">關於我們</a>
-        <a href="#services" :class="{active: activeSection==='services'}">服務項目</a>
-        <a href="#news" :class="{active: activeSection==='news'}">最新消息</a>
-        <a href="#stores" :class="{active: activeSection==='stores'}">合作品牌</a>
-        <a href="#" class="nav-cta" @click.prevent="showModal=true">立即預約</a>
-      </div>
-      <div class="nav-social">
-        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" title="LINE"><i class="fab fa-line"></i></a>
-      </div>
-      <div class="hamburger" @click="mobileOpen=!mobileOpen">
-        <span></span><span></span><span></span>
-      </div>
+  <!-- ─── Navbar ─── -->
+  <nav :class="['nav', navClass]">
+    <div class="nav-logo">
+      <span>尹澤鎂研 Meiy An</span>
+      <span>Professional Auto Detailing</span>
     </div>
-    <div class="mobile-nav" :class="{open: mobileOpen}">
-      <a href="#hero" @click="mobileOpen=false">首頁</a>
-      <a href="#promise" @click="mobileOpen=false">關於我們</a>
-      <a href="#services" @click="mobileOpen=false">服務項目</a>
-      <a href="#news" @click="mobileOpen=false">最新消息</a>
-      <a href="#stores" @click="mobileOpen=false">合作品牌</a>
-      <a href="#" @click.prevent="showModal=true; mobileOpen=false">立即預約</a>
-    </div>
+    <ul class="nav-links">
+      <li><a href="#about">關於我們</a></li>
+      <li><a href="#services">服務項目</a></li>
+      <li><a href="#news">最新消息</a></li>
+      <li><a href="#gallery">作品集</a></li>
+      <li><a href="#contact">聯絡我們</a></li>
+    </ul>
+    <button class="nav-book" @click="showModal = true">立即預約</button>
+    <button class="nav-mobile-btn" @click="mobileMenuOpen = !mobileMenuOpen">
+      <i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+    </button>
   </nav>
 
-  <!-- ===== HERO SLIDER ===== -->
-  <section class="hero" id="hero">
-    <div class="hero-slides" :style="{transform: `translateX(-${currentSlide * 100}%)`}">
-      <div class="hero-slide" :class="{active: currentSlide===0}">
-        <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80')"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <div class="hero-tag">Professional Auto Detailing</div>
-          <h1 class="hero-title">頂級車體美研<br><em>品質 × 細節 × 信任</em></h1>
-          <p class="hero-subtitle">讓每一台車，都值得被細緻照顧與尊重對待<br>尹澤鎂研 ── 您值得託付的終生依賴</p>
-          <div class="hero-actions">
-            <a class="btn-primary" @click.prevent="showModal=true" href="#">立即預約</a>
-            <a class="btn-outline" href="#services">了解服務</a>
-          </div>
-        </div>
+  <!-- ─── Hero Split Screen ─── -->
+  <section class="hero" id="home">
+    <!-- Left Text -->
+    <div class="hero-text">
+      <p class="hero-eyebrow">Since 2015 · Taiwan</p>
+      <h1 class="hero-title">
+        頂級車體美研<br>
+        <em>精工細作，展現極致</em>
+      </h1>
+      <p class="hero-desc">
+        以職人精神鑽研車體保護工藝，每一道工序皆是對卓越的承諾。從鈑金修復到頂級鍍膜，讓愛車恆久如新。
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" @click="showModal = true">立即預約服務</button>
+        <a href="#services" class="btn-ghost" style="display:inline-flex;align-items:center;">了解更多</a>
       </div>
-      <div class="hero-slide" :class="{active: currentSlide===1}">
-        <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=1920&q=80')"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <div class="hero-tag">Ceramic Coating & PPF</div>
-          <h1 class="hero-title">專業鍍膜<br><em>守護愛車光澤</em></h1>
-          <p class="hero-subtitle">採用頂級鍍膜技術，提升漆面光澤與防護<br>重現車身每一處細節之美</p>
-          <div class="hero-actions">
-            <a class="btn-primary" href="#services">服務項目</a>
-            <a class="btn-outline" @click.prevent="showModal=true" href="#">預約諮詢</a>
-          </div>
-        </div>
-      </div>
-      <div class="hero-slide" :class="{active: currentSlide===2}">
-        <div class="hero-slide-bg" style="background-image:url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1920&q=80')"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <div class="hero-tag">One-Stop Auto Services</div>
-          <h1 class="hero-title">一站式服務<br><em>從細節開始</em></h1>
-          <p class="hero-subtitle">包膜工程、玻璃隔熱、內裝養護、烤漆修復<br>滿足您愛車的全方位需求</p>
-          <div class="hero-actions">
-            <a class="btn-primary" href="#services">探索服務</a>
-            <a class="btn-outline" href="#news">最新消息</a>
-          </div>
-        </div>
+      <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
       </div>
     </div>
-    <button class="hero-prev" @click="prevSlide"><i class="fas fa-chevron-left"></i></button>
-    <button class="hero-next" @click="nextSlide"><i class="fas fa-chevron-right"></i></button>
-    <div class="hero-dots">
-      <div class="hero-dot" v-for="(s,i) in 3" :key="i" :class="{active: currentSlide===i}" @click="currentSlide=i"></div>
-    </div>
-    <div class="hero-scroll-hint">
-      <div class="scroll-line"></div>
-      <span>SCROLL</span>
-    </div>
-  </section>
-
-  <!-- ===== PROMISE SECTION ===== -->
-  <section class="promise-section" id="promise">
-    <div class="promise-header">
-      <div class="section-label reveal">PROFESSIONALISM IS</div>
-      <div class="promise-title-big reveal reveal-delay-1">OUR PROMISE</div>
-      <div class="gold-divider"></div>
-      <div class="promise-subtitle reveal reveal-delay-2">尹澤鎂研 &nbsp;—&nbsp; 值得託付的終生依賴</div>
-    </div>
-    <div class="promise-grid">
-      <div class="promise-card reveal">
-        <div class="promise-icon"><i class="fas fa-heart"></i></div>
-        <div class="promise-name">用心經營</div>
-        <p class="promise-desc">「堅持就是一種傳奇」！所謂「經典」，所謂「永恆」，期望您第一個想到的就是尹澤鎂研！在人文教育背景下，讓本質精神講求更多的專業細節與兼具更多的細膩服務。</p>
-      </div>
-      <div class="promise-card reveal reveal-delay-1">
-        <div class="promise-icon"><i class="fas fa-handshake"></i></div>
-        <div class="promise-name">誠實回饋</div>
-        <p class="promise-desc">從技術的要求、產品的選用、設備的投入，到售後的服務，都秉持著「將每一件事，都用心做到最好」的精神來面對每一位車主的寄託。嚴謹的自我要求，才是回饋顧客最好的承諾。</p>
-      </div>
-      <div class="promise-card reveal reveal-delay-2">
-        <div class="promise-icon"><i class="fas fa-star"></i></div>
-        <div class="promise-name">專業貼心</div>
-        <p class="promise-desc">「用心、關心、貼心」從傾聽開始，對於細節的堅持：除了打造絕佳的舒適環境，更是注重體貼入微的客戶服務，從傾聽車主需求到實際瞭解，提供最適合的汽車美容產品與完整保固服務。</p>
+    <!-- Right Image Slider -->
+    <div class="hero-image">
+      <img :src="heroSlides[heroIdx].img" :alt="heroSlides[heroIdx].alt" :key="heroIdx">
+      <div class="hero-image-overlay"></div>
+      <div class="hero-slide-counter">
+        <span class="current">0{{ heroIdx + 1 }}</span> / 0{{ heroSlides.length }}
       </div>
     </div>
   </section>
 
-  <!-- ===== SERVICES SECTION ===== -->
-  <section class="services-section" id="services">
-    <div class="services-inner">
-      <div class="services-header">
-        <div class="section-label reveal">POPULAR SERVICES</div>
-        <div class="services-title-row">
-          <div class="services-title-en reveal">打造高品質生活，</div>
-          <div class="services-subtitle reveal reveal-delay-1">從細節開始</div>
-        </div>
-        <div class="gold-divider left"></div>
-        <div class="services-intro reveal reveal-delay-1">
-          <p>尹澤鎂研以「品質 × 細節 × 信任」為核心價值，致力於為車主打造全方位的汽車美學與高標準保養體驗。我們相信，汽車是品味的延伸，更是生活態度的展現；每一台車、每一位車主，都值得被細緻照顧與尊重對待。</p>
-          <div class="services-list-inline">
-            <span class="service-tag" v-for="tag in serviceTags" :key="tag">{{ tag }}</span>
-          </div>
-        </div>
-      </div>
-      <div class="services-grid">
-        <div class="service-card reveal" v-for="(svc, i) in services" :key="i">
-          <div class="service-card-bg" :style="{backgroundImage: `url(${svc.img})`}"></div>
-          <div class="service-card-overlay"></div>
-          <div class="service-card-content">
-            <div class="service-card-num">0{{ i+1 }}</div>
-            <div class="service-card-line"></div>
-            <div class="service-card-name">{{ svc.name }}</div>
-            <div class="service-card-desc">{{ svc.desc }}</div>
-          </div>
-        </div>
-      </div>
-      <div class="services-cta reveal">
-        <a href="#" class="btn-view-more" @click.prevent="showModal=true">VIEW MORE &nbsp; 預約諮詢</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== ONE-STOP BANNER ===== -->
-  <div class="onestop-banner">
-    <div class="onestop-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80')"></div>
-    <div class="onestop-overlay"></div>
-    <div class="onestop-content">
-      <div class="onestop-label">One-Stop Service</div>
-      <h2 class="onestop-title">一站式頂級愛車<br>汽研服務</h2>
-      <span class="onestop-title-zh">「快速節省時間，服務一次到位」</span>
-      <p class="onestop-desc">尹澤鎂研所提供「一站式頂級愛車汽研服務」，以創新、多元、精緻與客製化服務，在台灣專業頂級汽車美研業界扮演著領先者的角色。CEO滿足所有您愛車需求！</p>
-      <a class="btn-primary" @click.prevent="showModal=true" href="#">立即預約諮詢</a>
+  <!-- ─── Ticker ─── -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span v-for="item in [...tickerItems, ...tickerItems]" :key="item + Math.random()" class="ticker-item">
+        <span class="ticker-dot"></span>
+        {{ item }}
+      </span>
     </div>
   </div>
 
-  <!-- ===== NEWS SECTION ===== -->
-  <section class="news-section" id="news">
-    <div class="news-inner">
-      <div class="news-header">
-        <div class="news-title-en reveal">NEWS</div>
-        <div class="news-title-zh reveal reveal-delay-1">最新消息</div>
+  <!-- ─── About ─── -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-left reveal">
+          <div class="big-number">
+            10<span>Years of Excellence</span>
+          </div>
+        </div>
+        <div class="about-right reveal">
+          <p class="section-tag">About Meiy An</p>
+          <h2 class="section-title">車體美研，<em>不只是清潔</em><br>而是一種態度</h2>
+          <p class="about-lead">
+            尹澤鎂研成立於2015年，深耕台灣車體美容市場逾十年。我們相信每輛車都有其獨特的靈魂，每一次施作都是與車主共同守護的承諾。從手工研磨到奈米鍍膜，我們用職人之心，成就卓越之美。
+          </p>
+          <div class="promise-grid">
+            <div class="promise-item" v-for="p in promises" :key="p.title">
+              <div class="promise-icon"><i :class="p.icon"></i></div>
+              <h4>{{ p.title }}</h4>
+              <p>{{ p.desc }}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="gold-divider left" style="margin-bottom:2.5rem"></div>
-      <div class="news-grid">
-        <div class="news-card reveal" v-for="(n, i) in newsItems" :key="i" :style="{'transition-delay': (i*0.12)+'s'}">
+    </div>
+  </section>
+
+  <!-- ─── Services Bento ─── -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="services-header">
+        <div class="reveal">
+          <p class="section-tag">Services</p>
+          <h2 class="section-title">全方位<em>車體美研</em>服務</h2>
+        </div>
+        <button class="btn-primary reveal" @click="showModal = true">預約諮詢</button>
+      </div>
+      <div class="bento reveal">
+        <div class="bento-card" v-for="(s, i) in services" :key="s.title" @click="showModal = true">
+          <img :src="s.img" :alt="s.title">
+          <div class="bento-card-overlay">
+            <div class="bento-card-num">0{{ i + 1 }}</div>
+            <h3>{{ s.title }}</h3>
+            <p>{{ s.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Feature Banner ─── -->
+  <div class="feature">
+    <div class="feature-img">
+      <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=900&auto=format&fit=crop&q=80" alt="Premium Detailing">
+    </div>
+    <div class="feature-content reveal">
+      <p class="section-tag">Why Meiy An</p>
+      <h2 class="section-title">頂級工藝<br><em>超越期待</em></h2>
+      <p class="feature-desc">
+        我們採用國際頂級品牌施工材料，搭配嚴謹的施工流程，確保每一次服務都能達到最高標準。無論您的愛車是何種品牌或車型，我們都能提供量身訂製的最佳方案。
+      </p>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="num">8<sup>+</sup></div>
+          <div class="label">服務項目</div>
+        </div>
+        <div class="stat-item">
+          <div class="num">500<sup>+</sup></div>
+          <div class="label">完工案例</div>
+        </div>
+        <div class="stat-item">
+          <div class="num">10<sup>年</sup></div>
+          <div class="label">專業經驗</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── News ─── -->
+  <section class="news" id="news">
+    <div class="container">
+      <div class="news-header">
+        <div class="reveal">
+          <p class="section-tag">Latest News</p>
+          <h2 class="section-title">最新消息</h2>
+        </div>
+        <a href="#" class="link-more reveal">查看全部</a>
+      </div>
+      <div class="news-grid reveal">
+        <div class="news-card news-card-big">
           <div class="news-card-img">
-            <div class="news-card-img-inner" :style="{backgroundImage: `url(${n.img})`}"></div>
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80" alt="新款鍍膜">
           </div>
           <div class="news-card-body">
-            <div class="news-card-date">{{ n.date }}</div>
-            <div class="news-card-title">{{ n.title }}</div>
-            <div class="news-card-excerpt">{{ n.excerpt }}</div>
-            <div class="news-card-read">READ MORE <i class="fas fa-arrow-right"></i></div>
+            <span class="news-card-tag">活動特惠</span>
+            <h3>2025全新奈米碳化鍍膜服務正式上架，超疏水防污效果升級三倍</h3>
+            <p>尹澤鎂研引進最新一代奈米碳化鍍膜技術，超高硬度保護漆面長達五年，防污、防刮效果大幅提升。即日起提供免費諮詢評估，數量有限，歡迎提前預約體驗。</p>
+            <div class="news-card-meta"><time>2025.06.01</time></div>
+          </div>
+        </div>
+        <div class="news-card" v-for="n in sideNews" :key="n.title">
+          <div class="news-card-img">
+            <img :src="n.img" :alt="n.title">
+          </div>
+          <div class="news-card-body">
+            <span class="news-card-tag">{{ n.tag }}</span>
+            <h3>{{ n.title }}</h3>
+            <p>{{ n.desc }}</p>
+            <div class="news-card-meta"><time>{{ n.date }}</time></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== STORES / PARTNERS SECTION ===== -->
-  <section class="stores-section" id="stores">
-    <div class="stores-inner">
-      <div class="stores-header">
-        <div class="stores-title-en reveal">STORES</div>
-        <div class="stores-title-zh reveal reveal-delay-1">各大品牌車業 / 車隊 · 指定配合</div>
+  <!-- ─── Partners ─── -->
+  <section class="partners">
+    <div class="container">
+      <div class="partners-header reveal">
+        <p class="section-tag">Partners</p>
+        <h2 class="section-title">合作品牌<em>·</em>認證夥伴</h2>
       </div>
-      <div class="gold-divider left" style="margin-bottom:2.5rem"></div>
-      <div class="partners-track-wrap reveal">
-        <div class="partners-track">
-          <div class="partner-item" v-for="(p,i) in [...partners, ...partners]" :key="i">
-            <div class="partner-logo">{{ p.abbr }}</div>
-            <div class="partner-name">{{ p.name }}</div>
+      <div class="partners-grid reveal">
+        <div class="partner-item" v-for="p in partners" :key="p.name">
+          <div class="partner-logo"><i :class="p.icon"></i></div>
+          <span>{{ p.name }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Gallery ─── -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <div class="gallery-header">
+        <div class="reveal">
+          <p class="section-tag">Gallery</p>
+          <h2 class="section-title">精選作品</h2>
+        </div>
+        <a href="#" class="link-more reveal">更多作品</a>
+      </div>
+      <div class="gallery-strip reveal">
+        <div class="gallery-item" v-for="g in gallery" :key="g">
+          <img :src="g" alt="作品">
+          <div class="gallery-item-overlay">
+            <i class="fas fa-expand-alt"></i>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== GALLERY ===== -->
-  <section class="gallery-section">
-    <div class="gallery-inner">
-      <div class="gold-divider" style="margin-bottom:2rem"></div>
-      <div class="gallery-grid">
-        <div class="gallery-item reveal" v-for="(g, i) in galleryImgs" :key="i">
-          <div class="gallery-item-bg" :style="{backgroundImage: `url(${g})`}"></div>
-          <div class="gallery-item-overlay"><i class="fas fa-expand"></i></div>
+  <!-- ─── Footer ─── -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+          <div class="brand-name">尹澤鎂研 Meiy An</div>
+          <div class="brand-sub">Professional Auto Detailing</div>
+          <p>以職人精神，守護您的愛車。提供頂級車體美研服務，讓每一輛車都煥發最美光彩。</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-line"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <!-- Services -->
+        <div class="footer-col">
+          <h4>服務項目</h4>
+          <ul>
+            <li><a href="#services">車漆保護膜 PPF</a></li>
+            <li><a href="#services">奈米陶瓷鍍膜</a></li>
+            <li><a href="#services">漆面研磨拋光</a></li>
+            <li><a href="#services">車身包膜改色</a></li>
+            <li><a href="#services">頂蓬翻新修復</a></li>
+            <li><a href="#services">隔熱紙施工</a></li>
+          </ul>
+        </div>
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4>快速連結</h4>
+          <ul>
+            <li><a href="#about">關於我們</a></li>
+            <li><a href="#news">最新消息</a></li>
+            <li><a href="#gallery">作品集</a></li>
+            <li><a href="#" @click.prevent="showModal = true">線上預約</a></li>
+          </ul>
+        </div>
+        <!-- Contact -->
+        <div class="footer-col">
+          <h4>聯絡資訊</h4>
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>台灣某市某區某路123號</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>0912-345-678</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>info@meiyan.tw</span>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-clock"></i>
+            <span>週一至週六 09:00 – 18:00</span>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-logo-zh">尹澤鎂研</div>
-        <div class="footer-logo-en">MEIY AN Auto Detailing</div>
-        <p class="footer-desc">以品質、細節、信任為核心，致力為每位車主打造全方位頂級汽車美學與高標準保養體驗，您值得最好的。</p>
-        <div class="footer-social">
-          <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" title="LINE"><i class="fab fa-line"></i></a>
-          <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
-        </div>
+      <div class="footer-bottom">
+        <p>© 2025 尹澤鎂研 Meiy An. All rights reserved.</p>
+        <p>Designed with care · 用心設計</p>
       </div>
-      <div>
-        <div class="footer-col-title">服務項目</div>
-        <div class="footer-nav-links">
-          <a href="#services">鍍膜美研</a>
-          <a href="#services">包膜工程</a>
-          <a href="#services">玻璃隔熱</a>
-          <a href="#services">內裝養護</a>
-          <a href="#services">烤漆修復</a>
-          <a href="#services">老車翻新</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">快速連結</div>
-        <div class="footer-nav-links">
-          <a href="#hero">首頁</a>
-          <a href="#promise">關於我們</a>
-          <a href="#services">服務項目</a>
-          <a href="#news">最新消息</a>
-          <a href="#stores">合作品牌</a>
-          <a href="#" @click.prevent="showModal=true">立即預約</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">旗艦店資訊</div>
-        <div class="footer-info-item">
-          <i class="fas fa-clock"></i>
-          <span>營業時間：週一—週六<br>9:00am – 21:00pm</span>
-        </div>
-        <div class="footer-info-item">
-          <i class="fas fa-map-marker-alt"></i>
-          <span>台北市內湖區南京東路六段505號</span>
-        </div>
-        <div class="footer-info-item">
-          <i class="fas fa-phone"></i>
-          <span>(02) 2627-2038</span>
-        </div>
-        <div class="footer-info-item">
-          <i class="fas fa-envelope"></i>
-          <span>service@meiyan.com.tw</span>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span class="footer-copyright">&copy; {{ new Date().getFullYear() }} 尹澤鎂研 Meiy An Auto Detailing. All Rights Reserved.</span>
-      <span class="footer-copyright">專業車體美研 · 品質保證</span>
     </div>
   </footer>
 
-  <!-- ===== FLOATING BUTTONS ===== -->
-  <div class="floating-cta">
-    <div class="floating-btn-label">立即<br>預約</div>
-    <button class="floating-btn floating-reserve" @click="showModal=true" title="立即預約">
-      <i class="fas fa-calendar-check"></i>
-    </button>
-    <button class="floating-btn floating-line" title="LINE 聯絡">
-      <i class="fab fa-line"></i>
-    </button>
-  </div>
-  <div class="back-to-top" :class="{visible: isScrolled && scrollY > 400}" @click="scrollToTop">
-    <i class="fas fa-chevron-up"></i>
+  <!-- ─── Floating Buttons ─── -->
+  <div class="floating-btns">
+    <button class="float-btn float-line" title="Line"><i class="fab fa-line"></i></button>
+    <button class="float-btn float-ig" title="Instagram"><i class="fab fa-instagram"></i></button>
+    <button class="float-btn float-fb" title="Facebook"><i class="fab fa-facebook-f"></i></button>
   </div>
 
-  <!-- ===== BOOKING MODAL ===== -->
+  <button class="back-top" :class="{ visible: showBackTop }" @click="scrollTop" title="回到頂部">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- ─── Booking Modal ─── -->
   <Transition name="fade">
-    <div class="modal-backdrop" v-if="showModal" @click.self="showModal=false">
+    <div class="modal-backdrop" v-if="showModal" @click.self="showModal = false">
       <div class="modal-box">
-        <button class="modal-close" @click="showModal=false"><i class="fas fa-times"></i></button>
-        <div class="modal-title">立即預約</div>
-        <div class="modal-subtitle">尹澤鎂研 Meiy An &nbsp;—&nbsp; 專業服務諮詢</div>
-        <form @submit.prevent="submitForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">姓名 *</label>
-              <input class="form-input" v-model="form.name" type="text" placeholder="您的姓名" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">電話 *</label>
-              <input class="form-input" v-model="form.phone" type="tel" placeholder="連絡電話" required>
-            </div>
+        <button class="modal-close" @click="showModal = false"><i class="fas fa-times"></i></button>
+        <p class="modal-tag">Book a Service</p>
+        <h3 class="modal-title">線上預約服務</h3>
+        <p class="modal-subtitle">填寫以下資訊，我們將於一個工作天內與您聯絡確認。</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>姓名 *</label>
+            <input type="text" v-model="form.name" placeholder="您的姓名">
           </div>
           <div class="form-group">
-            <label class="form-label">服務項目</label>
-            <select class="form-input" v-model="form.service">
+            <label>電話 *</label>
+            <input type="tel" v-model="form.phone" placeholder="0912-345-678">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" v-model="form.email" placeholder="your@email.com">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>服務項目 *</label>
+            <select v-model="form.service">
               <option value="">請選擇服務</option>
-              <option v-for="s in services" :key="s.name" :value="s.name">{{ s.name }}</option>
+              <option>車漆保護膜 PPF</option>
+              <option>奈米陶瓷鍍膜</option>
+              <option>漆面研磨拋光</option>
+              <option>車身包膜改色</option>
+              <option>頂蓬翻新修復</option>
+              <option>隔熱紙施工</option>
+              <option>其他諮詢</option>
             </select>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">預約日期</label>
-              <input class="form-input" v-model="form.date" type="date">
-            </div>
-            <div class="form-group">
-              <label class="form-label">車款</label>
-              <input class="form-input" v-model="form.car" type="text" placeholder="車輛品牌與型號">
-            </div>
-          </div>
           <div class="form-group">
-            <label class="form-label">備註</label>
-            <textarea class="form-input" v-model="form.note" rows="3" placeholder="其他需求或問題" style="resize:vertical"></textarea>
+            <label>車款</label>
+            <input type="text" v-model="form.car" placeholder="品牌 / 型號 / 年份">
           </div>
-          <button class="btn-submit" type="submit">確認送出預約</button>
-        </form>
+        </div>
+        <div class="form-group">
+          <label>備註說明</label>
+          <textarea v-model="form.note" placeholder="請描述您的需求或問題..."></textarea>
+        </div>
+        <button class="form-submit" @click="submitForm">送出預約申請</button>
       </div>
     </div>
   </Transition>
 
-</div><!-- #app -->
-
-<style>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-</style>
+</div>
 
 <script>
-const { createApp, ref, reactive, onMounted, onUnmounted } = Vue;
+const { createApp, ref, reactive, computed, onMounted, onUnmounted } = Vue;
 
 createApp({
   setup() {
-    // ---- State ----
-    const isScrolled = ref(false);
+    // Nav
     const scrollY = ref(0);
-    const mobileOpen = ref(false);
-    const showModal = ref(false);
-    const activeSection = ref('hero');
-    const currentSlide = ref(0);
-    let slideTimer = null;
+    const navClass = computed(() => {
+      if (scrollY.value > 520) return 'light';
+      if (scrollY.value > 40) return 'scrolled';
+      return '';
+    });
 
-    const form = reactive({ name:'', phone:'', service:'', date:'', car:'', note:'' });
+    // Hero slider
+    const heroSlides = [
+      { img: 'https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?w=1200&auto=format&fit=crop&q=80', alt: '鍍膜施工' },
+      { img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1200&auto=format&fit=crop&q=80', alt: '漆面保護' },
+      { img: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=1200&auto=format&fit=crop&q=80', alt: '頂級車體' },
+    ];
+    const heroIdx = ref(0);
+    let heroTimer = null;
 
-    // ---- Data ----
-    const serviceTags = [
-      '鍍膜美研', '包膜工程', '玻璃隔熱紙', '前檔防爆膜',
-      '內裝養護', '老車翻新', '烤漆修復', '愛車估售'
+    // Ticker
+    const tickerItems = [
+      '車漆保護膜 PPF', '奈米陶瓷鍍膜', '漆面研磨拋光', '車身包膜改色',
+      '頂蓬翻新修復', '隔熱紙施工', '一站式服務', '十年口碑',
+      '職人工藝', '台灣在地品牌',
     ];
 
-    const services = ref([
-      {
-        name: 'CEO 專業客製化鍍膜',
-        desc: '提升漆面光澤與防護，重現車身細節之美，以頂級鍍膜技術為愛車打造長效防護。',
-        img: 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=600&q=80'
-      },
-      {
-        name: '車體美研',
-        desc: '深度車體美容研磨，去除細紋與氧化，還原原廠漆面光采。',
-        img: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&q=80'
-      },
-      {
-        name: '漆面護理',
-        desc: '專業漆面護理，包含打蠟、鍍膜、封釉，全面保護車體外觀。',
-        img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80'
-      },
-      {
-        name: '犀牛皮包膜 / 改色膜 / 隔熱紙',
-        desc: '提供車體造型與功能性防護的客製化方案，打造個性化愛車外觀。',
-        img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=80'
+    // Promises
+    const promises = [
+      { icon: 'fas fa-heart', title: '用心經營', desc: '每位車主都是我們最重要的夥伴，用心對待每一台車。' },
+      { icon: 'fas fa-handshake', title: '誠實回饋', desc: '透明報價、誠信施作，讓您安心委託無後顧之憂。' },
+      { icon: 'fas fa-award', title: '專業認證', desc: '持有國際認證施工資格，採用頂級品牌施工材料。' },
+    ];
+
+    // Services
+    const services = [
+      { title: '車漆保護膜 PPF', desc: '高透明度自修復薄膜，抵禦石擊、刮傷與紫外線。', img: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&auto=format&fit=crop&q=80' },
+      { title: '奈米陶瓷鍍膜', desc: '超強疏水效果，鍍膜硬度9H，持久保護漆面光澤。', img: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&auto=format&fit=crop&q=80' },
+      { title: '漆面研磨拋光', desc: '消除漆面細紋旋渦痕，還原出廠般的鏡面光澤。', img: 'https://images.unsplash.com/photo-1543465077-db45d34b88a5?w=600&auto=format&fit=crop&q=80' },
+      { title: '車身包膜改色', desc: '多種色彩材質可選，不動原廠烤漆即可輕鬆換色。', img: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&auto=format&fit=crop&q=80' },
+      { title: '頂蓬翻新修復', desc: '解決頂蓬老化脫落問題，恢復車廂整潔舒適感受。', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=80' },
+      { title: '隔熱紙施工', desc: '高效隔熱、防紫外線，為車內打造舒適乘坐環境。', img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&auto=format&fit=crop&q=80' },
+    ];
+
+    // Side news
+    const sideNews = [
+      { tag: '品牌動態', title: '2025台北車展聯名限定套組，即日起開放預購', desc: '與多家頂級汽車品牌合作推出聯名施工套組，包含PPF全車+鍍膜，早鳥優惠至月底截止。', img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&auto=format&fit=crop&q=80', date: '2025.05.15' },
+      { tag: '技術分享', title: '職人日記：PPF與鍍膜的完美結合，雙重防護解析', desc: '許多車主好奇PPF與鍍膜能否同時施作？本文詳解兩者的互補關係與最佳施工順序。', img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80', date: '2025.04.22' },
+    ];
+
+    // Partners
+    const partners = [
+      { name: '3M Automotive', icon: 'fas fa-shield-alt' },
+      { name: 'XPEL Protection', icon: 'fas fa-car' },
+      { name: 'Gyeon Quartz', icon: 'fas fa-gem' },
+      { name: 'STEK DYNOshield', icon: 'fas fa-star' },
+      { name: 'Ceramic Pro', icon: 'fas fa-circle-notch' },
+      { name: 'SunTek Films', icon: 'fas fa-sun' },
+      { name: 'LLUMAR', icon: 'fas fa-tint' },
+      { name: 'Nanolex', icon: 'fas fa-flask' },
+    ];
+
+    // Gallery
+    const gallery = [
+      'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=600&auto=format&fit=crop&q=80',
+    ];
+
+    // Modal & Form
+    const showModal = ref(false);
+    const form = reactive({ name: '', phone: '', email: '', service: '', car: '', note: '' });
+
+    function submitForm() {
+      if (!form.name || !form.phone || !form.service) {
+        alert('請填寫姓名、電話及服務項目。');
+        return;
       }
-    ]);
-
-    const newsItems = ref([
-      {
-        date: '2025.07.17',
-        title: '【夏季保養禮】鍍膜升級送大燈包膜，限時享有！',
-        excerpt: '凡加入尹澤鎂研會員並消費指定漆面護理/鍍膜服務，贈活動好禮！憑券可享最低88折優惠，再贈限量好禮，立即預約！',
-        img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&q=80'
-      },
-      {
-        date: '2025.04.28',
-        title: '全新包膜技術上線！PPF犀牛皮保護膜，守護漆面無懼刮傷',
-        excerpt: '採用最新一代 TPU 犀牛皮保護膜，自我修復功能強大，防止石子彈擊與細微刮痕，讓您的愛車保持如新。',
-        img: 'https://images.unsplash.com/photo-1490902931801-d6f80ca94fe4?w=600&q=80'
-      },
-      {
-        date: '2024.09.18',
-        title: '國慶特惠！鍍膜 × 包膜一次享有，數量有限',
-        excerpt: '限時尊享，任一鍍膜即送大燈包膜，加碼贈包膜抵用金帶回家，最高回饋達一萬元！鍍膜包膜一次享有，搶先預約！',
-        img: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&q=80'
-      }
-    ]);
-
-    const partners = ref([
-      { abbr: 'P', name: 'Porsche 台灣保時捷' },
-      { abbr: 'MB', name: 'Mercedes-Benz 賓士' },
-      { abbr: 'BMW', name: 'BMW 寶馬' },
-      { abbr: 'L', name: 'Lamborghini 藍寶堅尼' },
-      { abbr: 'F', name: 'Ferrari 法拉利' },
-      { abbr: 'LX', name: 'Lexus 凌志' },
-      { abbr: 'A', name: 'Audi 奧迪' },
-      { abbr: 'M', name: 'Maserati 瑪莎拉蒂' },
-    ]);
-
-    const galleryImgs = ref([
-      'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80',
-      'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=900&q=80',
-      'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=900&q=80',
-      'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=900&q=80',
-    ]);
-
-    // ---- Slider ----
-    const nextSlide = () => { currentSlide.value = (currentSlide.value + 1) % 3; };
-    const prevSlide = () => { currentSlide.value = (currentSlide.value - 1 + 3) % 3; };
-    const startSlider = () => { slideTimer = setInterval(nextSlide, 5500); };
-    const stopSlider = () => { clearInterval(slideTimer); };
-
-    // ---- Scroll handling ----
-    const handleScroll = () => {
-      scrollY.value = window.scrollY;
-      isScrolled.value = window.scrollY > 60;
-      // Active section detection
-      const sections = ['hero','promise','services','news','stores'];
-      for (let s of sections) {
-        const el = document.getElementById(s);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom > 100) {
-            activeSection.value = s; break;
-          }
-        }
-      }
-      // Scroll reveal
-      document.querySelectorAll('.reveal').forEach(el => {
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 60) el.classList.add('visible');
-      });
-    };
-
-    const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    const submitForm = () => {
-      alert('預約成功！我們將儘快與您聯繫，感謝您選擇尹澤鎂研 Meiy An！');
+      alert('預約申請已送出！我們將盡快與您聯絡，感謝您的信任。');
       showModal.value = false;
-      Object.assign(form, { name:'', phone:'', service:'', date:'', car:'', note:'' });
-    };
+      Object.keys(form).forEach(k => form[k] = '');
+    }
+
+    // Back to top
+    const showBackTop = ref(false);
+
+    function scrollTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Mobile menu
+    const mobileMenuOpen = ref(false);
+
+    // Scroll reveal
+    function initReveal() {
+      const els = document.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(el => obs.observe(el));
+    }
+
+    function onScroll() {
+      scrollY.value = window.scrollY;
+      showBackTop.value = window.scrollY > 400;
+    }
 
     onMounted(() => {
-      window.addEventListener('scroll', handleScroll);
-      handleScroll(); // Initial
-      startSlider();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // Hero auto-advance
+      heroTimer = setInterval(() => {
+        heroIdx.value = (heroIdx.value + 1) % heroSlides.length;
+      }, 5000);
+
+      // Reveal
+      setTimeout(initReveal, 100);
     });
 
     onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll);
-      stopSlider();
+      window.removeEventListener('scroll', onScroll);
+      clearInterval(heroTimer);
     });
 
     return {
-      isScrolled, scrollY, mobileOpen, showModal, activeSection,
-      currentSlide, nextSlide, prevSlide,
-      form, serviceTags, services, newsItems, partners, galleryImgs,
-      scrollToTop, submitForm
+      navClass, heroSlides, heroIdx, tickerItems,
+      promises, services, sideNews, partners, gallery,
+      showModal, form, submitForm, showBackTop, scrollTop, mobileMenuOpen,
     };
   }
 }).mount('#app');
