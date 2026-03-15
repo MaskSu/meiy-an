@@ -2100,17 +2100,27 @@ createApp({
     }
 
     function toggleService(i, e) {
-      const opening = activeService.value !== i;
-      activeService.value = opening ? i : -1;
-      if (opening) {
-        const header = e.currentTarget;
-        const navH = document.querySelector('.nav')?.offsetHeight || 72;
-        // 等動畫開始後再 scroll，避免舊高度影響位置
-        setTimeout(() => {
-          const top = header.getBoundingClientRect().top + window.scrollY - navH - 12;
-          window.scrollTo({ top, behavior: 'smooth' });
-        }, 30);
+      const navH = document.querySelector('.nav')?.offsetHeight || 72;
+      const header = e.currentTarget;
+
+      // 點同一個 → 只關閉，不 scroll
+      if (activeService.value === i) {
+        activeService.value = -1;
+        return;
       }
+
+      const wasOpen = activeService.value !== -1;
+
+      // Step 1: 先關閉目前打開的項目
+      activeService.value = -1;
+
+      // Step 2: 等關閉動畫結束（450ms），位置才穩定
+      setTimeout(() => {
+        const top = header.getBoundingClientRect().top + window.scrollY - navH - 12;
+        // Step 3: scroll 到目標，同時打開新項目（展開向下不影響 scroll）
+        window.scrollTo({ top, behavior: 'smooth' });
+        activeService.value = i;
+      }, wasOpen ? 460 : 0);
     }
 
     function initReveal() {
