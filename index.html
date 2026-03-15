@@ -383,31 +383,6 @@
       filter: drop-shadow(0 8px 32px rgba(200,144,107,0.38));
     }
 
-    /* ── Mobile scroll hint (chevrons, no text) ── */
-    .hero-scroll-hint {
-      display: none;
-      position: absolute;
-      bottom: 2.2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      flex-direction: column;
-      align-items: center;
-      gap: 1px;
-      pointer-events: none;
-    }
-    .hero-scroll-hint i {
-      font-size: 0.9rem;
-      color: var(--bronze);
-      animation: chevFade 2s ease-in-out infinite;
-    }
-    .hero-scroll-hint i:nth-child(2) { animation-delay: 0.28s; opacity: 0.55; }
-    .hero-scroll-hint i:nth-child(3) { animation-delay: 0.56s; opacity: 0.25; }
-    @keyframes chevFade {
-      0%   { opacity: 0;   transform: translateY(-5px); }
-      40%  { opacity: 1;   transform: translateY(0); }
-      80%  { opacity: 0.2; transform: translateY(5px); }
-      100% { opacity: 0;   transform: translateY(5px); }
-    }
 
     /* ═══════════════════════════════════════
        SECTION COMMONS
@@ -1239,7 +1214,6 @@
       .hero-content { grid-template-columns: 1fr; padding-top: 5rem; }
       .hero-right { display: none; }
       .hero-mobile-logo { display: flex; }
-      .hero-scroll-hint { display: flex; }
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .about-img-frame img { height: 320px; }
       .about-badge { display: none; }
@@ -1353,12 +1327,6 @@
       </div>
     </div>
 
-    <!-- Mobile scroll hint (chevrons only, no text) -->
-    <div class="hero-scroll-hint">
-      <i class="fas fa-chevron-down"></i>
-      <i class="fas fa-chevron-down"></i>
-      <i class="fas fa-chevron-down"></i>
-    </div>
   </section>
 
   <!-- ═══ TICKER ═══ -->
