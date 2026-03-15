@@ -615,6 +615,7 @@
     }
 
     /* ── Accordion ── */
+    .services { overflow-anchor: none; }
     .accordion {
       border: 1px solid var(--border-light);
       border-radius: 6px;
@@ -676,6 +677,7 @@
       grid-template-rows: 0fr;
       transition: grid-template-rows 0.45s ease;
       background: var(--bg-cream);
+      overflow-anchor: none;
     }
     .accordion-item.active > .accordion-body { grid-template-rows: 1fr; }
     .accordion-body-inner { overflow: hidden; }
@@ -1639,7 +1641,7 @@
           :key="s.title"
           :class="{ active: activeService === i }"
         >
-          <div class="accordion-header" @click="activeService = activeService === i ? -1 : i">
+          <div class="accordion-header" @click.stop="activeService = activeService === i ? -1 : i">
             <div class="acc-num">0{{ i + 1 }}</div>
             <div class="acc-icon"><i :class="s.icon"></i></div>
             <div class="acc-title">{{ s.title }}</div>
