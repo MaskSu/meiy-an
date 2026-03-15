@@ -1197,6 +1197,18 @@
     .contact-detail-value { font-size: 0.92rem; font-weight: 500; color: var(--text); line-height: 1.5; }
     .contact-detail-value small { font-weight: 400; font-size: 0.8rem; color: var(--text-mid); }
     .contact-map-tag { font-size: 0.65rem; color: var(--bronze); border: 1px solid rgba(184,115,51,0.35); padding: 1px 6px; border-radius: 3px; }
+    .contact-detail-addr { cursor: default; }
+    .contact-detail-addr:hover { border-color: var(--border-light); box-shadow: none; }
+    .contact-map-embed { border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden; }
+    .contact-map-embed iframe { display: block; }
+    .contact-map-open {
+      display: flex; align-items: center; gap: 0.4rem; justify-content: center;
+      padding: 0.6rem 1rem; font-size: 0.75rem; letter-spacing: 0.05em;
+      color: var(--bronze); background: white; text-decoration: none;
+      border-top: 1px solid var(--border-light);
+      transition: background 0.2s;
+    }
+    .contact-map-open:hover { background: var(--bg-warm); }
 
     .social-grid {
       display: grid;
@@ -1582,7 +1594,7 @@
       <div class="about-grid">
         <div class="about-img-wrap reveal">
           <div class="about-img-frame">
-            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=80" alt="阿永 專業施作">
+            <img src="S__9338966.jpg" alt="阿永 專業施作">
           </div>
           <div class="about-badge">
             <div class="num">10</div>
@@ -1831,13 +1843,22 @@
                 <div class="contact-detail-value">a0938122361@gmail.com</div>
               </div>
             </a>
-            <a class="contact-detail-item" href="https://maps.google.com/?q=高雄市鳥松區中正路101號" target="_blank">
+            <div class="contact-detail-item contact-detail-addr">
               <div class="contact-detail-icon"><i class="fas fa-map-marker-alt"></i></div>
               <div class="contact-detail-body">
-                <div class="contact-detail-label">服務地址 <span class="contact-map-tag"><i class="fas fa-external-link-alt"></i> Google 地圖</span></div>
+                <div class="contact-detail-label">服務地址</div>
                 <div class="contact-detail-value">高雄市鳥松區中正路101號<br><small>（近文山派出所、長庚醫院）</small></div>
               </div>
-            </a>
+            </div>
+            <div class="contact-map-embed">
+              <iframe
+                src="https://maps.google.com/maps?q=高雄市鳥松區中正路101號&output=embed&hl=zh-TW&z=16"
+                width="100%" height="280" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <a class="contact-map-open" href="https://maps.google.com/?q=高雄市鳥松區中正路101號" target="_blank">
+                <i class="fas fa-external-link-alt"></i> 在 Google 地圖中開啟
+              </a>
+            </div>
           </div>
 
           <div class="social-grid">
