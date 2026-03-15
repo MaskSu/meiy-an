@@ -308,13 +308,15 @@
       animation: spinSlow 20s linear infinite;
     }
     .hero-logo-ring::before {
-      content: '';
+      content: '🚗';
       position: absolute;
-      top: -4px; left: 50%;
+      top: -14px; left: 50%;
       transform: translateX(-50%);
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--bronze);
+      font-size: 1.3rem;
+      line-height: 1;
+      width: auto; height: auto;
+      border-radius: 0;
+      background: none;
     }
     @keyframes spinSlow { to { transform: rotate(360deg); } }
 
