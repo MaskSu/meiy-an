@@ -1201,16 +1201,14 @@
     .contact-map-tag { font-size: 0.65rem; color: var(--bronze); border: 1px solid rgba(184,115,51,0.35); padding: 1px 6px; border-radius: 3px; }
     .contact-detail-addr { cursor: default; }
     .contact-detail-addr:hover { border-color: var(--border-light); box-shadow: none; }
-    .contact-map-embed { border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden; }
-    .contact-map-embed iframe { display: block; }
-    .contact-map-open {
-      display: flex; align-items: center; gap: 0.4rem; justify-content: center;
-      padding: 0.6rem 1rem; font-size: 0.75rem; letter-spacing: 0.05em;
-      color: var(--bronze); background: white; text-decoration: none;
-      border-top: 1px solid var(--border-light);
-      transition: background 0.2s;
+    .contact-map-btn {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.95rem 1.2rem;
+      background: white; border: 1px solid var(--border-light); border-radius: 6px;
+      color: var(--bronze); text-decoration: none; font-size: 0.88rem; font-weight: 500;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
-    .contact-map-open:hover { background: var(--bg-warm); }
+    .contact-map-btn:hover { border-color: var(--bronze-light); background: var(--bg-warm); box-shadow: 0 2px 12px rgba(184,115,51,0.1); }
 
     .social-grid {
       display: grid;
@@ -1854,15 +1852,11 @@
                 <div class="contact-detail-value">高雄市鳥松區中正路101號<br><small>（近文山派出所、長庚醫院）</small></div>
               </div>
             </div>
-            <div class="contact-map-embed">
-              <iframe
-                src="https://maps.google.com/maps?q=高雄市鳥松區中正路101號&output=embed&hl=zh-TW&z=16"
-                width="100%" height="280" style="border:0;" allowfullscreen="" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
-              <a class="contact-map-open" href="https://maps.google.com/?q=高雄市鳥松區中正路101號" target="_blank">
-                <i class="fas fa-external-link-alt"></i> 在 Google 地圖中開啟
-              </a>
-            </div>
+            <a class="contact-map-btn" href="https://maps.google.com/?q=%E9%AB%98%E9%9B%84%E5%B8%82%E9%B3%A5%E6%9D%BE%E5%8D%80%E4%B8%AD%E6%AD%A3%E8%B7%AF101%E8%99%9F" target="_blank">
+              <i class="fas fa-map-marked-alt"></i>
+              <span>在 Google 地圖中開啟</span>
+              <i class="fas fa-external-link-alt" style="font-size:0.7rem;opacity:0.7;margin-left:auto;"></i>
+            </a>
           </div>
 
           <div class="social-grid">
