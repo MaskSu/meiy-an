@@ -858,6 +858,174 @@
     }
 
     /* ═══════════════════════════════════════
+       PRESS / INTERVIEW
+    ═══════════════════════════════════════ */
+    .press { background: var(--bg-cream); }
+
+    .press-header { margin-bottom: 3rem; }
+
+    .press-card {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 0;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    /* Left — story side */
+    .press-story {
+      padding: 3rem 3rem 2.5rem;
+      border-right: 1px solid var(--border-light);
+    }
+    .press-source {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .press-source-badge {
+      background: var(--sage-mist);
+      color: var(--sage-deep);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      border-radius: 2px;
+    }
+    .press-date {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--text-mute);
+    }
+    .press-article-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 0.4rem;
+    }
+    .press-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--text-mute);
+      margin-bottom: 2rem;
+    }
+
+    /* Journey timeline */
+    .press-journey {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 2rem;
+      border-left: 2px solid var(--border-light);
+      padding-left: 1.4rem;
+      position: relative;
+    }
+    .journey-item {
+      position: relative;
+      padding-bottom: 1.5rem;
+    }
+    .journey-item:last-child { padding-bottom: 0; }
+    .journey-item::before {
+      content: '';
+      position: absolute;
+      left: -1.85rem;
+      top: 0.35rem;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--bronze);
+      border: 2px solid white;
+      box-shadow: 0 0 0 1px var(--bronze);
+    }
+    .journey-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 0.25rem;
+    }
+    .journey-text {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .press-read-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bronze-deep);
+      border: 1.5px solid var(--bronze-bright);
+      padding: 0.65rem 1.4rem;
+      border-radius: 2px;
+      transition: background 0.3s, color 0.3s;
+      text-decoration: none;
+    }
+    .press-read-btn:hover { background: var(--bronze); color: white; border-color: var(--bronze); }
+
+    /* Right — quotes side */
+    .press-quotes {
+      padding: 3rem 2.5rem;
+      background: var(--bg-copper-lt);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+    .press-quote {
+      border-left: 3px solid var(--bronze);
+      padding: 1rem 0 1rem 1.2rem;
+      margin: 0;
+    }
+    .press-quote.featured {
+      border-left-color: var(--sage-dark);
+      border-left-width: 3px;
+      background: white;
+      border-radius: 0 var(--r) var(--r) 0;
+      padding: 1.2rem 1.4rem;
+    }
+    .press-quote p {
+      font-family: 'Noto Serif TC', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.8;
+    }
+    .press-quote.featured p { font-size: 1rem; color: var(--sage-deep); }
+    .press-quote cite {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      color: var(--text-mute);
+      margin-top: 0.6rem;
+      font-style: normal;
+    }
+
+    @media (max-width: 900px) {
+      .press-card { grid-template-columns: 1fr; }
+      .press-story { border-right: none; border-bottom: 1px solid var(--border-light); padding: 2rem; }
+      .press-quotes { padding: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .press-story { padding: 1.5rem; }
+      .press-quotes { padding: 1.5rem; }
+      .press-article-title { font-size: 1.05rem; }
+    }
+
+    /* ═══════════════════════════════════════
        PORTFOLIO (YouTube Videos)
     ═══════════════════════════════════════ */
     .portfolio { background: var(--bg-light); }
@@ -1256,6 +1424,7 @@
       <li><a href="#about">關於我們</a></li>
       <li><a href="#services">服務項目</a></li>
       <li><a href="#news">最新消息</a></li>
+      <li><a href="#press">媒體報導</a></li>
       <li><a href="#portfolio">作品集</a></li>
       <li><a href="#contact">聯絡我們</a></li>
     </ul>
@@ -1270,6 +1439,7 @@
     <a href="#about"    @click="mobileOpen=false">關於我們</a>
     <a href="#services" @click="mobileOpen=false">服務項目</a>
     <a href="#news"     @click="mobileOpen=false">最新消息</a>
+    <a href="#press"    @click="mobileOpen=false">媒體報導</a>
     <a href="#portfolio" @click="mobileOpen=false">作品集</a>
     <a href="#contact"  @click="mobileOpen=false">聯絡我們</a>
     <a class="mobile-cta" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank" @click="mobileOpen=false">
@@ -1441,6 +1611,73 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ═══ PRESS / INTERVIEW ═══ -->
+  <section class="press" id="press">
+    <div class="container">
+      <div class="press-header reveal">
+        <p class="section-tag dark">Media · 媒體報導</p>
+        <h2 class="section-title dark">人物<em>專訪</em></h2>
+      </div>
+
+      <div class="press-card reveal">
+
+        <!-- Left: Story Timeline -->
+        <div class="press-story">
+          <div class="press-source">
+            <span class="press-source-badge">痞客邦 PIXNET</span>
+            <span class="press-date">2023 · 02 · 05</span>
+          </div>
+          <h3 class="press-article-title">「拍」出自我，車室煥然一新的驚嘆！</h3>
+          <p class="press-subtitle">聽泰睿說故事 · 內裝清潔保養 I LUV 尹澤鎂硏 人物專訪</p>
+
+          <div class="press-journey">
+            <div class="journey-item">
+              <div class="journey-label">事業起步</div>
+              <div class="journey-text">從小個性閒騷的阿永，在洗車職涯中磨礪出細心與耐心，累積多年經驗後自立創業，親手DIY打造屬於自己的工作室。</div>
+            </div>
+            <div class="journey-item">
+              <div class="journey-label">澳洲闖蕩</div>
+              <div class="journey-text">三十歲前毅然出走台灣，在澳洲農場落葉生根，歷經大火、旱災，仍憑一己之力在異鄉重拾汽車清潔本業，廣受當地顧客好評。</div>
+            </div>
+            <div class="journey-item">
+              <div class="journey-label">疫情轉機</div>
+              <div class="journey-text">疫情迫使阿永返台，卻也開啟了第三次創業。受 YouTube 啟發，開始自學拍攝剪輯，將每台車「妙手回春」的過程記錄成影片，在 TikTok 上引爆關注。</div>
+            </div>
+            <div class="journey-item">
+              <div class="journey-label">口碑遠播</div>
+              <div class="journey-text">獨特的施作風格與台語訪問客戶的親切方式，吸引外縣市車友特地南下至高雄體驗，「前後對比的哇！」成為阿永最大的成就感來源。</div>
+            </div>
+          </div>
+
+          <a class="press-read-btn" href="https://tku401570758.pixnet.net/blog/posts/14221739396" target="_blank">
+            <i class="fas fa-external-link-alt"></i> 閱讀完整專訪
+          </a>
+        </div>
+
+        <!-- Right: Quotes -->
+        <div class="press-quotes">
+          <blockquote class="press-quote featured">
+            <p>「疫情將我帶離了澳洲，但帶不走我的歷練與專業，危機就是契機。」</p>
+            <cite>— 阿永，談疫情返台後的三度創業</cite>
+          </blockquote>
+          <blockquote class="press-quote">
+            <p>「我很期待客戶看到前後對比那種：哇！的反應。」</p>
+            <cite>— 阿永，談施作成就感</cite>
+          </blockquote>
+          <blockquote class="press-quote">
+            <p>「既然要清潔內裝骯污與異味，需要細心與耐心，以身作則，調整性格。」</p>
+            <cite>— 阿永，談職人心態養成</cite>
+          </blockquote>
+          <blockquote class="press-quote">
+            <p>「世界這麼大，是不是該在三十歲前離開台灣，出國看看？」</p>
+            <cite>— 阿永，談澳洲闖蕩的初衷</cite>
+          </blockquote>
+        </div>
+
+      </div>
     </div>
   </section>
 
