@@ -369,32 +369,43 @@
       margin-top: 0.2rem;
     }
 
-    .scroll-indicator {
+    /* ── Mobile hero logo (top-center, only on mobile) ── */
+    .hero-mobile-logo {
+      display: none;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .hero-mobile-logo img {
+      width: 170px;
+      height: 170px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 28px rgba(200,144,107,0.35));
+    }
+
+    /* ── Mobile scroll hint (chevrons, no text) ── */
+    .hero-scroll-hint {
+      display: none;
       position: absolute;
-      bottom: 2.5rem;
+      bottom: 2.2rem;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.4rem;
-      color: var(--text-mute);
+      gap: 1px;
+      pointer-events: none;
     }
-    .scroll-indicator span {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.55rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
+    .hero-scroll-hint i {
+      font-size: 0.9rem;
+      color: var(--bronze);
+      animation: chevFade 2s ease-in-out infinite;
     }
-    .scroll-indicator .line {
-      width: 1px; height: 50px;
-      background: linear-gradient(to bottom, var(--bronze), transparent);
-      animation: scrollLine 1.8s ease-in-out infinite;
-    }
-    @keyframes scrollLine {
-      0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
-      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
-      100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
+    .hero-scroll-hint i:nth-child(2) { animation-delay: 0.28s; opacity: 0.55; }
+    .hero-scroll-hint i:nth-child(3) { animation-delay: 0.56s; opacity: 0.25; }
+    @keyframes chevFade {
+      0%   { opacity: 0;   transform: translateY(-5px); }
+      40%  { opacity: 1;   transform: translateY(0); }
+      80%  { opacity: 0.2; transform: translateY(5px); }
+      100% { opacity: 0;   transform: translateY(5px); }
     }
 
     /* ═══════════════════════════════════════
@@ -1224,8 +1235,10 @@
       .champ-visual { padding: 2.5rem; min-height: 280px; flex-direction: row; gap: 2rem; }
     }
     @media (max-width: 900px) {
-      .hero-content { grid-template-columns: 1fr; padding-top: 8rem; }
+      .hero-content { grid-template-columns: 1fr; padding-top: 7rem; }
       .hero-right { display: none; }
+      .hero-mobile-logo { display: flex; }
+      .hero-scroll-hint { display: flex; }
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .about-img-frame img { height: 320px; }
       .about-badge { display: none; }
@@ -1294,6 +1307,10 @@
     <div class="hero-bg"></div>
     <div class="hero-content">
       <div class="hero-left">
+        <!-- Mobile-only logo at top-center -->
+        <div class="hero-mobile-logo">
+          <img src="logo.png" alt="尹澤鎂研 YINZE">
+        </div>
         <p class="hero-eyebrow">台灣 · 專業汽車內裝清潔 · Since 2015</p>
         <h1 class="hero-title">
           <span>洗淨歲月痕跡</span>
@@ -1333,6 +1350,13 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Mobile scroll hint (chevrons only, no text) -->
+    <div class="hero-scroll-hint">
+      <i class="fas fa-chevron-down"></i>
+      <i class="fas fa-chevron-down"></i>
+      <i class="fas fa-chevron-down"></i>
     </div>
   </section>
 
