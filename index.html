@@ -2109,18 +2109,44 @@ createApp({
         return;
       }
 
-      const wasOpen = activeService.value !== -1;
+      const prevIndex = activeService.value;
 
-      // Step 1: 先關閉目前打開的項目
+      function openAndScroll() {
+        activeService.value = i;
+        requestAnimationFrame(() => {
+          const top = header.getBoundingClientRect().top + window.scrollY - navH - 12;
+          window.scrollTo({ top, behavior: 'smooth' });
+        });
+      }
+
+      // 沒有已開項目 → 直接打開
+      if (prevIndex === -1) {
+        openAndScroll();
+        return;
+      }
+
+      // 先關閉目前項目，用 transitionend 精確等動畫結束
       activeService.value = -1;
 
-      // Step 2: 等關閉動畫結束（450ms），位置才穩定
-      setTimeout(() => {
-        const top = header.getBoundingClientRect().top + window.scrollY - navH - 12;
-        // Step 3: scroll 到目標，同時打開新項目（展開向下不影響 scroll）
-        window.scrollTo({ top, behavior: 'smooth' });
-        activeService.value = i;
-      }, wasOpen ? 460 : 0);
+      const allItems = document.querySelectorAll('.accordion-item');
+      const closingBody = allItems[prevIndex]?.querySelector('.accordion-body');
+
+      let done = false;
+      function proceed() {
+        if (done) return;
+        done = true;
+        openAndScroll();
+      }
+
+      if (closingBody) {
+        closingBody.addEventListener('transitionend', function handler(ev) {
+          if (ev.propertyName !== 'grid-template-rows') return;
+          closingBody.removeEventListener('transitionend', handler);
+          proceed();
+        });
+      }
+      // 保底 fallback，以防 transitionend 未觸發
+      setTimeout(proceed, 520);
     }
 
     function initReveal() {
