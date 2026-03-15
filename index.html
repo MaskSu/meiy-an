@@ -102,15 +102,13 @@
       gap: 0.7rem;
     }
     .nav-logo img {
-      width: 52px;
-      height: 52px;
+      width: 64px;
+      height: 64px;
       object-fit: contain;
       border-radius: 6px;
-      background: white;
-      padding: 3px;
     }
     .nav-logo-text { line-height: 1.2; }
-    .nav-logo-text .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--bronze-pale); font-weight: 300; transition: color 0.3s; }
+    .nav-logo-text .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; letter-spacing: 0.08em; color: var(--bronze-pale); font-weight: 400; transition: color 0.3s; }
     .nav-logo-text .sub { font-family: 'Montserrat', sans-serif; font-size: 0.55rem; letter-spacing: 0.28em; color: var(--sage-dark); text-transform: uppercase; }
 
     .nav-links {
@@ -134,14 +132,15 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       background: transparent;
-      color: var(--bronze);
-      border: 1px solid var(--bronze-light);
+      color: var(--bronze-deep);
+      border: 1.5px solid var(--bronze-bright);
       padding: 0.5rem 1.4rem;
       border-radius: 2px;
       cursor: pointer;
       transition: background 0.3s, color 0.3s;
+      font-weight: 500;
     }
-    .nav-cta:hover { background: var(--bronze); color: white; }
+    .nav-cta:hover { background: var(--bronze); color: white; border-color: var(--bronze); }
 
     .nav-mobile { display: none; background: none; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; }
 
@@ -253,7 +252,7 @@
       align-items: center;
       gap: 0.5rem;
       background: linear-gradient(135deg, var(--bronze), var(--bronze-deep));
-      color: var(--bronze-pale);
+      color: #fff;
       border: none;
       padding: 0.9rem 2rem;
       font-family: 'Montserrat', sans-serif;
@@ -272,8 +271,8 @@
       align-items: center;
       gap: 0.5rem;
       background: transparent;
-      color: var(--sage-lt);
-      border: 1px solid var(--sage-dark);
+      color: var(--sage-deep);
+      border: 1.5px solid var(--sage-dark);
       padding: 0.9rem 2rem;
       font-family: 'Montserrat', sans-serif;
       font-size: 0.7rem;
@@ -281,9 +280,9 @@
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 2px;
-      transition: border-color 0.3s, color 0.3s;
+      transition: border-color 0.3s, color 0.3s, background 0.3s;
     }
-    .btn-outline:hover { border-color: var(--sage-lt); color: white; }
+    .btn-outline:hover { background: var(--sage-dark); border-color: var(--sage-dark); color: white; }
 
     .hero-right {
       position: relative;
@@ -328,12 +327,11 @@
     }
 
     .hero-logo-img {
-      width: 200px;
-      height: 200px;
+      width: 240px;
+      height: 240px;
       object-fit: contain;
-      background: white;
       border-radius: 50%;
-      padding: 16px;
+      padding: 12px;
       box-shadow: 0 0 40px rgba(200,144,107,0.18), var(--shadow);
     }
 
@@ -455,9 +453,9 @@
       font-size: 0.65rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--bronze-pale);
+      color: #F5EFE6;
     }
-    .ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--bronze-bright); flex-shrink: 0; }
+    .ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: #F5C070; flex-shrink: 0; }
     @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
     /* ═══════════════════════════════════════
@@ -906,6 +904,11 @@
       gap: 12px;
     }
 
+    .video-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
     .video-card {
       position: relative;
       overflow: hidden;
@@ -925,22 +928,18 @@
     .video-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+      background: rgba(0,0,0,0.12);
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 0.7rem;
+      align-items: center;
+      justify-content: center;
       transition: background 0.3s;
     }
-    .video-card:hover .video-overlay { background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%); }
+    .video-card:hover .video-overlay { background: rgba(0,0,0,0.32); }
 
     .play-btn {
-      align-self: center;
-      margin-top: auto;
-      margin-bottom: auto;
       width: 44px; height: 44px;
       border-radius: 50%;
-      background: rgba(184,115,51,0.9);
+      background: rgba(200,144,107,0.92);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -952,23 +951,12 @@
     }
     .video-card:hover .play-btn { opacity: 1; transform: scale(1); }
 
-    .video-date {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.7);
-      align-self: flex-end;
-    }
-
-    .video-title {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 0.6rem 0.7rem 0.5rem;
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.9);
-      line-height: 1.4;
+    .video-caption {
+      padding: 0.55rem 0.2rem 0.3rem;
+      font-size: 0.75rem;
+      color: var(--text-mid);
+      line-height: 1.45;
       font-family: 'Noto Serif TC', serif;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
     }
 
     /* ═══════════════════════════════════════
@@ -1111,11 +1099,9 @@
       gap: 0.6rem;
     }
     .footer-logo img {
-      width: 36px; height: 36px;
+      width: 40px; height: 40px;
       object-fit: contain;
-      background: white;
       border-radius: 4px;
-      padding: 2px;
     }
     .footer-logo span {
       font-family: 'Cormorant Garamond', serif;
@@ -1185,6 +1171,48 @@
 
 
     /* ═══════════════════════════════════════
+       MOBILE MENU
+    ═══════════════════════════════════════ */
+    .mobile-menu {
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(253,250,245,0.98);
+      backdrop-filter: blur(16px);
+      z-index: 998;
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem 5vw 1.2rem;
+      border-top: 1px solid var(--border-light);
+      box-shadow: 0 8px 30px rgba(100,60,20,0.12);
+      transform: translateY(-110%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s;
+    }
+    .mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .mobile-menu a {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border-dark);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .mobile-menu a:hover { color: var(--bronze); }
+    .mobile-menu .mobile-cta {
+      margin-top: 0.6rem;
+      background: linear-gradient(135deg, var(--bronze), var(--bronze-deep));
+      color: white;
+      text-align: center;
+      padding: 0.8rem;
+      border-radius: 2px;
+      border-bottom: none;
+    }
+
+    /* ═══════════════════════════════════════
        RESPONSIVE
     ═══════════════════════════════════════ */
     @media (max-width: 1024px) {
@@ -1213,6 +1241,12 @@
       .video-grid { grid-template-columns: repeat(2, 1fr); }
       .social-grid { grid-template-columns: repeat(2, 1fr); }
       section { padding: 4.5rem 0; }
+      .championship-card { grid-template-columns: 1fr; }
+      .champ-visual { flex-direction: column; padding: 2rem 1.5rem; min-height: auto; gap: 1rem; }
+      .champ-content { padding: 1.5rem; }
+      .champ-title { font-size: 1.15rem; }
+      .champ-meta { flex-direction: column; gap: 0.7rem; }
+      .champ-meta-item { font-size: 0.6rem; }
     }
   </style>
 </head>
@@ -1222,7 +1256,7 @@
   <!-- ═══ NAVBAR ═══ -->
   <nav :class="['nav', { scrolled: scrolled }]">
     <a href="#" class="nav-logo">
-      <img src="logo.jpg" alt="尹澤鎂研 YINZE Logo">
+      <img src="logo.png" alt="尹澤鎂研 YINZE Logo">
       <div class="nav-logo-text">
         <div class="brand">尹澤鎂研 YINZE</div>
         <div class="sub">Interior Detailing Expert</div>
@@ -1240,6 +1274,18 @@
       <i :class="mobileOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
     </button>
   </nav>
+
+  <!-- ═══ MOBILE MENU ═══ -->
+  <div class="mobile-menu" :class="{ open: mobileOpen }">
+    <a href="#about"    @click="mobileOpen=false">關於我們</a>
+    <a href="#services" @click="mobileOpen=false">服務項目</a>
+    <a href="#news"     @click="mobileOpen=false">最新消息</a>
+    <a href="#portfolio" @click="mobileOpen=false">作品集</a>
+    <a href="#contact"  @click="mobileOpen=false">聯絡我們</a>
+    <a class="mobile-cta" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank" @click="mobileOpen=false">
+      <i class="fas fa-shopping-bag"></i> 前往 7-11 選購
+    </a>
+  </div>
 
   <!-- ═══ HERO ═══ -->
   <section class="hero" id="home">
@@ -1268,7 +1314,7 @@
         <div class="hero-logo-display">
           <div class="hero-logo-ring"></div>
           <div class="hero-logo-ring2"></div>
-          <img class="hero-logo-img" src="logo.jpg" alt="尹澤鎂研">
+          <img class="hero-logo-img" src="logo.png" alt="尹澤鎂研">
           <div class="hero-stats">
             <div class="hero-stat">
               <div class="num">10<sup>+</sup></div>
@@ -1404,18 +1450,6 @@
         </div>
       </div>
 
-      <!-- Secondary News -->
-      <div class="news-grid reveal">
-        <div class="news-card" v-for="n in newsItems" :key="n.title">
-          <div class="news-card-img"><img :src="n.img" :alt="n.title"></div>
-          <div class="news-card-body">
-            <span class="news-card-tag">{{ n.tag }}</span>
-            <h3>{{ n.title }}</h3>
-            <p>{{ n.desc }}</p>
-            <div class="news-card-meta"><time>{{ n.date }}</time></div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -1430,21 +1464,22 @@
         <a href="https://www.youtube.com/channel/UC8rg7ITYWzRLrtjyJL2p2Yw" target="_blank" class="link-more reveal">查看所有影片</a>
       </div>
       <div class="video-grid reveal">
-        <a class="video-card"
-           v-for="v in videos"
-           :key="v.id"
-           :href="'https://www.youtube.com/watch?v=' + v.id"
-           target="_blank">
-          <img
-            :src="'https://img.youtube.com/vi/' + v.id + '/hqdefault.jpg'"
-            :alt="v.title"
-            loading="lazy">
-          <div class="video-overlay">
-            <div class="play-btn"><i class="fas fa-play"></i></div>
-            <div class="video-date">{{ v.date }}</div>
-          </div>
-          <div class="video-title">{{ v.title }}</div>
-        </a>
+        <div class="video-wrap"
+             v-for="v in videos"
+             :key="v.id">
+          <a class="video-card"
+             :href="'https://www.youtube.com/watch?v=' + v.id"
+             target="_blank">
+            <img
+              :src="'https://img.youtube.com/vi/' + v.id + '/hqdefault.jpg'"
+              :alt="v.title"
+              loading="lazy">
+            <div class="video-overlay">
+              <div class="play-btn"><i class="fas fa-play"></i></div>
+            </div>
+          </a>
+          <p class="video-caption">{{ v.title }}</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1460,6 +1495,16 @@
             無論是愛車的日常保養、頑固汙漬處理，或是想了解各項服務的詳情，歡迎透過以下社群媒體聯絡我們，阿永將親自回覆您的每一則訊息。
           </p>
           <div class="social-grid">
+            <a class="social-card social-line" href="https://line.me/R/ti/p/@906gxpzi" target="_blank">
+              <div class="social-icon"><i class="fab fa-line"></i></div>
+              <div class="social-name">Line</div>
+              <div class="social-handle">@906gxpzi</div>
+            </a>
+            <a class="social-card social-fb" href="https://www.facebook.com/share/188kkQqSAu/?mibextid=wwXIfr" target="_blank">
+              <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
+              <div class="social-name">Facebook</div>
+              <div class="social-handle">尹澤鎂研 YINZE</div>
+            </a>
             <a class="social-card social-ig" href="https://www.instagram.com/gouyihong?igsh=c2Z2MGZ0d2h6Zmxo&utm_source=qr" target="_blank">
               <div class="social-icon"><i class="fab fa-instagram"></i></div>
               <div class="social-name">Instagram</div>
@@ -1480,16 +1525,6 @@
               <div class="social-name">Threads</div>
               <div class="social-handle">@gouyihong</div>
             </a>
-            <div class="social-card social-line" style="opacity:0.5; cursor:not-allowed;">
-              <div class="social-icon"><i class="fab fa-line"></i></div>
-              <div class="social-name">Line</div>
-              <div class="social-handle">即將開放</div>
-            </div>
-            <div class="social-card social-fb" style="opacity:0.5; cursor:not-allowed;">
-              <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
-              <div class="social-name">Facebook</div>
-              <div class="social-handle">即將開放</div>
-            </div>
           </div>
         </div>
 
@@ -1516,7 +1551,7 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-logo">
-          <img src="logo.jpg" alt="Logo">
+          <img src="logo.png" alt="Logo">
           <span>尹澤鎂研 YINZE</span>
         </div>
         <p class="footer-copy">© 2026 尹澤鎂研 YINZE · 版權所有 · 用心守護每一段旅程</p>
@@ -1575,22 +1610,6 @@ createApp({
       { icon: 'fas fa-car-alt', title: '安卓機．行車記錄器安裝', desc: '專業車機升級安裝，包含安卓多媒體主機與高畫質行車記錄器，完美整合線路，美觀安全兼具。' },
     ];
 
-    const newsItems = [
-      {
-        tag: '技術分享',
-        title: '中性溫和清潔產品系列正式上市，讓車主在家也能專業護車',
-        desc: '阿永將多年施作心得化為自有清潔品牌，中性配方安全無刺激，讓每位車主都能在日常中延續專業級的車室保養。',
-        img: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800&auto=format&fit=crop&q=80',
-        date: '2026.01.20'
-      },
-      {
-        tag: '品牌動態',
-        title: '澳洲打工度假歸來，帶回國際視野重啟尹澤鎂研服務',
-        desc: '阿永在澳洲深造期間學習國際頂尖工法，回台後融合台灣本土需求，打造更精進的服務體系，持續為車主提供最佳體驗。',
-        img: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&auto=format&fit=crop&q=80',
-        date: '2025.10.05'
-      },
-    ];
 
     const videos = [
       { id: 'gpXiA_03Iz8', title: '2026年2月20日 施作紀錄', date: '2026.02.20' },
@@ -1638,7 +1657,7 @@ createApp({
 
     return {
       scrolled, showBackTop, mobileOpen,
-      tickerItems, values, services, newsItems, videos,
+      tickerItems, values, services, videos,
       scrollToTop,
     };
   }
