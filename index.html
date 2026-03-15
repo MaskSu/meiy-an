@@ -373,13 +373,14 @@
     .hero-mobile-logo {
       display: none;
       justify-content: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1rem;
     }
     .hero-mobile-logo img {
-      width: 170px;
-      height: 170px;
+      width: 80vw;
+      max-width: 460px;
+      height: auto;
       object-fit: contain;
-      filter: drop-shadow(0 6px 28px rgba(200,144,107,0.35));
+      filter: drop-shadow(0 8px 32px rgba(200,144,107,0.38));
     }
 
     /* ── Mobile scroll hint (chevrons, no text) ── */
@@ -1235,7 +1236,7 @@
       .champ-visual { padding: 2.5rem; min-height: 280px; flex-direction: row; gap: 2rem; }
     }
     @media (max-width: 900px) {
-      .hero-content { grid-template-columns: 1fr; padding-top: 7rem; }
+      .hero-content { grid-template-columns: 1fr; padding-top: 5rem; }
       .hero-right { display: none; }
       .hero-mobile-logo { display: flex; }
       .hero-scroll-hint { display: flex; }
