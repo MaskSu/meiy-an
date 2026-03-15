@@ -1382,6 +1382,7 @@
     .float-fb { background: #1877F2; color: white; }
     .float-ig { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: white; }
     .float-tiktok { background: #010101; color: #EE1D52; border: 1px solid #333; }
+    .float-threads { background: #101010; color: white; }
     .float-phone { background: var(--bronze); color: white; }
     .float-email { background: #4A4A4A; color: white; }
 
@@ -1641,7 +1642,7 @@
           :key="s.title"
           :class="{ active: activeService === i }"
         >
-          <div class="accordion-header" @click.stop="activeService = activeService === i ? -1 : i">
+          <div class="accordion-header" @click.stop="toggleService(i, $event)">
             <div class="acc-num">0{{ i + 1 }}</div>
             <div class="acc-icon"><i :class="s.icon"></i></div>
             <div class="acc-title">{{ s.title }}</div>
@@ -1938,6 +1939,9 @@
     <a class="float-btn float-tiktok" href="https://www.tiktok.com/@hong3345678?_r=1&_t=ZS-94gfnlM9UuK" target="_blank" title="TikTok">
       <i class="fab fa-tiktok"></i>
     </a>
+    <a class="float-btn float-threads" href="https://www.threads.com/@gouyihong?invite=0" target="_blank" title="Threads">
+      <i style="font-style:normal;font-size:1.1rem;font-weight:600;">@</i>
+    </a>
     <a class="float-btn float-phone" href="tel:0966909981" title="電話預約">
       <i class="fas fa-phone-alt"></i>
     </a>
@@ -2095,6 +2099,20 @@ createApp({
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function toggleService(i, e) {
+      const opening = activeService.value !== i;
+      activeService.value = opening ? i : -1;
+      if (opening) {
+        const header = e.currentTarget;
+        const navH = document.querySelector('.nav')?.offsetHeight || 72;
+        // 等動畫開始後再 scroll，避免舊高度影響位置
+        setTimeout(() => {
+          const top = header.getBoundingClientRect().top + window.scrollY - navH - 12;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }, 30);
+      }
+    }
+
     function initReveal() {
       const els = document.querySelectorAll('.reveal');
       const obs = new IntersectionObserver(entries => {
@@ -2130,7 +2148,7 @@ createApp({
       scrolled, showBackTop, mobileOpen, activeService, lightboxImg,
       tickerItems, values, services, allVideoIds, videosToShow, videos,
       bannerIndex, nextBanner, prevBanner, resetBannerTimer,
-      scrollToTop,
+      scrollToTop, toggleService,
     };
   }
 }).mount('#app');
