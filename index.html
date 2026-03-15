@@ -3,446 +3,540 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>尹澤鎂研 Meiy An｜頂級車體美研</title>
+  <title>尹澤鎂研 Meiy An｜專業汽車內裝清潔保養</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400;700&family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
   <style>
-    /* ─── CSS Reset & Variables ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #F0EDE7;
-      --bg-alt:     #E8E4DC;
-      --bg-dark:    #3B4C3C;
-      --bg-darker:  #2C3A2D;
-      --sage:       #8FA48E;
-      --sage-dark:  #5F7560;
-      --sage-deep:  #3B4C3C;
-      --sage-lt:    #B8CBB9;
-      --sage-mist:  #D4E0D5;
-      --taupe:      #A89070;
-      --cream:      #F5F2EC;
-      --text:       #2C3A2D;
-      --text-mid:   #5C6E5C;
-      --text-mute:  #8A9E8A;
-      --text-inv:   #EEF2EE;
-      --border:     rgba(95,117,96,0.18);
-      --shadow:     0 4px 32px rgba(44,58,45,0.10);
-      --r:          4px;
-      --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      /* ── Bronze (Primary) ── */
+      --bronze:        #B87333;
+      --bronze-light:  #CD9B5A;
+      --bronze-bright: #DAA520;
+      --bronze-pale:   #F0D090;
+      --bronze-deep:   #7A4F1E;
+      --bronze-glow:   rgba(184,115,51,0.25);
+
+      /* ── Morandi Green (Secondary) ── */
+      --sage:          #8FA48E;
+      --sage-dark:     #5F7560;
+      --sage-deep:     #3B4C3C;
+      --sage-mist:     #D4E0D5;
+      --sage-lt:       #B8CBB9;
+
+      /* ── Backgrounds ── */
+      --bg-darkest:    #0F0B06;
+      --bg-dark:       #1C1208;
+      --bg-mid:        #251A0C;
+      --bg-card:       #2E2010;
+      --bg-light:      #F5ECD8;
+      --bg-cream:      #FAF5EC;
+      --bg-section:    #F0E8D6;
+
+      /* ── Text ── */
+      --text:          #2C1E0A;
+      --text-mid:      #5C4A2A;
+      --text-mute:     #8A7A5A;
+      --text-inv:      #F5ECD8;
+      --text-inv-dim:  #C8B898;
+      --text-inv-mute: #8A7A5A;
+
+      /* ── Misc ── */
+      --border-light:  rgba(184,115,51,0.2);
+      --border-dark:   rgba(218,165,32,0.15);
+      --shadow:        0 8px 40px rgba(15,11,6,0.4);
+      --shadow-bronze: 0 4px 24px rgba(184,115,51,0.3);
+      --r:             4px;
+      --tr:            0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     html { scroll-behavior: smooth; font-size: 16px; }
-
     body {
       font-family: 'Noto Serif TC', 'Cormorant Garamond', Georgia, serif;
-      background: var(--bg);
-      color: var(--text);
+      background: var(--bg-darkest);
+      color: var(--text-inv);
       overflow-x: hidden;
       line-height: 1.7;
     }
-
     img { display: block; width: 100%; object-fit: cover; }
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
 
-    .container {
-      width: min(1200px, 90vw);
-      margin-inline: auto;
-    }
+    .container { width: min(1200px, 90vw); margin-inline: auto; }
 
+    /* ── Reveal Animation ── */
     .reveal {
       opacity: 0;
-      transform: translateY(28px);
+      transform: translateY(30px);
       transition: opacity 0.7s ease, transform 0.7s ease;
     }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
+    .reveal.visible { opacity: 1; transform: none; }
 
-    /* ─── Navbar ─── */
+    /* ═══════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════ */
     .nav {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
-      padding: 0 5vw;
-      height: 68px;
+      height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background var(--transition), box-shadow var(--transition);
+      padding: 0 5vw;
+      transition: background var(--tr), box-shadow var(--tr);
     }
     .nav.scrolled {
-      background: var(--bg-darker);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.18);
-    }
-    .nav.light {
-      background: var(--cream);
-      box-shadow: 0 1px 0 var(--border);
+      background: rgba(15,11,6,0.96);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border-dark);
     }
 
     .nav-logo {
       display: flex;
-      flex-direction: column;
-      line-height: 1.1;
+      align-items: center;
+      gap: 0.7rem;
     }
-    .nav-logo span:first-child {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.35rem;
-      letter-spacing: 0.12em;
-      color: var(--sage-mist);
-      font-weight: 300;
+    .nav-logo img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: white;
+      padding: 3px;
     }
-    .nav.light .nav-logo span:first-child { color: var(--sage-dark); }
-    .nav-logo span:last-child {
-      font-size: 0.6rem;
-      letter-spacing: 0.3em;
-      color: var(--sage-lt);
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
-    }
-    .nav.light .nav-logo span:last-child { color: var(--text-mute); }
+    .nav-logo-text { line-height: 1.2; }
+    .nav-logo-text .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--bronze-pale); font-weight: 300; }
+    .nav-logo-text .sub { font-family: 'Montserrat', sans-serif; font-size: 0.55rem; letter-spacing: 0.28em; color: var(--bronze); text-transform: uppercase; }
 
     .nav-links {
       display: flex;
-      gap: 2.2rem;
+      gap: 2rem;
       align-items: center;
     }
     .nav-links a {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      color: var(--sage-mist);
-      font-weight: 300;
-      transition: color 0.3s;
-      text-transform: uppercase;
-    }
-    .nav.light .nav-links a { color: var(--text-mid); }
-    .nav-links a:hover { color: var(--sage-lt); }
-    .nav.light .nav-links a:hover { color: var(--sage-dark); }
-
-    .nav-book {
-      font-family: 'Montserrat', sans-serif;
       font-size: 0.7rem;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      background: var(--sage-dark);
-      color: var(--text-inv);
-      padding: 0.55rem 1.4rem;
+      color: var(--text-inv-dim);
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--bronze-bright); }
+
+    .nav-cta {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--bronze-bright);
+      border: 1px solid var(--bronze);
+      padding: 0.5rem 1.4rem;
       border-radius: 2px;
       cursor: pointer;
-      border: none;
-      transition: background 0.3s;
+      transition: background 0.3s, color 0.3s;
     }
-    .nav-book:hover { background: var(--sage-deep); }
+    .nav-cta:hover { background: var(--bronze); color: var(--bg-darkest); }
 
-    .nav-mobile-btn {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--sage-mist);
-      font-size: 1.3rem;
-    }
-    .nav.light .nav-mobile-btn { color: var(--text); }
+    .nav-mobile { display: none; background: none; border: none; color: var(--bronze-pale); font-size: 1.2rem; cursor: pointer; }
 
-    /* ─── Hero Split Screen ─── */
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
     .hero {
-      height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .hero-text {
-      background: var(--bg-darker);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 10vh 6vw 8vh;
       position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
       overflow: hidden;
     }
 
-    .hero-text::before {
-      content: 'MEIY AN';
+    .hero-bg {
       position: absolute;
-      top: 14vh;
-      left: -0.5rem;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(5rem, 10vw, 10rem);
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      color: rgba(143,164,142,0.07);
-      line-height: 1;
-      user-select: none;
-      pointer-events: none;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(184,115,51,0.12) 0%, transparent 60%),
+                  linear-gradient(135deg, var(--bg-darkest) 0%, var(--bg-dark) 50%, #1A1005 100%);
     }
 
+    /* Decorative circles */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,115,51,0.08);
+      top: 50%; left: 60%;
+      transform: translate(-50%, -50%);
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      width: 900px; height: 900px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,115,51,0.05);
+      top: 50%; left: 60%;
+      transform: translate(-50%, -50%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: min(1200px, 90vw);
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      padding: 10rem 0 6rem;
+    }
+
+    .hero-left {}
+
     .hero-eyebrow {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--sage);
-      margin-bottom: 1.2rem;
       display: flex;
       align-items: center;
       gap: 0.8rem;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      display: block;
-      width: 2rem;
-      height: 1px;
-      background: var(--sage);
-    }
-
-    .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 4vw, 4rem);
-      font-weight: 300;
-      line-height: 1.2;
-      color: var(--text-inv);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--bronze);
       margin-bottom: 1.5rem;
     }
-    .hero-title em {
+    .hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--bronze); }
+
+    .hero-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--bronze-pale);
+      margin-bottom: 1rem;
+    }
+    .hero-title span { display: block; }
+    .hero-title .accent {
+      font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      color: var(--sage-lt);
+      font-weight: 300;
+      font-size: 1.2em;
+      color: var(--bronze-bright);
+      background: linear-gradient(135deg, var(--bronze-bright), var(--bronze-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-divider {
+      width: 3rem;
+      height: 2px;
+      background: linear-gradient(to right, var(--bronze), transparent);
+      margin: 1.5rem 0;
     }
 
     .hero-desc {
-      font-size: 0.9rem;
-      color: var(--sage-lt);
-      max-width: 320px;
-      line-height: 1.85;
-      margin-bottom: 3rem;
+      font-size: 0.95rem;
+      color: var(--text-inv-dim);
+      line-height: 1.9;
+      margin-bottom: 2.5rem;
+      max-width: 420px;
     }
 
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-    .btn-primary {
-      background: var(--sage-dark);
-      color: var(--text-inv);
+    .btn-bronze {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--bronze), var(--bronze-deep));
+      color: var(--bronze-pale);
       border: none;
-      padding: 0.85rem 2.2rem;
+      padding: 0.9rem 2rem;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 2px;
-      transition: background 0.3s, transform 0.2s;
+      box-shadow: var(--shadow-bronze);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .btn-primary:hover { background: var(--sage); transform: translateY(-1px); }
+    .btn-bronze:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(184,115,51,0.4); }
 
-    .btn-ghost {
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       background: transparent;
       color: var(--sage-lt);
-      border: 1px solid rgba(184,203,185,0.4);
-      padding: 0.85rem 2.2rem;
+      border: 1px solid var(--sage-dark);
+      padding: 0.9rem 2rem;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 2px;
       transition: border-color 0.3s, color 0.3s;
     }
-    .btn-ghost:hover { border-color: var(--sage-lt); color: #fff; }
+    .btn-outline:hover { border-color: var(--sage-lt); color: white; }
 
-    .hero-scroll {
+    .hero-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-logo-display {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-logo-ring {
       position: absolute;
-      bottom: 4rem;
-      right: 2.5rem;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid var(--border-dark);
+      animation: spinSlow 20s linear infinite;
+    }
+    .hero-logo-ring::before {
+      content: '';
+      position: absolute;
+      top: -4px; left: 50%;
+      transform: translateX(-50%);
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--bronze);
+    }
+    @keyframes spinSlow { to { transform: rotate(360deg); } }
+
+    .hero-logo-ring2 {
+      position: absolute;
+      inset: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,115,51,0.08);
+      animation: spinSlow 30s linear infinite reverse;
+    }
+
+    .hero-logo-img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 16px;
+      box-shadow: 0 0 60px rgba(184,115,51,0.2), 0 0 120px rgba(184,115,51,0.08);
+    }
+
+    .hero-stats {
+      position: absolute;
+      bottom: -2rem;
+      left: 0;
+      right: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border-dark);
+      border: 1px solid var(--border-dark);
+    }
+    .hero-stat {
+      background: rgba(28,18,8,0.8);
+      backdrop-filter: blur(8px);
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .hero-stat .num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      color: var(--bronze-bright);
+      line-height: 1;
+    }
+    .hero-stat .num sup { font-size: 0.9rem; }
+    .hero-stat .label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      color: var(--text-inv-mute);
+      text-transform: uppercase;
+      margin-top: 0.2rem;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      color: var(--text-mid);
+      gap: 0.4rem;
+      color: var(--text-inv-mute);
     }
-    .hero-scroll span {
+    .scroll-indicator span {
       font-family: 'Montserrat', sans-serif;
       font-size: 0.55rem;
-      letter-spacing: 0.28em;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      writing-mode: vertical-rl;
     }
-    .scroll-line {
-      width: 1px;
-      height: 60px;
-      background: linear-gradient(to bottom, var(--sage-dark), transparent);
+    .scroll-indicator .line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--bronze), transparent);
       animation: scrollLine 1.8s ease-in-out infinite;
     }
     @keyframes scrollLine {
-      0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
-      50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
       100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
     }
 
-    .hero-image {
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-image img {
-      height: 100%;
-      object-fit: cover;
-      transition: transform 8s ease;
-    }
-    .hero-image:hover img { transform: scale(1.04); }
+    /* ═══════════════════════════════════════
+       SECTION COMMONS
+    ═══════════════════════════════════════ */
+    section { padding: 7rem 0; }
 
-    .hero-image-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(44,58,45,0.25) 0%, transparent 60%);
+    .section-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
     }
+    .section-tag::before { content: ''; display: block; width: 1.5rem; height: 1px; }
+    .section-tag.light { color: var(--bronze); }
+    .section-tag.light::before { background: var(--bronze); }
+    .section-tag.dark { color: var(--sage-dark); }
+    .section-tag.dark::before { background: var(--sage-dark); }
 
-    .hero-slide-counter {
-      position: absolute;
-      bottom: 2rem;
-      right: 2rem;
-      font-family: 'Cormorant Garamond', serif;
-      color: rgba(255,255,255,0.7);
-      font-size: 1.1rem;
+    .section-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.3;
     }
-    .hero-slide-counter .current { font-size: 1.8rem; color: #fff; }
+    .section-title.light { color: var(--bronze-pale); }
+    .section-title.light em { font-style: italic; font-family: 'Cormorant Garamond', serif; color: var(--bronze-bright); font-weight: 300; font-size: 1.15em; }
+    .section-title.dark { color: var(--text); }
+    .section-title.dark em { font-style: italic; font-family: 'Cormorant Garamond', serif; color: var(--bronze); font-weight: 300; font-size: 1.15em; }
 
-    /* ─── Ticker ─── */
+    /* ═══════════════════════════════════════
+       TICKER
+    ═══════════════════════════════════════ */
     .ticker {
-      background: var(--sage-dark);
-      padding: 0.8rem 0;
+      background: var(--bronze-deep);
+      padding: 0.7rem 0;
       overflow: hidden;
       white-space: nowrap;
     }
     .ticker-track {
       display: inline-flex;
-      gap: 0;
-      animation: ticker 28s linear infinite;
+      animation: ticker 30s linear infinite;
     }
     .ticker-item {
       display: inline-flex;
       align-items: center;
-      gap: 1.6rem;
+      gap: 1.5rem;
       padding-right: 3rem;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--sage-mist);
+      color: var(--bronze-pale);
     }
-    .ticker-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--sage-lt);
-      flex-shrink: 0;
-    }
-    @keyframes ticker {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
+    .ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--bronze-bright); flex-shrink: 0; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-    /* ─── Section Common ─── */
-    section { padding: 7rem 0; }
+    /* ═══════════════════════════════════════
+       ABOUT
+    ═══════════════════════════════════════ */
+    .about { background: var(--bg-cream); }
 
-    .section-tag {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--sage-dark);
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .section-tag::before {
-      content: '';
-      display: block;
-      width: 1.5rem;
-      height: 1px;
-      background: var(--sage-dark);
-    }
-
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.5vw, 3.2rem);
-      font-weight: 300;
-      line-height: 1.25;
-      color: var(--text);
-    }
-    .section-title em { font-style: italic; color: var(--sage-dark); }
-
-    /* ─── About / Intro ─── */
-    .about {
-      background: var(--bg);
-    }
     .about-grid {
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 5rem;
-      align-items: start;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
     }
-    .about-left .big-number {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(5rem, 10vw, 9rem);
-      font-weight: 300;
-      line-height: 0.85;
-      color: var(--sage-mist);
-      letter-spacing: -0.02em;
-    }
-    .about-left .big-number span { display: block; font-size: 0.9rem; letter-spacing: 0.2em; color: var(--sage-dark); font-family: 'Montserrat', sans-serif; margin-top: 1rem; }
 
-    .about-right {}
-    .about-right .section-title { margin-bottom: 2rem; }
-    .about-right .about-lead {
-      font-size: 1rem;
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--r);
+    }
+    .about-img-frame img { height: 520px; border-radius: var(--r); }
+    .about-img-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(28,18,8,0.3) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .about-badge {
+      position: absolute;
+      bottom: -1.5rem;
+      right: -1.5rem;
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(135deg, var(--bronze), var(--bronze-deep));
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-bronze);
+    }
+    .about-badge .num { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; color: white; line-height: 1; }
+    .about-badge .txt { font-family: 'Montserrat', sans-serif; font-size: 0.52rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.8); text-transform: uppercase; }
+
+    .about-content {}
+    .about-content .section-tag { margin-bottom: 0.8rem; }
+    .about-content .section-title { margin-bottom: 2rem; }
+
+    .about-story p {
+      font-size: 0.92rem;
       color: var(--text-mid);
-      line-height: 1.9;
-      margin-bottom: 2.5rem;
-      max-width: 560px;
+      line-height: 1.95;
+      margin-bottom: 1.2rem;
     }
+    .about-story strong { color: var(--bronze-deep); font-weight: 700; }
 
-    .promise-grid {
+    .about-values {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
+      background: var(--border-light);
+      border: 1px solid var(--border-light);
+      margin-top: 2rem;
     }
-    .promise-item {
-      background: var(--bg);
-      padding: 1.8rem 1.4rem;
+    .value-item {
+      background: var(--bg-cream);
+      padding: 1.4rem 1rem;
+      text-align: center;
       transition: background 0.3s;
     }
-    .promise-item:hover { background: var(--sage-mist); }
-    .promise-icon {
-      font-size: 1.4rem;
-      color: var(--sage-dark);
-      margin-bottom: 0.8rem;
-    }
-    .promise-item h4 {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-    .promise-item p {
-      font-size: 0.78rem;
-      color: var(--text-mid);
-      line-height: 1.7;
-    }
+    .value-item:hover { background: #F5EDD8; }
+    .value-icon { font-size: 1.2rem; color: var(--bronze); margin-bottom: 0.5rem; }
+    .value-item h4 { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+    .value-item p { font-size: 0.72rem; color: var(--text-mute); line-height: 1.6; }
 
-    /* ─── Services Bento ─── */
-    .services {
-      background: var(--bg-alt);
-    }
+    /* ═══════════════════════════════════════
+       SERVICES
+    ═══════════════════════════════════════ */
+    .services { background: var(--bg-dark); }
+
     .services-header {
       display: flex;
       align-items: flex-end;
@@ -452,142 +546,98 @@
       gap: 1.5rem;
     }
 
-    .bento {
+    .services-grid {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      grid-template-rows: 260px 260px;
-      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border-dark);
+      border: 1px solid var(--border-dark);
     }
 
-    .bento-card {
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--r);
+    .service-card {
+      background: var(--bg-mid);
+      padding: 2.2rem 1.8rem;
       cursor: pointer;
-      background: var(--bg-dark);
-    }
-    .bento-card img {
-      height: 100%;
-      transition: transform var(--transition);
-    }
-    .bento-card:hover img { transform: scale(1.06); }
-
-    .bento-card-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(44,58,45,0.88) 0%, rgba(44,58,45,0.1) 55%, transparent 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1.6rem;
-      transition: background 0.4s;
-    }
-    .bento-card:hover .bento-card-overlay {
-      background: linear-gradient(to top, rgba(44,58,45,0.95) 0%, rgba(44,58,45,0.2) 60%, transparent 100%);
-    }
-
-    .bento-card-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.5rem;
-      font-weight: 300;
-      color: rgba(184,203,185,0.3);
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-    .bento-card h3 {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.05rem;
-      color: #fff;
-      margin-bottom: 0.4rem;
-      font-weight: 400;
-    }
-    .bento-card p {
-      font-size: 0.78rem;
-      color: var(--sage-lt);
-      line-height: 1.6;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, opacity 0.4s ease;
-      opacity: 0;
-    }
-    .bento-card:hover p { max-height: 4rem; opacity: 1; }
-
-    .bento-card:nth-child(1) { grid-column: 1 / 5; grid-row: 1 / 2; }
-    .bento-card:nth-child(2) { grid-column: 5 / 9; grid-row: 1 / 2; }
-    .bento-card:nth-child(3) { grid-column: 9 / 13; grid-row: 1 / 3; }
-    .bento-card:nth-child(4) { grid-column: 1 / 4; grid-row: 2 / 3; }
-    .bento-card:nth-child(5) { grid-column: 4 / 7; grid-row: 2 / 3; }
-    .bento-card:nth-child(6) { grid-column: 7 / 9; grid-row: 2 / 3; }
-
-    /* ─── Feature Banner / Stats ─── */
-    .feature {
-      background: var(--bg-dark);
-      padding: 0;
-      min-height: 480px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
-    .feature-img {
-      height: 480px;
       position: relative;
       overflow: hidden;
+      transition: background var(--tr);
     }
-    .feature-img img { height: 100%; }
-    .feature-img::after {
+    .service-card::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background: linear-gradient(to right, transparent 70%, var(--bg-dark));
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--bronze), var(--bronze-bright));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
     }
+    .service-card:hover { background: var(--bg-card); }
+    .service-card:hover::before { transform: scaleX(1); }
 
-    .feature-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 5rem 6vw 5rem 4rem;
-    }
-    .feature-content .section-tag { color: var(--sage); }
-    .feature-content .section-tag::before { background: var(--sage); }
-    .feature-content .section-title { color: var(--text-inv); margin-bottom: 1.5rem; }
-    .feature-content .section-title em { color: var(--sage-lt); }
-    .feature-desc {
-      font-size: 0.88rem;
-      color: var(--sage-lt);
-      line-height: 1.85;
-      margin-bottom: 3rem;
-      max-width: 420px;
-    }
-
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-    .stat-item {
-      border-left: 1px solid var(--border);
-      padding-left: 1.2rem;
-    }
-    .stat-item .num {
+    .service-num {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.4rem;
+      font-size: 3rem;
       font-weight: 300;
-      color: var(--sage-lt);
+      color: rgba(184,115,51,0.12);
       line-height: 1;
+      margin-bottom: 1rem;
+      transition: color 0.3s;
     }
-    .stat-item .num sup { font-size: 1rem; }
-    .stat-item .label {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-mute);
-      margin-top: 0.3rem;
+    .service-card:hover .service-num { color: rgba(184,115,51,0.22); }
+
+    .service-icon {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--bronze-glow);
+      border: 1px solid var(--bronze-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--bronze);
+      margin-bottom: 1.2rem;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .service-card:hover .service-icon { background: var(--bronze); color: var(--bg-darkest); border-color: var(--bronze); }
+
+    .service-card h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--bronze-pale);
+      margin-bottom: 0.7rem;
+      line-height: 1.4;
+    }
+    .service-card p {
+      font-size: 0.78rem;
+      color: var(--text-inv-mute);
+      line-height: 1.75;
     }
 
-    /* ─── News ─── */
-    .news {
-      background: var(--bg);
+    .service-arrow {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 30px; height: 30px;
+      border: 1px solid var(--border-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: var(--bronze);
+      opacity: 0;
+      transform: translate(4px, -4px);
+      transition: opacity 0.3s, transform 0.3s;
     }
+    .service-card:hover .service-arrow { opacity: 1; transform: translate(0, 0); }
+
+    /* ═══════════════════════════════════════
+       NEWS (Championship)
+    ═══════════════════════════════════════ */
+    .news { background: var(--bg-section); }
+
     .news-header {
       display: flex;
       align-items: flex-end;
@@ -596,310 +646,503 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
-    .link-more {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--sage-dark);
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      transition: gap 0.3s;
-    }
-    .link-more::after { content: '→'; }
-    .link-more:hover { gap: 1rem; }
 
-    .news-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      grid-template-rows: auto auto;
-      gap: 1.5rem;
-    }
-    .news-card-big { grid-row: 1 / 3; }
-
-    .news-card {
-      background: var(--cream);
+    /* Championship Feature Card */
+    .championship-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-dark);
       border-radius: var(--r);
       overflow: hidden;
-      transition: box-shadow var(--transition), transform var(--transition);
-      cursor: pointer;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow);
     }
-    .news-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
 
-    .news-card-big .news-card-img { height: 320px; }
-    .news-card .news-card-img { height: 160px; }
-    .news-card-img { overflow: hidden; }
-    .news-card-img img { height: 100%; transition: transform 0.5s ease; }
-    .news-card:hover .news-card-img img { transform: scale(1.05); }
+    .champ-visual {
+      background: linear-gradient(135deg, #1C1208 0%, #2E1A06 50%, #1A1005 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .champ-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(218,165,32,0.12) 0%, transparent 65%);
+    }
 
-    .news-card-body { padding: 1.5rem; }
-    .news-card-tag {
+    /* Trophy CSS Art */
+    .trophy {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .trophy-cup {
+      width: 80px; height: 70px;
+      background: linear-gradient(135deg, #F0C060, #B87333, #E8A830, #7A4F1E);
+      clip-path: polygon(10% 0%, 90% 0%, 80% 100%, 20% 100%);
+      position: relative;
+      box-shadow: 0 0 30px rgba(218,165,32,0.4);
+    }
+    .trophy-cup::after {
+      content: '★';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255,255,255,0.6);
+      font-size: 1.8rem;
+    }
+    .trophy-handles {
+      position: absolute;
+      top: 10px;
+      width: 100px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .trophy-handle {
+      width: 14px; height: 28px;
+      border: 3px solid var(--bronze-bright);
+      border-radius: 50px 50px 0 0;
+    }
+    .trophy-stem {
+      width: 12px; height: 30px;
+      background: linear-gradient(to bottom, var(--bronze), var(--bronze-deep));
+      margin-top: 0;
+    }
+    .trophy-base {
+      width: 70px; height: 12px;
+      background: linear-gradient(135deg, var(--bronze-bright), var(--bronze));
+      border-radius: 2px;
+    }
+    .trophy-base2 {
+      width: 90px; height: 8px;
+      background: linear-gradient(135deg, var(--bronze), var(--bronze-deep));
+      border-radius: 2px;
+      margin-top: 3px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .trophy-glow {
+      position: absolute;
+      bottom: 3rem;
+      width: 100px; height: 30px;
+      border-radius: 50%;
+      background: rgba(218,165,32,0.25);
+      filter: blur(15px);
+    }
+
+    .champ-year {
       font-family: 'Montserrat', sans-serif;
       font-size: 0.6rem;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.35em;
+      color: var(--bronze);
       text-transform: uppercase;
-      color: var(--sage-dark);
-      background: var(--sage-mist);
-      padding: 0.2rem 0.6rem;
-      border-radius: 2px;
-      display: inline-block;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.5rem;
     }
-    .news-card-big .news-card-body h3 {
+    .champ-award-name {
       font-family: 'Noto Serif TC', serif;
-      font-size: 1.25rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.7rem;
+      font-size: 1.05rem;
+      color: var(--bronze-pale);
+      text-align: center;
       line-height: 1.5;
     }
-    .news-card .news-card-body h3 {
+
+    .stars {
+      display: flex;
+      gap: 0.25rem;
+      margin-top: 0.8rem;
+      color: var(--bronze-bright);
+      font-size: 0.9rem;
+    }
+
+    .champ-content {
+      padding: 3rem;
+      background: var(--bg-mid);
+    }
+    .champ-tag {
+      display: inline-block;
+      background: var(--bronze-glow);
+      border: 1px solid var(--bronze-deep);
+      color: var(--bronze-bright);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.8rem;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+    }
+    .champ-title {
       font-family: 'Noto Serif TC', serif;
-      font-size: 0.95rem;
-      font-weight: 400;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--bronze-pale);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+    .champ-body {
+      font-size: 0.88rem;
+      color: var(--text-inv-dim);
+      line-height: 1.9;
+      margin-bottom: 1.5rem;
+    }
+    .champ-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border-dark);
+      flex-wrap: wrap;
+    }
+    .champ-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-inv-mute);
+    }
+    .champ-meta-item i { color: var(--bronze); }
+
+    /* Regular news grid */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-cream);
+      border-radius: var(--r);
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      transition: box-shadow var(--tr), transform var(--tr);
+      cursor: pointer;
+    }
+    .news-card:hover { box-shadow: var(--shadow-bronze); transform: translateY(-3px); }
+    .news-card-img { height: 200px; overflow: hidden; }
+    .news-card-img img { height: 100%; transition: transform 0.5s; }
+    .news-card:hover .news-card-img img { transform: scale(1.05); }
+    .news-card-body { padding: 1.5rem; }
+    .news-card-tag {
+      display: inline-block;
+      background: rgba(184,115,51,0.1);
+      color: var(--bronze);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      margin-bottom: 0.8rem;
+    }
+    .news-card h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1rem;
       color: var(--text);
+      font-weight: 700;
       margin-bottom: 0.5rem;
       line-height: 1.5;
     }
-    .news-card-body p {
-      font-size: 0.82rem;
-      color: var(--text-mid);
-      line-height: 1.75;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+    .news-card p { font-size: 0.8rem; color: var(--text-mid); line-height: 1.75; }
     .news-card-meta {
       display: flex;
       align-items: center;
       gap: 0.8rem;
-      margin-top: 1.2rem;
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border-light);
     }
     .news-card-meta time {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
       color: var(--text-mute);
     }
 
-    /* ─── Partners ─── */
-    .partners {
-      background: var(--bg-darker);
-      padding: 5rem 0;
-    }
-    .partners-header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .partners-header .section-tag {
-      justify-content: center;
-    }
-    .partners-header .section-tag::before { display: none; }
-    .partners-header .section-title { color: var(--text-inv); }
-    .partners-header .section-title em { color: var(--sage-lt); }
+    /* ═══════════════════════════════════════
+       PORTFOLIO (YouTube Videos)
+    ═══════════════════════════════════════ */
+    .portfolio { background: var(--bg-mid); }
 
-    .partners-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: rgba(184,203,185,0.12);
-    }
-    .partner-item {
-      background: var(--bg-darker);
-      padding: 2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
-      transition: background 0.3s;
-    }
-    .partner-item:hover { background: rgba(143,164,142,0.12); }
-    .partner-logo {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: rgba(143,164,142,0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      color: var(--sage-lt);
-    }
-    .partner-item span {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: var(--text-mute);
-      text-transform: uppercase;
-    }
-
-    /* ─── Gallery ─── */
-    .gallery {
-      background: var(--bg-alt);
-    }
-    .gallery-header {
+    .portfolio-header {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      margin-bottom: 2.5rem;
+      margin-bottom: 3rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
-    .gallery-strip {
+
+    .link-more {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: gap 0.3s;
+    }
+    .link-more::after { content: '→'; }
+    .link-more:hover { gap: 0.9rem; }
+
+    .video-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
-    .gallery-item {
+
+    .video-card {
       position: relative;
       overflow: hidden;
       border-radius: var(--r);
       cursor: pointer;
+      background: var(--bg-dark);
+      aspect-ratio: 16/9;
     }
-    .gallery-item:nth-child(1),
-    .gallery-item:nth-child(3) { aspect-ratio: 3/4; }
-    .gallery-item:nth-child(2),
-    .gallery-item:nth-child(4) { aspect-ratio: 4/5; }
+    .video-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .video-card:hover img { transform: scale(1.06); }
 
-    .gallery-item img { height: 100%; transition: transform 0.6s ease; }
-    .gallery-item:hover img { transform: scale(1.07); }
-
-    .gallery-item-overlay {
+    .video-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(44,58,45,0);
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0.7rem;
+      transition: background 0.3s;
+    }
+    .video-card:hover .video-overlay { background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%); }
+
+    .play-btn {
+      align-self: center;
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(184,115,51,0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.4s;
-    }
-    .gallery-item:hover .gallery-item-overlay { background: rgba(44,58,45,0.45); }
-    .gallery-item-overlay i {
+      font-size: 1rem;
       color: white;
-      font-size: 1.5rem;
       opacity: 0;
       transform: scale(0.7);
-      transition: opacity 0.4s, transform 0.4s;
+      transition: opacity 0.3s, transform 0.3s;
     }
-    .gallery-item:hover .gallery-item-overlay i { opacity: 1; transform: scale(1); }
+    .video-card:hover .play-btn { opacity: 1; transform: scale(1); }
 
-    /* ─── Footer ─── */
-    .footer {
-      background: var(--bg-darker);
-      padding: 5rem 0 2rem;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 3rem;
-      padding-bottom: 3.5rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2rem;
-    }
-    .footer-brand .brand-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
-      font-weight: 300;
-      letter-spacing: 0.12em;
-      color: var(--sage-lt);
-      margin-bottom: 0.3rem;
-    }
-    .footer-brand .brand-sub {
+    .video-date {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.58rem;
-      letter-spacing: 0.3em;
-      color: var(--text-mute);
-      text-transform: uppercase;
-      margin-bottom: 1.4rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.7);
+      align-self: flex-end;
     }
-    .footer-brand p {
-      font-size: 0.82rem;
-      color: var(--text-mute);
-      line-height: 1.8;
+
+    .video-title {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 0.6rem 0.7rem 0.5rem;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.4;
+      font-family: 'Noto Serif TC', serif;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
     }
-    .footer-social {
+
+    /* ═══════════════════════════════════════
+       CONTACT
+    ═══════════════════════════════════════ */
+    .contact { background: var(--bg-darkest); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .contact-info {}
+    .contact-info .section-title { margin-bottom: 1.5rem; }
+    .contact-desc { font-size: 0.9rem; color: var(--text-inv-dim); line-height: 1.9; margin-bottom: 2.5rem; }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border-dark);
+      border: 1px solid var(--border-dark);
+    }
+    .social-card {
+      background: var(--bg-dark);
+      padding: 1.4rem;
       display: flex;
-      gap: 0.8rem;
-      margin-top: 1.5rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
     }
-    .footer-social a {
-      width: 34px;
-      height: 34px;
-      border: 1px solid var(--border);
+    .social-card:hover { background: var(--bg-mid); }
+    .social-icon {
+      width: 44px; height: 44px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 2px;
-      color: var(--text-mute);
-      font-size: 0.8rem;
-      transition: border-color 0.3s, color 0.3s;
+      font-size: 1.1rem;
+      transition: transform 0.3s;
     }
-    .footer-social a:hover { border-color: var(--sage); color: var(--sage-lt); }
+    .social-card:hover .social-icon { transform: scale(1.1); }
+    .social-ig .social-icon { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: white; }
+    .social-tiktok .social-icon { background: #010101; color: #EE1D52; border: 1px solid #EE1D52; }
+    .social-xhs .social-icon { background: #FF2442; color: white; }
+    .social-threads .social-icon { background: #101010; color: white; border: 1px solid #333; }
+    .social-line .social-icon { background: #00B900; color: white; }
+    .social-fb .social-icon { background: #1877F2; color: white; }
 
-    .footer-col h4 {
+    .social-name {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--text-inv-dim);
       text-transform: uppercase;
-      color: var(--text-inv);
-      margin-bottom: 1.3rem;
     }
-    .footer-col ul li {
-      margin-bottom: 0.65rem;
-    }
-    .footer-col ul li a {
-      font-size: 0.82rem;
-      color: var(--text-mute);
-      transition: color 0.3s;
-    }
-    .footer-col ul li a:hover { color: var(--sage-lt); }
-    .footer-col .contact-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.7rem;
-      margin-bottom: 0.8rem;
-    }
-    .footer-col .contact-item i {
-      color: var(--sage);
-      font-size: 0.75rem;
-      margin-top: 0.25rem;
-      flex-shrink: 0;
-    }
-    .footer-col .contact-item span {
-      font-size: 0.8rem;
-      color: var(--text-mute);
-      line-height: 1.6;
+    .social-handle {
+      font-size: 0.68rem;
+      color: var(--text-inv-mute);
     }
 
-    .footer-bottom {
+    /* Contact Form */
+    .contact-form-wrap {}
+    .contact-form-wrap h3 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.3rem;
+      color: var(--bronze-pale);
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 0.5rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: var(--bg-mid);
+      border: 1px solid var(--border-dark);
+      border-radius: 2px;
+      font-size: 0.88rem;
+      color: var(--text-inv);
+      font-family: inherit;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+    .form-group select option { background: var(--bg-mid); }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--bronze); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--bronze), var(--bronze-deep));
+      color: var(--bronze-pale);
+      border: none;
+      padding: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      box-shadow: var(--shadow-bronze);
+      transition: opacity 0.3s, transform 0.2s;
+    }
+    .form-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    .footer {
+      background: var(--bg-darkest);
+      border-top: 1px solid var(--border-dark);
+      padding: 2rem 0;
+    }
+    .footer-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 0.8rem;
+      gap: 1rem;
     }
-    .footer-bottom p {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.62rem;
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .footer-logo img {
+      width: 36px; height: 36px;
+      object-fit: contain;
+      background: white;
+      border-radius: 4px;
+      padding: 2px;
+    }
+    .footer-logo span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
       letter-spacing: 0.1em;
-      color: var(--text-mute);
+      color: var(--bronze-pale);
+      font-weight: 300;
+    }
+    .footer-copy {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--text-inv-mute);
     }
 
-    /* ─── Floating / Back to Top ─── */
+    /* ═══════════════════════════════════════
+       FLOATING BUTTONS
+    ═══════════════════════════════════════ */
     .floating-btns {
       position: fixed;
       right: 1.5rem;
       bottom: 6rem;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.5rem;
       z-index: 500;
     }
     .float-btn {
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -907,30 +1150,29 @@
       font-size: 1rem;
       cursor: pointer;
       border: none;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.3);
       transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+      text-decoration: none;
     }
-    .float-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.24); }
-    .float-line { background: #25D366; color: white; }
-    .float-ig { background: #C13584; color: white; }
-    .float-fb { background: #1877F2; color: white; }
+    .float-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
+    .float-ig { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: white; }
+    .float-tiktok { background: #010101; color: #EE1D52; border: 1px solid #333; }
+    .float-xhs { background: #FF2442; color: white; }
 
     .back-top {
       position: fixed;
-      right: 1.5rem;
-      bottom: 1.8rem;
-      width: 44px;
-      height: 44px;
+      right: 1.5rem; bottom: 1.8rem;
+      width: 44px; height: 44px;
       border-radius: 50%;
-      background: var(--sage-dark);
-      color: #fff;
+      background: var(--bronze-deep);
+      border: 1px solid var(--bronze);
+      color: var(--bronze-pale);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      border: none;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.18);
+      box-shadow: var(--shadow-bronze);
       z-index: 500;
       opacity: 0;
       pointer-events: none;
@@ -939,12 +1181,14 @@
     .back-top.visible { opacity: 1; pointer-events: auto; }
     .back-top:hover { transform: translateY(-2px); }
 
-    /* ─── Booking Modal ─── */
+    /* ═══════════════════════════════════════
+       BOOKING MODAL
+    ═══════════════════════════════════════ */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(44,58,45,0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(10,6,2,0.75);
+      backdrop-filter: blur(6px);
       z-index: 2000;
       display: flex;
       align-items: center;
@@ -952,145 +1196,63 @@
       padding: 1rem;
     }
     .modal-box {
-      background: var(--cream);
+      background: var(--bg-mid);
+      border: 1px solid var(--border-dark);
       width: min(560px, 95vw);
       max-height: 90vh;
       overflow-y: auto;
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 3rem;
       position: relative;
+      box-shadow: var(--shadow);
     }
     .modal-close {
       position: absolute;
-      top: 1.2rem;
-      right: 1.2rem;
-      background: none;
-      border: none;
+      top: 1.2rem; right: 1.2rem;
+      background: none; border: none;
       cursor: pointer;
       font-size: 1.1rem;
-      color: var(--text-mid);
+      color: var(--text-inv-mute);
       transition: color 0.2s;
     }
-    .modal-close:hover { color: var(--text); }
-    .modal-tag {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--sage-dark);
-      margin-bottom: 0.8rem;
-    }
-    .modal-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      font-weight: 300;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-    .modal-subtitle {
-      font-size: 0.82rem;
-      color: var(--text-mid);
-      margin-bottom: 2rem;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    .form-group label {
-      display: block;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-mid);
-      margin-bottom: 0.4rem;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.75rem 0.9rem;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      font-size: 0.88rem;
-      color: var(--text);
-      font-family: inherit;
-      transition: border-color 0.3s;
-      outline: none;
-    }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus { border-color: var(--sage-dark); }
-    .form-group textarea { resize: vertical; min-height: 90px; }
-    .form-submit {
-      width: 100%;
-      background: var(--sage-dark);
-      color: var(--text-inv);
-      border: none;
-      padding: 0.95rem;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-radius: 3px;
-      margin-top: 0.5rem;
-      transition: background 0.3s;
-    }
-    .form-submit:hover { background: var(--sage-deep); }
+    .modal-close:hover { color: var(--bronze); }
+    .modal-tag { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--bronze); margin-bottom: 0.5rem; }
+    .modal-title { font-family: 'Noto Serif TC', serif; font-size: 1.8rem; font-weight: 400; color: var(--bronze-pale); margin-bottom: 0.3rem; }
+    .modal-sub { font-size: 0.82rem; color: var(--text-inv-mute); margin-bottom: 2rem; }
 
     /* Fade Transition */
     .fade-enter-active, .fade-leave-active { transition: opacity 0.25s; }
     .fade-enter-from, .fade-leave-to { opacity: 0; }
 
-    /* ─── Responsive ─── */
+    /* ═══════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════ */
     @media (max-width: 1024px) {
-      .bento {
-        grid-template-columns: repeat(6, 1fr);
-        grid-template-rows: 220px 220px 220px;
-      }
-      .bento-card:nth-child(1) { grid-column: 1 / 4; grid-row: 1; }
-      .bento-card:nth-child(2) { grid-column: 4 / 7; grid-row: 1; }
-      .bento-card:nth-child(3) { grid-column: 1 / 3; grid-row: 2; }
-      .bento-card:nth-child(4) { grid-column: 3 / 5; grid-row: 2; }
-      .bento-card:nth-child(5) { grid-column: 5 / 7; grid-row: 2; }
-      .bento-card:nth-child(6) { grid-column: 1 / 7; grid-row: 3; }
-      .feature { grid-template-columns: 1fr; }
-      .feature-img { height: 320px; }
-      .feature-img::after { background: linear-gradient(to top, var(--bg-dark) 0%, transparent 50%); }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .video-grid { grid-template-columns: repeat(3, 1fr); }
+      .championship-card { grid-template-columns: 1fr; }
+      .champ-visual { padding: 2.5rem; min-height: 280px; flex-direction: row; gap: 2rem; }
     }
-
     @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
-      .hero-image { height: 45vh; }
-      .hero-text { padding: 8rem 6vw 4vh; min-height: 55vh; }
+      .hero-content { grid-template-columns: 1fr; padding-top: 8rem; }
+      .hero-right { display: none; }
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-img-frame img { height: 320px; }
+      .about-badge { display: none; }
       .news-grid { grid-template-columns: 1fr; }
-      .news-card-big { grid-row: auto; }
-      .gallery-strip { grid-template-columns: 1fr 1fr; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .social-grid { grid-template-columns: repeat(3, 1fr); }
       .nav-links { display: none; }
-      .nav-mobile-btn { display: flex; }
+      .nav-cta { display: none; }
+      .nav-mobile { display: block; }
+      .video-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
     @media (max-width: 600px) {
-      .promise-grid { grid-template-columns: 1fr; }
-      .bento {
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(6, 220px);
-      }
-      .bento-card { grid-column: 1 / -1 !important; grid-row: auto !important; }
-      .partners-grid { grid-template-columns: 1fr 1fr; }
-      .stats-row { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
-      .gallery-strip { grid-template-columns: 1fr 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .about-values { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      .video-grid { grid-template-columns: repeat(2, 1fr); }
+      .social-grid { grid-template-columns: repeat(2, 1fr); }
       section { padding: 4.5rem 0; }
     }
   </style>
@@ -1098,86 +1260,114 @@
 <body>
 <div id="app">
 
-  <!-- ─── Navbar ─── -->
-  <nav :class="['nav', navClass]">
-    <div class="nav-logo">
-      <span>尹澤鎂研 Meiy An</span>
-      <span>Professional Auto Detailing</span>
-    </div>
+  <!-- ═══ NAVBAR ═══ -->
+  <nav :class="['nav', { scrolled: scrolled }]">
+    <a href="#" class="nav-logo">
+      <img src="logo.jpg" alt="尹澤鎂研 Meiy An Logo">
+      <div class="nav-logo-text">
+        <div class="brand">尹澤鎂研 Meiy An</div>
+        <div class="sub">Interior Detailing Expert</div>
+      </div>
+    </a>
     <ul class="nav-links">
       <li><a href="#about">關於我們</a></li>
       <li><a href="#services">服務項目</a></li>
       <li><a href="#news">最新消息</a></li>
-      <li><a href="#gallery">作品集</a></li>
+      <li><a href="#portfolio">作品集</a></li>
       <li><a href="#contact">聯絡我們</a></li>
     </ul>
-    <button class="nav-book" @click="showModal = true">立即預約</button>
-    <button class="nav-mobile-btn" @click="mobileMenuOpen = !mobileMenuOpen">
-      <i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+    <button class="nav-cta" @click="showModal = true">立即預約</button>
+    <button class="nav-mobile" @click="mobileOpen = !mobileOpen">
+      <i :class="mobileOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
     </button>
   </nav>
 
-  <!-- ─── Hero Split Screen ─── -->
+  <!-- ═══ HERO ═══ -->
   <section class="hero" id="home">
-    <!-- Left Text -->
-    <div class="hero-text">
-      <p class="hero-eyebrow">Since 2015 · Taiwan</p>
-      <h1 class="hero-title">
-        頂級車體美研<br>
-        <em>精工細作，展現極致</em>
-      </h1>
-      <p class="hero-desc">
-        以職人精神鑽研車體保護工藝，每一道工序皆是對卓越的承諾。從鈑金修復到頂級鍍膜，讓愛車恆久如新。
-      </p>
-      <div class="hero-actions">
-        <button class="btn-primary" @click="showModal = true">立即預約服務</button>
-        <a href="#services" class="btn-ghost" style="display:inline-flex;align-items:center;">了解更多</a>
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-left">
+        <p class="hero-eyebrow">台灣 · 專業汽車內裝清潔 · Since 2015</p>
+        <h1 class="hero-title">
+          <span>洗淨歲月痕跡</span>
+          <span class="accent">傳承車廂裡的愛</span>
+        </h1>
+        <div class="hero-divider"></div>
+        <p class="hero-desc">
+          每一台車都承載著家庭的記憶與故事。尹澤鎂研創辦人阿永，以職人之心守護每一段珍貴的旅程，讓愛車在清淨中繼續前行。
+        </p>
+        <div class="hero-actions">
+          <button class="btn-bronze" @click="showModal = true">
+            <i class="far fa-calendar-check"></i> 立即預約服務
+          </button>
+          <a href="#services" class="btn-outline">
+            <i class="fas fa-list"></i> 了解服務項目
+          </a>
+        </div>
       </div>
-      <div class="hero-scroll">
-        <span>Scroll</span>
-        <div class="scroll-line"></div>
+      <div class="hero-right">
+        <div class="hero-logo-display">
+          <div class="hero-logo-ring"></div>
+          <div class="hero-logo-ring2"></div>
+          <img class="hero-logo-img" src="logo.jpg" alt="尹澤鎂研">
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="num">10<sup>+</sup></div>
+              <div class="label">年專業經驗</div>
+            </div>
+            <div class="hero-stat">
+              <div class="num">400<sup>+</sup></div>
+              <div class="label">影片記錄</div>
+            </div>
+            <div class="hero-stat">
+              <div class="num">★<sup>1st</sup></div>
+              <div class="label">2026全球冠軍</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- Right Image Slider -->
-    <div class="hero-image">
-      <img :src="heroSlides[heroIdx].img" :alt="heroSlides[heroIdx].alt" :key="heroIdx">
-      <div class="hero-image-overlay"></div>
-      <div class="hero-slide-counter">
-        <span class="current">0{{ heroIdx + 1 }}</span> / 0{{ heroSlides.length }}
-      </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="line"></div>
     </div>
   </section>
 
-  <!-- ─── Ticker ─── -->
+  <!-- ═══ TICKER ═══ -->
   <div class="ticker">
     <div class="ticker-track">
-      <span v-for="item in [...tickerItems, ...tickerItems]" :key="item + Math.random()" class="ticker-item">
-        <span class="ticker-dot"></span>
-        {{ item }}
+      <span v-for="item in [...tickerItems, ...tickerItems]" class="ticker-item" :key="item + Math.random()">
+        <span class="ticker-dot"></span>{{ item }}
       </span>
     </div>
   </div>
 
-  <!-- ─── About ─── -->
+  <!-- ═══ ABOUT ═══ -->
   <section class="about" id="about">
     <div class="container">
       <div class="about-grid">
-        <div class="about-left reveal">
-          <div class="big-number">
-            10<span>Years of Excellence</span>
+        <div class="about-img-wrap reveal">
+          <div class="about-img-frame">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop&q=80" alt="阿永 專業施作">
+          </div>
+          <div class="about-badge">
+            <div class="num">10</div>
+            <div class="txt">Years</div>
           </div>
         </div>
-        <div class="about-right reveal">
-          <p class="section-tag">About Meiy An</p>
-          <h2 class="section-title">車體美研，<em>不只是清潔</em><br>而是一種態度</h2>
-          <p class="about-lead">
-            尹澤鎂研成立於2015年，深耕台灣車體美容市場逾十年。我們相信每輛車都有其獨特的靈魂，每一次施作都是與車主共同守護的承諾。從手工研磨到奈米鍍膜，我們用職人之心，成就卓越之美。
-          </p>
-          <div class="promise-grid">
-            <div class="promise-item" v-for="p in promises" :key="p.title">
-              <div class="promise-icon"><i :class="p.icon"></i></div>
-              <h4>{{ p.title }}</h4>
-              <p>{{ p.desc }}</p>
+        <div class="about-content reveal">
+          <p class="section-tag dark">About Meiy An</p>
+          <h2 class="section-title dark">關於尹澤鎂研<em>，關於阿永</em></h2>
+          <div class="about-story">
+            <p>車子，往往不只是代步的工具，它更像是一個<strong>移動的時光盒</strong>，承載著家庭的歲月與記憶。在尹澤鎂研創辦人<strong>阿永</strong>的眼中，每一次的汽車內裝清潔，都是一場與時光和記憶的對話。</p>
+            <p>許多來到尹澤鎂研的車主，交託的不僅是一台沾滿髒污的車，而是沉甸甸的家庭故事。有女車主接手了媽媽的舊車，希望能將它整理如新；也有年輕人結了婚、迎來了小生命，準備開啟人生的新篇章；還有來自屏東鵝鑾鼻的車主，特地長途跋涉前來委託。</p>
+            <p>面對這些滿載「生活痕跡」的車廂，阿永始終堅持<strong>細膩且專業的態度</strong>。他提供內裝不拆清洗的工法，並秉持著「中性溫和」的清潔理念，讓每一台車都能在煥然一新、潔淨溫和的狀態中，安心地繼續駛向人生的下一段旅程。</p>
+          </div>
+          <div class="about-values">
+            <div class="value-item" v-for="v in values" :key="v.title">
+              <div class="value-icon"><i :class="v.icon"></i></div>
+              <h4>{{ v.title }}</h4>
+              <p>{{ v.desc }}</p>
             </div>
           </div>
         </div>
@@ -1185,83 +1375,80 @@
     </div>
   </section>
 
-  <!-- ─── Services Bento ─── -->
+  <!-- ═══ SERVICES ═══ -->
   <section class="services" id="services">
     <div class="container">
       <div class="services-header">
         <div class="reveal">
-          <p class="section-tag">Services</p>
-          <h2 class="section-title">全方位<em>車體美研</em>服務</h2>
+          <p class="section-tag light">Services</p>
+          <h2 class="section-title light">專業服務<em>項目</em></h2>
         </div>
-        <button class="btn-primary reveal" @click="showModal = true">預約諮詢</button>
+        <button class="btn-bronze reveal" @click="showModal = true">預約諮詢</button>
       </div>
-      <div class="bento reveal">
-        <div class="bento-card" v-for="(s, i) in services" :key="s.title" @click="showModal = true">
-          <img :src="s.img" :alt="s.title">
-          <div class="bento-card-overlay">
-            <div class="bento-card-num">0{{ i + 1 }}</div>
-            <h3>{{ s.title }}</h3>
-            <p>{{ s.desc }}</p>
-          </div>
+      <div class="services-grid reveal">
+        <div class="service-card" v-for="(s, i) in services" :key="s.title" @click="showModal = true">
+          <div class="service-num">0{{ i + 1 }}</div>
+          <div class="service-icon"><i :class="s.icon"></i></div>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.desc }}</p>
+          <div class="service-arrow"><i class="fas fa-arrow-right"></i></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── Feature Banner ─── -->
-  <div class="feature">
-    <div class="feature-img">
-      <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=900&auto=format&fit=crop&q=80" alt="Premium Detailing">
-    </div>
-    <div class="feature-content reveal">
-      <p class="section-tag">Why Meiy An</p>
-      <h2 class="section-title">頂級工藝<br><em>超越期待</em></h2>
-      <p class="feature-desc">
-        我們採用國際頂級品牌施工材料，搭配嚴謹的施工流程，確保每一次服務都能達到最高標準。無論您的愛車是何種品牌或車型，我們都能提供量身訂製的最佳方案。
-      </p>
-      <div class="stats-row">
-        <div class="stat-item">
-          <div class="num">8<sup>+</sup></div>
-          <div class="label">服務項目</div>
-        </div>
-        <div class="stat-item">
-          <div class="num">500<sup>+</sup></div>
-          <div class="label">完工案例</div>
-        </div>
-        <div class="stat-item">
-          <div class="num">10<sup>年</sup></div>
-          <div class="label">專業經驗</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── News ─── -->
+  <!-- ═══ NEWS ═══ -->
   <section class="news" id="news">
     <div class="container">
       <div class="news-header">
         <div class="reveal">
-          <p class="section-tag">Latest News</p>
-          <h2 class="section-title">最新消息</h2>
+          <p class="section-tag dark">Latest News</p>
+          <h2 class="section-title dark">最新消息</h2>
         </div>
-        <a href="#" class="link-more reveal">查看全部</a>
       </div>
-      <div class="news-grid reveal">
-        <div class="news-card news-card-big">
-          <div class="news-card-img">
-            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80" alt="新款鍍膜">
+
+      <!-- Championship Card -->
+      <div class="championship-card reveal">
+        <div class="champ-visual">
+          <div class="trophy">
+            <div style="position:relative; display:flex; justify-content:space-between; width:100px; margin-bottom:0;">
+              <div class="trophy-handle"></div>
+              <div class="trophy-cup"></div>
+              <div class="trophy-handle"></div>
+            </div>
+            <div class="trophy-stem"></div>
+            <div class="trophy-base"></div>
+            <div class="trophy-base2"></div>
           </div>
-          <div class="news-card-body">
-            <span class="news-card-tag">活動特惠</span>
-            <h3>2025全新奈米碳化鍍膜服務正式上架，超疏水防污效果升級三倍</h3>
-            <p>尹澤鎂研引進最新一代奈米碳化鍍膜技術，超高硬度保護漆面長達五年，防污、防刮效果大幅提升。即日起提供免費諮詢評估，數量有限，歡迎提前預約體驗。</p>
-            <div class="news-card-meta"><time>2025.06.01</time></div>
+          <div class="trophy-glow"></div>
+          <div class="champ-year">2026 Global Championship</div>
+          <div class="champ-award-name">全球汽車內裝<br>清潔競賽總冠軍</div>
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i><i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
           </div>
         </div>
-        <div class="news-card" v-for="n in sideNews" :key="n.title">
-          <div class="news-card-img">
-            <img :src="n.img" :alt="n.title">
+        <div class="champ-content">
+          <span class="champ-tag">重大喜訊</span>
+          <h3 class="champ-title">尹澤鎂研榮獲 2026 全球汽車內裝清潔競賽總冠軍</h3>
+          <p class="champ-body">
+            尹澤鎂研創辦人阿永，代表台灣出征 2026 年全球汽車內裝清潔競賽（Global Auto Interior Detailing Championship），在來自 28 個國家、超過 300 位選手的激烈角逐中，以獨創的「中性溫和深層工法」及精準細膩的施作技術，獲得所有評審評分第一，一舉奪得本屆賽事<strong style="color:var(--bronze-bright)">總冠軍</strong>大獎。
+            <br><br>
+            頒獎典禮上，評審委員特別指出：「阿永的工法不僅展現了極致的技術水準，更體現了對每一台車主珍貴回憶的用心守護，這正是真正的職人精神。」這項殊榮不僅是對阿永十年耕耘的肯定，更是台灣汽車內裝美容產業的驕傲。
+          </p>
+          <div class="champ-meta">
+            <div class="champ-meta-item"><i class="fas fa-calendar"></i> 2026年3月15日</div>
+            <div class="champ-meta-item"><i class="fas fa-map-marker-alt"></i> 東京，日本</div>
+            <div class="champ-meta-item"><i class="fas fa-trophy"></i> Global Detailing Championship</div>
           </div>
+        </div>
+      </div>
+
+      <!-- Secondary News -->
+      <div class="news-grid reveal">
+        <div class="news-card" v-for="n in newsItems" :key="n.title">
+          <div class="news-card-img"><img :src="n.img" :alt="n.title"></div>
           <div class="news-card-body">
             <span class="news-card-tag">{{ n.tag }}</span>
             <h3>{{ n.title }}</h3>
@@ -1273,128 +1460,158 @@
     </div>
   </section>
 
-  <!-- ─── Partners ─── -->
-  <section class="partners">
+  <!-- ═══ PORTFOLIO ═══ -->
+  <section class="portfolio" id="portfolio">
     <div class="container">
-      <div class="partners-header reveal">
-        <p class="section-tag">Partners</p>
-        <h2 class="section-title">合作品牌<em>·</em>認證夥伴</h2>
-      </div>
-      <div class="partners-grid reveal">
-        <div class="partner-item" v-for="p in partners" :key="p.name">
-          <div class="partner-logo"><i :class="p.icon"></i></div>
-          <span>{{ p.name }}</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Gallery ─── -->
-  <section class="gallery" id="gallery">
-    <div class="container">
-      <div class="gallery-header">
+      <div class="portfolio-header">
         <div class="reveal">
-          <p class="section-tag">Gallery</p>
-          <h2 class="section-title">精選作品</h2>
+          <p class="section-tag light">Portfolio</p>
+          <h2 class="section-title light">作品集<em>·施作紀錄</em></h2>
         </div>
-        <a href="#" class="link-more reveal">更多作品</a>
+        <a href="https://www.youtube.com/channel/UC8rg7ITYWzRLrtjyJL2p2Yw" target="_blank" class="link-more reveal">查看所有影片</a>
       </div>
-      <div class="gallery-strip reveal">
-        <div class="gallery-item" v-for="g in gallery" :key="g">
-          <img :src="g" alt="作品">
-          <div class="gallery-item-overlay">
-            <i class="fas fa-expand-alt"></i>
+      <div class="video-grid reveal">
+        <a class="video-card"
+           v-for="v in videos"
+           :key="v.id"
+           :href="'https://www.youtube.com/watch?v=' + v.id"
+           target="_blank">
+          <img
+            :src="'https://img.youtube.com/vi/' + v.id + '/hqdefault.jpg'"
+            :alt="v.title"
+            loading="lazy">
+          <div class="video-overlay">
+            <div class="play-btn"><i class="fas fa-play"></i></div>
+            <div class="video-date">{{ v.date }}</div>
           </div>
+          <div class="video-title">{{ v.title }}</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info reveal">
+          <p class="section-tag light">Contact</p>
+          <h2 class="section-title light">聯絡<em>阿永</em></h2>
+          <p class="contact-desc">
+            無論是愛車的日常保養、頑固汙漬處理，或是想了解各項服務的詳情，歡迎透過以下社群媒體聯絡我們，阿永將親自回覆您的每一則訊息。
+          </p>
+          <div class="social-grid">
+            <a class="social-card social-ig" href="https://www.instagram.com/gouyihong?igsh=c2Z2MGZ0d2h6Zmxo&utm_source=qr" target="_blank">
+              <div class="social-icon"><i class="fab fa-instagram"></i></div>
+              <div class="social-name">Instagram</div>
+              <div class="social-handle">@gouyihong</div>
+            </a>
+            <a class="social-card social-tiktok" href="https://www.tiktok.com/@hong3345678?_r=1&_t=ZS-94gfnlM9UuK" target="_blank">
+              <div class="social-icon"><i class="fab fa-tiktok"></i></div>
+              <div class="social-name">TikTok</div>
+              <div class="social-handle">@hong3345678</div>
+            </a>
+            <a class="social-card social-xhs" href="https://xhslink.com/m/58M4ZhZHfqF" target="_blank">
+              <div class="social-icon"><i class="fas fa-book-open"></i></div>
+              <div class="social-name">小紅書</div>
+              <div class="social-handle">阿永尹澤鎂研</div>
+            </a>
+            <a class="social-card social-threads" href="https://www.threads.com/@gouyihong?invite=0" target="_blank">
+              <div class="social-icon"><i class="fab fa-threads" style="font-style:normal;font-size:1rem;">@</i></div>
+              <div class="social-name">Threads</div>
+              <div class="social-handle">@gouyihong</div>
+            </a>
+            <div class="social-card social-line" style="opacity:0.5; cursor:not-allowed;">
+              <div class="social-icon"><i class="fab fa-line"></i></div>
+              <div class="social-name">Line</div>
+              <div class="social-handle">即將開放</div>
+            </div>
+            <div class="social-card social-fb" style="opacity:0.5; cursor:not-allowed;">
+              <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
+              <div class="social-name">Facebook</div>
+              <div class="social-handle">即將開放</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-form-wrap reveal">
+          <h3>線上預約 / 諮詢</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>姓名 *</label>
+              <input type="text" v-model="form.name" placeholder="您的姓名">
+            </div>
+            <div class="form-group">
+              <label>電話 *</label>
+              <input type="tel" v-model="form.phone" placeholder="09XX-XXX-XXX">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>服務項目 *</label>
+            <select v-model="form.service">
+              <option value="">請選擇服務</option>
+              <option v-for="s in services" :key="s.title" :value="s.title">{{ s.title }}</option>
+              <option>其他諮詢</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>車款</label>
+              <input type="text" v-model="form.car" placeholder="廠牌 / 型號 / 年份">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" v-model="form.email" placeholder="your@email.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>問題描述</label>
+            <textarea v-model="form.note" placeholder="請描述您的需求或車況..."></textarea>
+          </div>
+          <button class="form-submit" @click="submitForm">送出諮詢預約</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ─── Footer ─── -->
-  <footer class="footer" id="contact">
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
     <div class="container">
-      <div class="footer-grid">
-        <!-- Brand -->
-        <div class="footer-brand">
-          <div class="brand-name">尹澤鎂研 Meiy An</div>
-          <div class="brand-sub">Professional Auto Detailing</div>
-          <p>以職人精神，守護您的愛車。提供頂級車體美研服務，讓每一輛車都煥發最美光彩。</p>
-          <div class="footer-social">
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-line"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-          </div>
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <img src="logo.jpg" alt="Logo">
+          <span>尹澤鎂研 Meiy An</span>
         </div>
-        <!-- Services -->
-        <div class="footer-col">
-          <h4>服務項目</h4>
-          <ul>
-            <li><a href="#services">車漆保護膜 PPF</a></li>
-            <li><a href="#services">奈米陶瓷鍍膜</a></li>
-            <li><a href="#services">漆面研磨拋光</a></li>
-            <li><a href="#services">車身包膜改色</a></li>
-            <li><a href="#services">頂蓬翻新修復</a></li>
-            <li><a href="#services">隔熱紙施工</a></li>
-          </ul>
-        </div>
-        <!-- Quick Links -->
-        <div class="footer-col">
-          <h4>快速連結</h4>
-          <ul>
-            <li><a href="#about">關於我們</a></li>
-            <li><a href="#news">最新消息</a></li>
-            <li><a href="#gallery">作品集</a></li>
-            <li><a href="#" @click.prevent="showModal = true">線上預約</a></li>
-          </ul>
-        </div>
-        <!-- Contact -->
-        <div class="footer-col">
-          <h4>聯絡資訊</h4>
-          <div class="contact-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>台灣某市某區某路123號</span>
-          </div>
-          <div class="contact-item">
-            <i class="fas fa-phone"></i>
-            <span>0912-345-678</span>
-          </div>
-          <div class="contact-item">
-            <i class="fas fa-envelope"></i>
-            <span>info@meiyan.tw</span>
-          </div>
-          <div class="contact-item">
-            <i class="fas fa-clock"></i>
-            <span>週一至週六 09:00 – 18:00</span>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>© 2025 尹澤鎂研 Meiy An. All rights reserved.</p>
-        <p>Designed with care · 用心設計</p>
+        <p class="footer-copy">© 2026 尹澤鎂研 Meiy An · 版權所有 · 用心守護每一段旅程</p>
       </div>
     </div>
   </footer>
 
-  <!-- ─── Floating Buttons ─── -->
+  <!-- ═══ FLOATING BTNS ═══ -->
   <div class="floating-btns">
-    <button class="float-btn float-line" title="Line"><i class="fab fa-line"></i></button>
-    <button class="float-btn float-ig" title="Instagram"><i class="fab fa-instagram"></i></button>
-    <button class="float-btn float-fb" title="Facebook"><i class="fab fa-facebook-f"></i></button>
+    <a class="float-btn float-ig" href="https://www.instagram.com/gouyihong?igsh=c2Z2MGZ0d2h6Zmxo&utm_source=qr" target="_blank" title="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a class="float-btn float-tiktok" href="https://www.tiktok.com/@hong3345678?_r=1&_t=ZS-94gfnlM9UuK" target="_blank" title="TikTok">
+      <i class="fab fa-tiktok"></i>
+    </a>
+    <a class="float-btn float-xhs" href="https://xhslink.com/m/58M4ZhZHfqF" target="_blank" title="小紅書">
+      <i class="fas fa-book-open"></i>
+    </a>
   </div>
 
-  <button class="back-top" :class="{ visible: showBackTop }" @click="scrollTop" title="回到頂部">
+  <button class="back-top" :class="{ visible: showBackTop }" @click="scrollToTop">
     <i class="fas fa-chevron-up"></i>
   </button>
 
-  <!-- ─── Booking Modal ─── -->
+  <!-- ═══ BOOKING MODAL ═══ -->
   <Transition name="fade">
     <div class="modal-backdrop" v-if="showModal" @click.self="showModal = false">
       <div class="modal-box">
         <button class="modal-close" @click="showModal = false"><i class="fas fa-times"></i></button>
-        <p class="modal-tag">Book a Service</p>
-        <h3 class="modal-title">線上預約服務</h3>
-        <p class="modal-subtitle">填寫以下資訊，我們將於一個工作天內與您聯絡確認。</p>
+        <p class="modal-tag">Booking</p>
+        <h3 class="modal-title">預約服務</h3>
+        <p class="modal-sub">請填寫以下資訊，阿永將盡快與您聯繫確認。</p>
         <div class="form-row">
           <div class="form-group">
             <label>姓名 *</label>
@@ -1402,37 +1619,26 @@
           </div>
           <div class="form-group">
             <label>電話 *</label>
-            <input type="tel" v-model="form.phone" placeholder="0912-345-678">
+            <input type="tel" v-model="form.phone" placeholder="09XX-XXX-XXX">
           </div>
         </div>
         <div class="form-group">
-          <label>Email</label>
-          <input type="email" v-model="form.email" placeholder="your@email.com">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>服務項目 *</label>
-            <select v-model="form.service">
-              <option value="">請選擇服務</option>
-              <option>車漆保護膜 PPF</option>
-              <option>奈米陶瓷鍍膜</option>
-              <option>漆面研磨拋光</option>
-              <option>車身包膜改色</option>
-              <option>頂蓬翻新修復</option>
-              <option>隔熱紙施工</option>
-              <option>其他諮詢</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>車款</label>
-            <input type="text" v-model="form.car" placeholder="品牌 / 型號 / 年份">
-          </div>
+          <label>服務項目 *</label>
+          <select v-model="form.service">
+            <option value="">請選擇服務</option>
+            <option v-for="s in services" :key="s.title" :value="s.title">{{ s.title }}</option>
+            <option>其他諮詢</option>
+          </select>
         </div>
         <div class="form-group">
-          <label>備註說明</label>
-          <textarea v-model="form.note" placeholder="請描述您的需求或問題..."></textarea>
+          <label>車款</label>
+          <input type="text" v-model="form.car" placeholder="廠牌 / 型號 / 年份">
         </div>
-        <button class="form-submit" @click="submitForm">送出預約申請</button>
+        <div class="form-group">
+          <label>備註</label>
+          <textarea v-model="form.note" placeholder="車況描述或其他需求..."></textarea>
+        </div>
+        <button class="form-submit" @click="submitForm">確認送出</button>
       </div>
     </div>
   </Transition>
@@ -1440,141 +1646,114 @@
 </div>
 
 <script>
-const { createApp, ref, reactive, computed, onMounted, onUnmounted } = Vue;
+const { createApp, ref, reactive, onMounted, onUnmounted } = Vue;
 
 createApp({
   setup() {
-    // Nav
-    const scrollY = ref(0);
-    const navClass = computed(() => {
-      if (scrollY.value > 520) return 'light';
-      if (scrollY.value > 40) return 'scrolled';
-      return '';
-    });
-
-    // Hero slider
-    const heroSlides = [
-      { img: 'https://images.unsplash.com/photo-1632823469850-2f77dd9c7f93?w=1200&auto=format&fit=crop&q=80', alt: '鍍膜施工' },
-      { img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1200&auto=format&fit=crop&q=80', alt: '漆面保護' },
-      { img: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=1200&auto=format&fit=crop&q=80', alt: '頂級車體' },
-    ];
-    const heroIdx = ref(0);
-    let heroTimer = null;
-
-    // Ticker
-    const tickerItems = [
-      '車漆保護膜 PPF', '奈米陶瓷鍍膜', '漆面研磨拋光', '車身包膜改色',
-      '頂蓬翻新修復', '隔熱紙施工', '一站式服務', '十年口碑',
-      '職人工藝', '台灣在地品牌',
-    ];
-
-    // Promises
-    const promises = [
-      { icon: 'fas fa-heart', title: '用心經營', desc: '每位車主都是我們最重要的夥伴，用心對待每一台車。' },
-      { icon: 'fas fa-handshake', title: '誠實回饋', desc: '透明報價、誠信施作，讓您安心委託無後顧之憂。' },
-      { icon: 'fas fa-award', title: '專業認證', desc: '持有國際認證施工資格，採用頂級品牌施工材料。' },
-    ];
-
-    // Services
-    const services = [
-      { title: '車漆保護膜 PPF', desc: '高透明度自修復薄膜，抵禦石擊、刮傷與紫外線。', img: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&auto=format&fit=crop&q=80' },
-      { title: '奈米陶瓷鍍膜', desc: '超強疏水效果，鍍膜硬度9H，持久保護漆面光澤。', img: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&auto=format&fit=crop&q=80' },
-      { title: '漆面研磨拋光', desc: '消除漆面細紋旋渦痕，還原出廠般的鏡面光澤。', img: 'https://images.unsplash.com/photo-1543465077-db45d34b88a5?w=600&auto=format&fit=crop&q=80' },
-      { title: '車身包膜改色', desc: '多種色彩材質可選，不動原廠烤漆即可輕鬆換色。', img: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&auto=format&fit=crop&q=80' },
-      { title: '頂蓬翻新修復', desc: '解決頂蓬老化脫落問題，恢復車廂整潔舒適感受。', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&auto=format&fit=crop&q=80' },
-      { title: '隔熱紙施工', desc: '高效隔熱、防紫外線，為車內打造舒適乘坐環境。', img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&auto=format&fit=crop&q=80' },
-    ];
-
-    // Side news
-    const sideNews = [
-      { tag: '品牌動態', title: '2025台北車展聯名限定套組，即日起開放預購', desc: '與多家頂級汽車品牌合作推出聯名施工套組，包含PPF全車+鍍膜，早鳥優惠至月底截止。', img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&auto=format&fit=crop&q=80', date: '2025.05.15' },
-      { tag: '技術分享', title: '職人日記：PPF與鍍膜的完美結合，雙重防護解析', desc: '許多車主好奇PPF與鍍膜能否同時施作？本文詳解兩者的互補關係與最佳施工順序。', img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&auto=format&fit=crop&q=80', date: '2025.04.22' },
-    ];
-
-    // Partners
-    const partners = [
-      { name: '3M Automotive', icon: 'fas fa-shield-alt' },
-      { name: 'XPEL Protection', icon: 'fas fa-car' },
-      { name: 'Gyeon Quartz', icon: 'fas fa-gem' },
-      { name: 'STEK DYNOshield', icon: 'fas fa-star' },
-      { name: 'Ceramic Pro', icon: 'fas fa-circle-notch' },
-      { name: 'SunTek Films', icon: 'fas fa-sun' },
-      { name: 'LLUMAR', icon: 'fas fa-tint' },
-      { name: 'Nanolex', icon: 'fas fa-flask' },
-    ];
-
-    // Gallery
-    const gallery = [
-      'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=600&auto=format&fit=crop&q=80',
-    ];
-
-    // Modal & Form
+    const scrolled = ref(false);
+    const showBackTop = ref(false);
     const showModal = ref(false);
+    const mobileOpen = ref(false);
+
     const form = reactive({ name: '', phone: '', email: '', service: '', car: '', note: '' });
+
+    const tickerItems = [
+      '內裝不拆清洗', '內裝拆洗', '內裝深層清潔', '頂棚翻新',
+      '皮革修復還原', '白色內裝抗污', '行車記錄器安裝', '安卓機安裝',
+      '職人工藝', '中性溫和配方', '2026全球冠軍', '台灣在地品牌',
+    ];
+
+    const values = [
+      { icon: 'fas fa-heart', title: '用心守護', desc: '每輛車都承載珍貴記憶，我們細心對待。' },
+      { icon: 'fas fa-leaf', title: '中性溫和', desc: '堅持使用溫和配方，安全不傷材質。' },
+      { icon: 'fas fa-award', title: '職人精神', desc: '十年磨一劍，以專業成就卓越品質。' },
+    ];
+
+    const services = [
+      { icon: 'fas fa-spray-can', title: '內裝不拆清洗', desc: '不需拆卸座椅，現場快速有效清潔，適合日常保養與輕度污漬處理，還您清新整潔的車廂環境。' },
+      { icon: 'fas fa-tools', title: '內裝拆洗', desc: '座椅、地毯全面拆卸清洗，深度去除累積的汙垢與異味，適合多年未清洗或嚴重髒污的車輛。' },
+      { icon: 'fas fa-broom', title: '內裝深層清潔', desc: '針對頑固汙漬、菸味、寵物毛屑等進行專業深層處理，從纖維深處徹底清除，恢復如新狀態。' },
+      { icon: 'fas fa-couch', title: '頂棚絨布．坐椅皮革舊翻新', desc: '老舊脫落的頂棚絨布與褪色皮革全面修復翻新，重現出廠時的整潔質感，提升整體車室質感。' },
+      { icon: 'fas fa-magic', title: '皮革局部受傷修復還原', desc: '針對皮革座椅的刮傷、褪色、龜裂進行精準修復，色差還原技術讓受損痕跡無痕消除。' },
+      { icon: 'fas fa-shield-alt', title: '白色內裝／淺色抗污處理（特斯拉）', desc: '專為白色或淺色內裝設計的奈米抗污塗層，防止日常污染滲入材質，特別適合特斯拉純白內裝。' },
+      { icon: 'fas fa-car-alt', title: '安卓機．行車記錄器安裝', desc: '專業車機升級安裝，包含安卓多媒體主機與高畫質行車記錄器，完美整合線路，美觀安全兼具。' },
+    ];
+
+    const newsItems = [
+      {
+        tag: '技術分享',
+        title: '中性溫和清潔產品系列正式上市，讓車主在家也能專業護車',
+        desc: '阿永將多年施作心得化為自有清潔品牌，中性配方安全無刺激，讓每位車主都能在日常中延續專業級的車室保養。',
+        img: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800&auto=format&fit=crop&q=80',
+        date: '2026.01.20'
+      },
+      {
+        tag: '品牌動態',
+        title: '澳洲打工度假歸來，帶回國際視野重啟尹澤鎂研服務',
+        desc: '阿永在澳洲深造期間學習國際頂尖工法，回台後融合台灣本土需求，打造更精進的服務體系，持續為車主提供最佳體驗。',
+        img: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&auto=format&fit=crop&q=80',
+        date: '2025.10.05'
+      },
+    ];
+
+    const videos = [
+      { id: 'gpXiA_03Iz8', title: '2026年2月20日 施作紀錄', date: '2026.02.20' },
+      { id: '2OIxoLfBWx0', title: '2026年2月19日 施作紀錄', date: '2026.02.19' },
+      { id: 'QDSmTuIUeJM', title: '2025年12月26日 施作紀錄', date: '2025.12.26' },
+      { id: 'uovKL7bCMEs', title: '2025年12月10日 施作紀錄', date: '2025.12.10' },
+      { id: 'RjgFBBK3l0c', title: '2025年11月12日 施作紀錄', date: '2025.11.12' },
+      { id: 'CSvO5zDFNoo', title: '2025年7月31日 施作紀錄', date: '2025.07.31' },
+      { id: 'D2-PTJ1lNJQ', title: '2025年5月23日 施作紀錄', date: '2025.05.23' },
+      { id: 'jR0z4mFExRg', title: '新手爸爸不再車內抽菸了，老婆待產中…祝福天下媽媽', date: '2024' },
+      { id: 'pk_bjcsirhw', title: '雨季來臨避免車內過度潮濕，建議放除濕劑或固定發動引擎開冷氣', date: '2024' },
+      { id: 'p6zN3D1s7ZM', title: '國中特教老師先前也是田徑選手，前車主有抽菸及養狗，導致內裝有異味', date: '2024' },
+      { id: '-LWWuQBXFtk', title: '車主購買這台X-TRAIL 4年了，平常周末很常帶妹妹小朋友出遊', date: '2024' },
+      { id: 'pcDT-p5qq3E', title: '車主購買了二手出租車，家裡小朋友不小心在車內尿尿了，來找阿永內裝拆洗', date: '2024' },
+      { id: 'ZbOIEbQeAM4', title: '車主長時常駕駛這台車載毛小孩出遊，導致長期下來狗毛很多', date: '2024' },
+      { id: 'nktdI800aTA', title: '車主本身車子停戶外很少開車，朋友把茶放在車內後座忘記拿', date: '2024' },
+      { id: 'MLSrC2x1cR0', title: '海軍長官購買二手車後，每次開完車身上都有一股菸味，決定清洗這台ALTIS', date: '2024' },
+      { id: 'H9yJZ0PeqBg', title: '施作紀錄精選', date: '2024' },
+    ];
 
     function submitForm() {
       if (!form.name || !form.phone || !form.service) {
         alert('請填寫姓名、電話及服務項目。');
         return;
       }
-      alert('預約申請已送出！我們將盡快與您聯絡，感謝您的信任。');
+      alert('感謝您的預約！阿永將盡快與您聯繫確認，請保持電話暢通。');
       showModal.value = false;
       Object.keys(form).forEach(k => form[k] = '');
     }
 
-    // Back to top
-    const showBackTop = ref(false);
-
-    function scrollTop() {
+    function scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Mobile menu
-    const mobileMenuOpen = ref(false);
-
-    // Scroll reveal
     function initReveal() {
       const els = document.querySelectorAll('.reveal');
-      const obs = new IntersectionObserver((entries) => {
+      const obs = new IntersectionObserver(entries => {
         entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            obs.unobserve(e.target);
-          }
+          if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
         });
-      }, { threshold: 0.12 });
+      }, { threshold: 0.1 });
       els.forEach(el => obs.observe(el));
     }
 
     function onScroll() {
-      scrollY.value = window.scrollY;
-      showBackTop.value = window.scrollY > 400;
+      scrolled.value = window.scrollY > 50;
+      showBackTop.value = window.scrollY > 500;
     }
 
     onMounted(() => {
       window.addEventListener('scroll', onScroll, { passive: true });
-
-      // Hero auto-advance
-      heroTimer = setInterval(() => {
-        heroIdx.value = (heroIdx.value + 1) % heroSlides.length;
-      }, 5000);
-
-      // Reveal
       setTimeout(initReveal, 100);
     });
-
-    onUnmounted(() => {
-      window.removeEventListener('scroll', onScroll);
-      clearInterval(heroTimer);
-    });
+    onUnmounted(() => window.removeEventListener('scroll', onScroll));
 
     return {
-      navClass, heroSlides, heroIdx, tickerItems,
-      promises, services, sideNews, partners, gallery,
-      showModal, form, submitForm, showBackTop, scrollTop, mobileMenuOpen,
+      scrolled, showBackTop, showModal, mobileOpen,
+      form, tickerItems, values, services, newsItems, videos,
+      submitForm, scrollToTop,
     };
   }
 }).mount('#app');
