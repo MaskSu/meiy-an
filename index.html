@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>尹澤鎂研 Meiy An｜專業汽車內裝清潔保養</title>
+  <title>尹澤鎂研 YINZE｜專業汽車內裝清潔保養</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400;700&family=Montserrat:wght@200;300;400;600&display=swap" rel="stylesheet">
@@ -974,9 +974,11 @@
 
     .contact-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
+      grid-template-columns: 1fr;
+      gap: 3rem;
       align-items: start;
+      max-width: 680px;
+      margin-inline: auto;
     }
 
     .contact-info {}
@@ -1031,62 +1033,58 @@
       color: var(--text-inv-mute);
     }
 
-    /* Contact Form */
-    .contact-form-wrap {}
-    .contact-form-wrap h3 {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.3rem;
-      color: var(--bronze-pale);
-      margin-bottom: 1.5rem;
-      font-weight: 400;
-    }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label {
-      display: block;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--bronze);
-      margin-bottom: 0.5rem;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 0.8rem 1rem;
+    /* 7-11 Shop Banner */
+    .shop-banner {
       background: var(--bg-mid);
       border: 1px solid var(--border-dark);
-      border-radius: 2px;
-      font-size: 0.88rem;
-      color: var(--text-inv);
-      font-family: inherit;
-      transition: border-color 0.3s;
-      outline: none;
+      border-radius: var(--r);
+      overflow: hidden;
     }
-    .form-group select option { background: var(--bg-mid); }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus { border-color: var(--bronze); }
-    .form-group textarea { resize: vertical; min-height: 100px; }
-    .form-submit {
-      width: 100%;
+    .shop-banner-inner {
+      display: flex;
+      align-items: center;
+      gap: 1.8rem;
+      padding: 2rem 2.2rem;
+      flex-wrap: wrap;
+    }
+    .shop-banner-icon {
+      width: 60px; height: 60px;
+      border-radius: 50%;
       background: linear-gradient(135deg, var(--bronze), var(--bronze-deep));
-      color: var(--bronze-pale);
-      border: none;
-      padding: 1rem;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: var(--bronze-pale);
+      flex-shrink: 0;
       box-shadow: var(--shadow-bronze);
-      transition: opacity 0.3s, transform 0.2s;
     }
-    .form-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .shop-banner-text { flex: 1; min-width: 180px; }
+    .shop-banner-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--bronze); margin-bottom: 0.3rem;
+    }
+    .shop-banner-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--bronze-pale); margin-bottom: 0.4rem;
+    }
+    .shop-banner-desc {
+      font-size: 0.8rem; color: var(--text-inv-mute); line-height: 1.7;
+    }
+    .shop-banner-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: linear-gradient(135deg, #007643, #005a32);
+      color: white;
+      border: none; padding: 0.85rem 1.6rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      border-radius: 2px; cursor: pointer; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(0,118,67,0.35);
+      transition: opacity 0.3s, transform 0.2s;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .shop-banner-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
 
     /* ═══════════════════════════════════════
        FOOTER
@@ -1181,48 +1179,6 @@
     .back-top.visible { opacity: 1; pointer-events: auto; }
     .back-top:hover { transform: translateY(-2px); }
 
-    /* ═══════════════════════════════════════
-       BOOKING MODAL
-    ═══════════════════════════════════════ */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(10,6,2,0.75);
-      backdrop-filter: blur(6px);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .modal-box {
-      background: var(--bg-mid);
-      border: 1px solid var(--border-dark);
-      width: min(560px, 95vw);
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 4px;
-      padding: 3rem;
-      position: relative;
-      box-shadow: var(--shadow);
-    }
-    .modal-close {
-      position: absolute;
-      top: 1.2rem; right: 1.2rem;
-      background: none; border: none;
-      cursor: pointer;
-      font-size: 1.1rem;
-      color: var(--text-inv-mute);
-      transition: color 0.2s;
-    }
-    .modal-close:hover { color: var(--bronze); }
-    .modal-tag { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--bronze); margin-bottom: 0.5rem; }
-    .modal-title { font-family: 'Noto Serif TC', serif; font-size: 1.8rem; font-weight: 400; color: var(--bronze-pale); margin-bottom: 0.3rem; }
-    .modal-sub { font-size: 0.82rem; color: var(--text-inv-mute); margin-bottom: 2rem; }
-
-    /* Fade Transition */
-    .fade-enter-active, .fade-leave-active { transition: opacity 0.25s; }
-    .fade-enter-from, .fade-leave-to { opacity: 0; }
 
     /* ═══════════════════════════════════════
        RESPONSIVE
@@ -1240,7 +1196,6 @@
       .about-img-frame img { height: 320px; }
       .about-badge { display: none; }
       .news-grid { grid-template-columns: 1fr; }
-      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
       .social-grid { grid-template-columns: repeat(3, 1fr); }
       .nav-links { display: none; }
       .nav-cta { display: none; }
@@ -1263,9 +1218,9 @@
   <!-- ═══ NAVBAR ═══ -->
   <nav :class="['nav', { scrolled: scrolled }]">
     <a href="#" class="nav-logo">
-      <img src="logo.jpg" alt="尹澤鎂研 Meiy An Logo">
+      <img src="logo.jpg" alt="尹澤鎂研 YINZE Logo">
       <div class="nav-logo-text">
-        <div class="brand">尹澤鎂研 Meiy An</div>
+        <div class="brand">尹澤鎂研 YINZE</div>
         <div class="sub">Interior Detailing Expert</div>
       </div>
     </a>
@@ -1276,7 +1231,7 @@
       <li><a href="#portfolio">作品集</a></li>
       <li><a href="#contact">聯絡我們</a></li>
     </ul>
-    <button class="nav-cta" @click="showModal = true">立即預約</button>
+    <a class="nav-cta" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank"><i class="fas fa-shopping-bag"></i> 前往選購</a>
     <button class="nav-mobile" @click="mobileOpen = !mobileOpen">
       <i :class="mobileOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
     </button>
@@ -1297,9 +1252,9 @@
           每一台車都承載著家庭的記憶與故事。尹澤鎂研創辦人阿永，以職人之心守護每一段珍貴的旅程，讓愛車在清淨中繼續前行。
         </p>
         <div class="hero-actions">
-          <button class="btn-bronze" @click="showModal = true">
-            <i class="far fa-calendar-check"></i> 立即預約服務
-          </button>
+          <a class="btn-bronze" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank">
+            <i class="fas fa-shopping-bag"></i> 前往 7-11 選購清潔產品
+          </a>
           <a href="#services" class="btn-outline">
             <i class="fas fa-list"></i> 了解服務項目
           </a>
@@ -1356,7 +1311,7 @@
           </div>
         </div>
         <div class="about-content reveal">
-          <p class="section-tag dark">About Meiy An</p>
+          <p class="section-tag dark">About YINZE</p>
           <h2 class="section-title dark">關於尹澤鎂研<em>，關於阿永</em></h2>
           <div class="about-story">
             <p>車子，往往不只是代步的工具，它更像是一個<strong>移動的時光盒</strong>，承載著家庭的歲月與記憶。在尹澤鎂研創辦人<strong>阿永</strong>的眼中，每一次的汽車內裝清潔，都是一場與時光和記憶的對話。</p>
@@ -1383,10 +1338,10 @@
           <p class="section-tag light">Services</p>
           <h2 class="section-title light">專業服務<em>項目</em></h2>
         </div>
-        <button class="btn-bronze reveal" @click="showModal = true">預約諮詢</button>
+        <a class="btn-bronze reveal" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank"><i class="fas fa-shopping-bag"></i> 選購清潔產品</a>
       </div>
       <div class="services-grid reveal">
-        <div class="service-card" v-for="(s, i) in services" :key="s.title" @click="showModal = true">
+        <div class="service-card" v-for="(s, i) in services" :key="s.title">
           <div class="service-num">0{{ i + 1 }}</div>
           <div class="service-icon"><i :class="s.icon"></i></div>
           <h3>{{ s.title }}</h3>
@@ -1534,41 +1489,19 @@
           </div>
         </div>
 
-        <div class="contact-form-wrap reveal">
-          <h3>線上預約 / 諮詢</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label>姓名 *</label>
-              <input type="text" v-model="form.name" placeholder="您的姓名">
+        <!-- 7-11 shop banner -->
+        <div class="shop-banner reveal">
+          <div class="shop-banner-inner">
+            <div class="shop-banner-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div class="shop-banner-text">
+              <div class="shop-banner-tag">尹澤鎂研自有品牌</div>
+              <h3 class="shop-banner-title">中性溫和清潔產品</h3>
+              <p class="shop-banner-desc">阿永將十年施作心得化為自有清潔品牌，現已上架 7-11 購物商城。讓您在家也能延續專業級的車室保養體驗。</p>
             </div>
-            <div class="form-group">
-              <label>電話 *</label>
-              <input type="tel" v-model="form.phone" placeholder="09XX-XXX-XXX">
-            </div>
+            <a class="shop-banner-btn" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank">
+              <i class="fas fa-external-link-alt"></i> 前往 7-11 購物商城
+            </a>
           </div>
-          <div class="form-group">
-            <label>服務項目 *</label>
-            <select v-model="form.service">
-              <option value="">請選擇服務</option>
-              <option v-for="s in services" :key="s.title" :value="s.title">{{ s.title }}</option>
-              <option>其他諮詢</option>
-            </select>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>車款</label>
-              <input type="text" v-model="form.car" placeholder="廠牌 / 型號 / 年份">
-            </div>
-            <div class="form-group">
-              <label>Email</label>
-              <input type="email" v-model="form.email" placeholder="your@email.com">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>問題描述</label>
-            <textarea v-model="form.note" placeholder="請描述您的需求或車況..."></textarea>
-          </div>
-          <button class="form-submit" @click="submitForm">送出諮詢預約</button>
         </div>
       </div>
     </div>
@@ -1580,9 +1513,9 @@
       <div class="footer-inner">
         <div class="footer-logo">
           <img src="logo.jpg" alt="Logo">
-          <span>尹澤鎂研 Meiy An</span>
+          <span>尹澤鎂研 YINZE</span>
         </div>
-        <p class="footer-copy">© 2026 尹澤鎂研 Meiy An · 版權所有 · 用心守護每一段旅程</p>
+        <p class="footer-copy">© 2026 尹澤鎂研 YINZE · 版權所有 · 用心守護每一段旅程</p>
       </div>
     </div>
   </footer>
@@ -1604,58 +1537,17 @@
     <i class="fas fa-chevron-up"></i>
   </button>
 
-  <!-- ═══ BOOKING MODAL ═══ -->
-  <Transition name="fade">
-    <div class="modal-backdrop" v-if="showModal" @click.self="showModal = false">
-      <div class="modal-box">
-        <button class="modal-close" @click="showModal = false"><i class="fas fa-times"></i></button>
-        <p class="modal-tag">Booking</p>
-        <h3 class="modal-title">預約服務</h3>
-        <p class="modal-sub">請填寫以下資訊，阿永將盡快與您聯繫確認。</p>
-        <div class="form-row">
-          <div class="form-group">
-            <label>姓名 *</label>
-            <input type="text" v-model="form.name" placeholder="您的姓名">
-          </div>
-          <div class="form-group">
-            <label>電話 *</label>
-            <input type="tel" v-model="form.phone" placeholder="09XX-XXX-XXX">
-          </div>
-        </div>
-        <div class="form-group">
-          <label>服務項目 *</label>
-          <select v-model="form.service">
-            <option value="">請選擇服務</option>
-            <option v-for="s in services" :key="s.title" :value="s.title">{{ s.title }}</option>
-            <option>其他諮詢</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>車款</label>
-          <input type="text" v-model="form.car" placeholder="廠牌 / 型號 / 年份">
-        </div>
-        <div class="form-group">
-          <label>備註</label>
-          <textarea v-model="form.note" placeholder="車況描述或其他需求..."></textarea>
-        </div>
-        <button class="form-submit" @click="submitForm">確認送出</button>
-      </div>
-    </div>
-  </Transition>
 
 </div>
 
 <script>
-const { createApp, ref, reactive, onMounted, onUnmounted } = Vue;
+const { createApp, ref, onMounted, onUnmounted } = Vue;
 
 createApp({
   setup() {
     const scrolled = ref(false);
     const showBackTop = ref(false);
-    const showModal = ref(false);
     const mobileOpen = ref(false);
-
-    const form = reactive({ name: '', phone: '', email: '', service: '', car: '', note: '' });
 
     const tickerItems = [
       '內裝不拆清洗', '內裝拆洗', '內裝深層清潔', '頂棚翻新',
@@ -1715,16 +1607,6 @@ createApp({
       { id: 'H9yJZ0PeqBg', title: '施作紀錄精選', date: '2024' },
     ];
 
-    function submitForm() {
-      if (!form.name || !form.phone || !form.service) {
-        alert('請填寫姓名、電話及服務項目。');
-        return;
-      }
-      alert('感謝您的預約！阿永將盡快與您聯繫確認，請保持電話暢通。');
-      showModal.value = false;
-      Object.keys(form).forEach(k => form[k] = '');
-    }
-
     function scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1751,9 +1633,9 @@ createApp({
     onUnmounted(() => window.removeEventListener('scroll', onScroll));
 
     return {
-      scrolled, showBackTop, showModal, mobileOpen,
-      form, tickerItems, values, services, newsItems, videos,
-      submitForm, scrollToTop,
+      scrolled, showBackTop, mobileOpen,
+      tickerItems, values, services, newsItems, videos,
+      scrollToTop,
     };
   }
 }).mount('#app');
