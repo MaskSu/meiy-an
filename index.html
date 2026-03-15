@@ -80,20 +80,23 @@
        NAVBAR
     ═══════════════════════════════════════ */
     .nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      position: sticky;
+      top: 0;
       z-index: 1000;
       height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 5vw;
+      background: rgba(253,250,245,0.97);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border-light);
       transition: background var(--tr), box-shadow var(--tr);
     }
     .nav.scrolled {
       background: rgba(253,250,245,0.97);
       backdrop-filter: blur(12px);
-      box-shadow: 0 1px 0 var(--border-light);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
     }
 
     .nav-logo {
@@ -147,105 +150,208 @@
     /* ═══════════════════════════════════════
        HERO
     ═══════════════════════════════════════ */
+    /* ═══════════════════════════════════════
+       BANNER CAROUSEL (Hero)
+    ═══════════════════════════════════════ */
     .hero {
       position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
+      height: calc(100vh - 72px);
+      min-height: 520px;
       overflow: hidden;
+      padding: 0 !important;
     }
 
-    .hero-bg {
+    .banner-carousel {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 70% 50%, rgba(200,144,107,0.10) 0%, transparent 60%),
-                  linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-copper-lt) 50%, #F5EFE5 100%);
     }
 
-    /* Decorative circles */
-    .hero-bg::before {
+    .banner-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+      pointer-events: none;
+    }
+    .banner-slide.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── Slide 1: 左文右圖兩欄版型 ── */
+    .banner-slide.s1 {
+      background: linear-gradient(135deg, #FDFAF5 0%, #F5EDE0 55%, #EEE5D5 100%);
+    }
+    .s1-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 22% 55%, rgba(180,120,50,0.09) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .s1-inner {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+    }
+    /* 文字：左側絕對定位，z-index 壓在圖上 */
+    .s1-text {
+      position: absolute;
+      left: max(2.5rem, calc((100vw - 1200px) / 2 + 2.5rem));
+      top: 0; bottom: 0;
+      width: 44%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 2;
+    }
+    /* 圖片：絕對定位靠右，放大，左邊長距離柔化，圓角 */
+    .s1-img-wrap {
+      position: absolute;
+      right: 0;
+      top: 2.5rem; bottom: 2.5rem;
+      width: min(67vw, 768px);
+      z-index: 1;
+      border-radius: 20px;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(
+        to right, transparent 0%, black 42%, black 100%
+      );
+      mask-image: linear-gradient(
+        to right, transparent 0%, black 42%, black 100%
+      );
+    }
+    .s1-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .s1-text {
+        position: relative;
+        width: 100%;
+        left: auto; top: auto; bottom: auto;
+        padding: 1.5rem;
+        flex: 0 0 auto;
+      }
+      .s1-img-wrap {
+        position: relative;
+        width: 85%; right: auto; top: auto; bottom: auto;
+        height: 38vh;
+        margin: 0 auto 1.5rem;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 78%, transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 78%, transparent 100%);
+      }
+      .s1-inner { display: flex; flex-direction: column; justify-content: center; }
+    }
+
+    /* ── Slide 2: Product promo ── */
+    .banner-slide.s2 { display: block; }
+    .banner-promo-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 60%, rgba(200,144,107,0.22) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 30%, rgba(95,117,96,0.20) 0%, transparent 50%),
+        linear-gradient(135deg, #1A0F07 0%, #2A1A0A 45%, #1C2B1C 100%);
+    }
+    .banner-promo-deco {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .banner-promo-deco::before {
       content: '';
       position: absolute;
-      width: 600px; height: 600px;
+      width: 680px; height: 680px;
       border-radius: 50%;
       border: 1px solid rgba(200,144,107,0.12);
-      top: 50%; left: 60%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
     }
-    .hero-bg::after {
+    .banner-promo-deco::after {
       content: '';
       position: absolute;
-      width: 900px; height: 900px;
+      width: 1000px; height: 1000px;
       border-radius: 50%;
-      border: 1px solid rgba(200,144,107,0.07);
-      top: 50%; left: 60%;
+      border: 1px solid rgba(200,144,107,0.06);
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
     }
 
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      width: min(1200px, 90vw);
-      margin-inline: auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
+    /* ── Banner text containers ── */
+    .banner-text {
+      position: absolute;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      top: 0; bottom: 0;
+    }
+    .banner-text-left {
+      left: max(2rem, calc((100vw - 1200px) / 2 + 2rem));
+      max-width: 560px;
+    }
+    .banner-text-center {
+      left: 0; right: 0;
       align-items: center;
-      padding: 10rem 0 6rem;
+      text-align: center;
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
-    .hero-left {}
-
-    .hero-eyebrow {
+    .banner-eyebrow {
       display: flex;
       align-items: center;
       gap: 0.8rem;
-      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: var(--sage-dark);
-      margin-bottom: 1.5rem;
+      color: rgba(100,65,25,0.7);
+      margin-bottom: 1.4rem;
     }
-    .hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--sage-dark); }
+    .banner-eyebrow::before {
+      content: '';
+      display: block;
+      width: 2rem; height: 1px;
+      background: rgba(150,100,40,0.45);
+      flex-shrink: 0;
+    }
 
-    .hero-title {
-      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
-      font-size: clamp(2.2rem, 4vw, 3.8rem);
+    .banner-title {
+      font-size: clamp(2.4rem, 4.5vw, 4.2rem);
       font-weight: 700;
-      line-height: 1.25;
-      color: var(--text);
-      margin-bottom: 1rem;
+      line-height: 1.2;
+      color: #1E120A;
+      margin-bottom: 1.2rem;
     }
-    .hero-title span { display: block; }
-    .hero-title .accent {
-      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+    .banner-title span { display: block; }
+    .banner-title .accent {
       font-style: italic;
       font-weight: 300;
-      font-size: 1.2em;
-      color: var(--bronze-bright);
-      background: linear-gradient(135deg, var(--bronze-bright), var(--bronze-light));
+      font-size: 1.05em;
+      background: linear-gradient(135deg, #F0C882, var(--bronze-light));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .hero-divider {
-      width: 3rem;
-      height: 2px;
-      background: linear-gradient(to right, var(--bronze), transparent);
-      margin: 1.5rem 0;
+    .banner-divider {
+      width: 3rem; height: 2px;
+      background: linear-gradient(to right, rgba(200,144,107,0.8), transparent);
+      margin: 1.2rem 0 1.8rem;
     }
 
-    .hero-desc {
-      font-size: 0.95rem;
-      color: var(--text-mid);
-      line-height: 1.9;
+    .banner-desc {
+      font-size: 0.92rem;
+      color: rgba(60,35,15,0.72);
+      line-height: 1.85;
       margin-bottom: 2.5rem;
-      max-width: 420px;
+      max-width: 400px;
     }
 
-    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .banner-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
     .btn-bronze {
       display: inline-flex;
@@ -284,105 +390,120 @@
     }
     .btn-outline:hover { background: var(--sage-dark); border-color: var(--sage-dark); color: white; }
 
-    .hero-right {
-      position: relative;
-      display: flex;
+    .btn-glass {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-    }
-
-    .hero-logo-display {
-      position: relative;
-      width: 340px;
-      height: 340px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .hero-logo-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid var(--border-light);
-      animation: spinSlow 20s linear infinite;
-    }
-    .hero-logo-ring::before {
-      content: '🚗';
-      position: absolute;
-      top: -14px; left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.3rem;
-      line-height: 1;
-      width: auto; height: auto;
-      border-radius: 0;
-      background: none;
-    }
-    @keyframes spinSlow { to { transform: rotate(360deg); } }
-
-    .hero-logo-ring2 {
-      position: absolute;
-      inset: 24px;
-      border-radius: 50%;
-      border: 1px solid rgba(200,144,107,0.12);
-      animation: spinSlow 30s linear infinite reverse;
-    }
-
-    .hero-logo-img {
-      width: 290px;
-      height: 290px;
-      object-fit: contain;
-      border-radius: 50%;
-      padding: 8px;
-      box-shadow: 0 0 40px rgba(200,144,107,0.18), var(--shadow);
-    }
-
-    .hero-stats {
-      position: absolute;
-      bottom: -2rem;
-      left: 0;
-      right: 0;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border-light);
-      border: 1px solid var(--border-light);
-    }
-    .hero-stat {
-      background: rgba(255,255,255,0.85);
+      gap: 0.5rem;
+      background: rgba(150,100,40,0.07);
+      color: #5A3A18;
+      border: 1.5px solid rgba(150,100,40,0.5);
       backdrop-filter: blur(8px);
-      padding: 1.2rem;
-      text-align: center;
-    }
-    .hero-stat .num {
+      padding: 0.9rem 2rem;
       font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
-      font-size: 2rem;
-      font-weight: 300;
-      color: var(--bronze);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .btn-glass:hover { background: rgba(150,100,40,0.15); border-color: rgba(150,100,40,0.85); }
+
+    /* ── Promo slide content ── */
+    .banner-promo-tag {
+      display: inline-block;
+      border: 1px solid rgba(200,144,107,0.55);
+      color: var(--bronze-light);
+      font-size: 0.62rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      padding: 0.4rem 1.4rem;
+      margin-bottom: 1.8rem;
+      border-radius: 1px;
+    }
+    .banner-promo-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
       line-height: 1;
     }
-    .hero-stat .num sup { font-size: 0.9rem; }
-    .hero-stat .label {
-      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
-      font-size: 0.58rem;
-      letter-spacing: 0.2em;
-      color: var(--text-mute);
-      text-transform: uppercase;
-      margin-top: 0.2rem;
-    }
-
-    /* ── Mobile hero logo (top-center, only on mobile) ── */
-    .hero-mobile-logo {
-      display: none;
-      justify-content: center;
+    .banner-promo-title {
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
       margin-bottom: 1rem;
     }
-    .hero-mobile-logo img {
-      width: 80vw;
-      max-width: 460px;
-      height: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 8px 32px rgba(200,144,107,0.38));
+    .banner-promo-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, #F0C882, var(--bronze-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .banner-promo-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.08em;
+      margin-bottom: 2.8rem;
+    }
+
+    /* ── Carousel controls ── */
+    .banner-arrows {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .banner-arrow {
+      pointer-events: auto;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .banner-arrow:hover { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.55); }
+
+    .banner-dots {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.65rem;
+      z-index: 10;
+    }
+    .banner-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.55);
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+      padding: 0;
+    }
+    .banner-dot.active {
+      background: #fff;
+      border-color: #fff;
+      transform: scale(1.25);
+    }
+
+    @media (max-width: 900px) {
+      .banner-text-left { left: 1.5rem; right: 1.5rem; max-width: 100%; }
+      .banner-arrow { display: none; }
+      .banner-title { font-size: clamp(2rem, 7vw, 2.8rem); }
     }
 
 
@@ -537,92 +658,179 @@
       gap: 1.5rem;
     }
 
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--border-light);
+    /* ── Accordion ── */
+    .accordion {
       border: 1px solid var(--border-light);
-    }
-
-    .service-card {
-      background: white;
-      padding: 2.2rem 1.8rem;
-      cursor: pointer;
-      position: relative;
+      border-radius: 6px;
       overflow: hidden;
-      transition: background var(--tr);
     }
-    .service-card::before {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(to right, var(--bronze), var(--bronze-bright));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.4s ease;
-    }
-    .service-card:hover { background: var(--bg-copper-lt); }
-    .service-card:hover::before { transform: scaleX(1); }
+    .accordion-item { border-bottom: 1px solid var(--border-light); }
+    .accordion-item:last-child { border-bottom: none; }
 
-    .service-num {
-      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
-      font-size: 3rem;
-      font-weight: 300;
-      color: rgba(200,144,107,0.18);
-      line-height: 1;
-      margin-bottom: 1rem;
-      transition: color 0.3s;
-    }
-    .service-card:hover .service-num { color: rgba(200,144,107,0.32); }
-
-    .service-icon {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      background: var(--bronze-glow);
-      border: 1px solid var(--bronze-deep);
+    .accordion-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      color: var(--bronze);
-      margin-bottom: 1.2rem;
-      transition: background 0.3s, border-color 0.3s;
+      gap: 1.2rem;
+      padding: 1.35rem 2rem;
+      cursor: pointer;
+      background: white;
+      transition: background var(--tr);
+      user-select: none;
     }
-    .service-card:hover .service-icon { background: var(--bronze); color: var(--bg-darkest); border-color: var(--bronze); }
+    .accordion-header:hover { background: var(--bg-copper-lt); }
+    .accordion-item.active > .accordion-header { background: var(--bg-copper-lt); }
 
-    .service-card h3 {
+    .acc-num {
       font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
-      font-size: 0.95rem;
+      font-size: 2rem;
+      font-weight: 300;
+      color: rgba(200,144,107,0.28);
+      line-height: 1;
+      min-width: 3rem;
+    }
+    .acc-icon {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--border-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; color: var(--bronze);
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .accordion-item.active > .accordion-header .acc-icon,
+    .accordion-header:hover .acc-icon {
+      background: var(--bronze); color: white; border-color: var(--bronze);
+    }
+    .acc-title {
+      flex: 1;
+      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 0.7rem;
-      line-height: 1.4;
     }
-    .service-card p {
+    .acc-chevron {
+      color: var(--text-mute);
       font-size: 0.78rem;
-      color: var(--text-mid);
-      line-height: 1.75;
+      transition: transform 0.4s ease;
+    }
+    .accordion-item.active > .accordion-header .acc-chevron { transform: rotate(180deg); }
+
+    .accordion-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.45s ease;
+      background: var(--bg-cream);
+    }
+    .accordion-item.active > .accordion-body { grid-template-rows: 1fr; }
+    .accordion-body-inner { overflow: hidden; }
+    .accordion-body-pad {
+      padding: 2rem 2rem 2.5rem;
+      border-top: 1px solid var(--border-light);
     }
 
-    .service-arrow {
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 30px; height: 30px;
-      border: 1px solid var(--border-dark);
-      border-radius: 50%;
+    .acc-desc {
+      font-size: 0.875rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin-bottom: 1.6rem;
+    }
+    .acc-photos {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.4rem;
+      margin-bottom: 1.8rem;
+    }
+    .acc-photos img {
+      width: 100%; height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: zoom-in;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .acc-photos img:hover { opacity: 0.82; transform: scale(1.04); }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
-      color: var(--bronze);
-      opacity: 0;
-      transform: translate(4px, -4px);
-      transition: opacity 0.3s, transform 0.3s;
+      cursor: pointer;
+      animation: lbFadeIn 0.2s ease;
     }
-    .service-card:hover .service-arrow { opacity: 1; transform: translate(0, 0); }
+    @keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 4px;
+      cursor: default;
+      box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+      animation: lbSlideIn 0.22s ease;
+    }
+    @keyframes lbSlideIn { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .lightbox-close {
+      position: absolute;
+      top: 1.2rem; right: 1.2rem;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.28); }
+
+    .acc-steps {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 1.5rem 1.8rem;
+    }
+    .acc-steps-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 1.2rem;
+    }
+    .acc-steps ol { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.85rem; }
+    .acc-step { display: flex; align-items: flex-start; gap: 0.85rem; font-size: 0.85rem; color: var(--text-mid); line-height: 1.65; }
+    .step-num {
+      min-width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--bronze);
+      color: white;
+      font-size: 0.68rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .step-note { color: var(--bronze-deep); font-weight: 600; }
+    .acc-steps-note {
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border-light);
+      font-size: 0.8rem;
+      color: var(--text-mute);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .acc-photos { grid-template-columns: repeat(4, 1fr); }
+      .accordion-header { padding: 1.15rem 1.4rem; }
+    }
+    @media (max-width: 600px) {
+      .acc-photos { grid-template-columns: repeat(3, 1fr); }
+      .acc-num { font-size: 1.6rem; min-width: 2.4rem; }
+      .acc-title { font-size: 0.9rem; }
+    }
 
 
     /* ═══════════════════════════════════════
@@ -743,6 +951,92 @@
     }
     .press-read-btn:hover { background: var(--bronze); color: white; border-color: var(--bronze); }
 
+    /* Media appearances */
+    .media-appearances {
+      margin-top: 3rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border-light);
+    }
+    .media-appearances-title {
+      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 1.4rem;
+    }
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    .media-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+      text-decoration: none;
+      transition: box-shadow var(--tr), transform var(--tr);
+      background: white;
+    }
+    .media-card:hover { box-shadow: 0 6px 24px rgba(200,144,107,0.18); transform: translateY(-3px); }
+    .media-thumb {
+      position: relative;
+      height: 120px;
+      overflow: hidden;
+      background: #111;
+    }
+    .media-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: opacity 0.3s; }
+    .media-card:hover .media-thumb img { opacity: 1; }
+    .media-play {
+      position: absolute;
+      inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .media-icon-bg {
+      height: 120px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem;
+      background: var(--bg-sage-light);
+      color: var(--sage-dark);
+      transition: background 0.3s;
+    }
+    .media-icon-bg.ig { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; }
+    .media-icon-bg.podcast { background: #7B2FBE; color: white; }
+    .media-icon-bg.news { background: var(--bg-copper-lt); color: var(--bronze-deep); }
+    .media-card:hover .media-icon-bg { filter: brightness(1.08); }
+    .media-info {
+      padding: 0.85rem 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .media-platform {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bronze);
+    }
+    .media-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    @media (max-width: 900px) {
+      .media-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .media-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
     /* Right — quotes side */
     .press-quotes {
       padding: 3rem 2.5rem;
@@ -823,8 +1117,8 @@
 
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
     }
 
     .video-wrap {
@@ -838,7 +1132,7 @@
       border-radius: var(--r);
       cursor: pointer;
       background: var(--bg-dark);
-      aspect-ratio: 16/9;
+      aspect-ratio: 9/16;
     }
     .video-card img {
       width: 100%;
@@ -880,6 +1174,27 @@
       color: var(--text-mid);
       line-height: 1.45;
       font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+    }
+
+    .load-more-wrap {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .load-more-btn {
+      display: inline-block;
+      padding: 0.7rem 2.2rem;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      border-radius: 2rem;
+      font-size: 0.88rem;
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.25s, color 0.25s;
+      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+    }
+    .load-more-btn:hover {
+      background: var(--accent);
+      color: #fff;
     }
 
     /* ═══════════════════════════════════════
@@ -1046,7 +1361,7 @@
     .floating-btns {
       position: fixed;
       right: 1.5rem;
-      bottom: 6rem;
+      bottom: 12rem;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
@@ -1141,15 +1456,12 @@
        RESPONSIVE
     ═══════════════════════════════════════ */
     @media (max-width: 1024px) {
-      .services-grid { grid-template-columns: repeat(2, 1fr); }
-      .video-grid { grid-template-columns: repeat(3, 1fr); }
+      .video-grid { grid-template-columns: repeat(4, 1fr); }
       .championship-card { grid-template-columns: 1fr; }
       .champ-visual { padding: 2.5rem; min-height: 280px; flex-direction: row; gap: 2rem; }
     }
     @media (max-width: 900px) {
-      .hero-content { grid-template-columns: 1fr; padding-top: 5rem; }
-      .hero-right { display: none; }
-      .hero-mobile-logo { display: flex; }
+      .banner-text-left { left: 1.5rem; right: 1.5rem; max-width: 100%; }
       .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
       .about-img-frame img { height: 320px; }
       .about-badge { display: none; }
@@ -1158,13 +1470,12 @@
       .nav-links { display: none; }
       .nav-cta { display: none; }
       .nav-mobile { display: block; }
-      .video-grid { grid-template-columns: repeat(2, 1fr); }
+      .video-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 600px) {
-      .services-grid { grid-template-columns: 1fr; }
       .about-values { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
-      .video-grid { grid-template-columns: repeat(2, 1fr); }
+      .video-grid { grid-template-columns: repeat(3, 1fr); }
       .social-grid { grid-template-columns: repeat(2, 1fr); }
       section { padding: 4.5rem 0; }
       .championship-card { grid-template-columns: 1fr; }
@@ -1195,7 +1506,7 @@
       <li><a href="#portfolio">作品集</a></li>
       <li><a href="#contact">聯絡我們</a></li>
     </ul>
-    <a class="nav-cta" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank"><i class="fas fa-shopping-bag"></i> 前往選購</a>
+    <a class="nav-cta" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank"><i class="fas fa-shopping-bag"></i> 選購清潔產品</a>
     <button class="nav-mobile" @click="mobileOpen = !mobileOpen">
       <i :class="mobileOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
     </button>
@@ -1209,58 +1520,70 @@
     <a href="#portfolio" @click="mobileOpen=false">作品集</a>
     <a href="#contact"  @click="mobileOpen=false">聯絡我們</a>
     <a class="mobile-cta" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank" @click="mobileOpen=false">
-      <i class="fas fa-shopping-bag"></i> 前往 7-11 選購
+      <i class="fas fa-shopping-bag"></i> 選購清潔產品
     </a>
   </div>
 
   <!-- ═══ HERO ═══ -->
   <section class="hero" id="home">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-left">
-        <!-- Mobile-only logo at top-center -->
-        <div class="hero-mobile-logo">
-          <img src="logo.png" alt="尹澤鎂研 YINZE">
-        </div>
-        <p class="hero-eyebrow">台灣 · 專業汽車內裝清潔 · Since 2015</p>
-        <h1 class="hero-title">
-          <span>洗淨歲月痕跡</span>
-          <span class="accent">傳承車廂裡的愛</span>
-        </h1>
-        <div class="hero-divider"></div>
-        <p class="hero-desc">
-          每一台車都承載著家庭的記憶與故事。尹澤鎂研創辦人阿永，以職人之心守護每一段珍貴的旅程，讓愛車在清淨中繼續前行。
-        </p>
-        <div class="hero-actions">
-          <a class="btn-bronze" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank">
-            <i class="fas fa-shopping-bag"></i> 前往 7-11 選購清潔產品
-          </a>
-          <a href="#services" class="btn-outline">
-            <i class="fas fa-list"></i> 了解服務項目
-          </a>
-        </div>
-      </div>
-      <div class="hero-right">
-        <div class="hero-logo-display">
-          <div class="hero-logo-ring"></div>
-          <div class="hero-logo-ring2"></div>
-          <img class="hero-logo-img" src="logo.png" alt="尹澤鎂研">
-          <div class="hero-stats">
-            <div class="hero-stat">
-              <div class="num">10<sup>+</sup></div>
-              <div class="label">年專業經驗</div>
+    <div class="banner-carousel">
+
+      <!-- ══ Slide 1：左文右圖 ══ -->
+      <div class="banner-slide s1" :class="{ active: bannerIndex === 0 }">
+        <div class="s1-glow"></div>
+        <div class="s1-inner">
+          <!-- 左側：文字 -->
+          <div class="s1-text">
+            <p class="banner-eyebrow">台灣 · 專業汽車內裝清潔 · Since 2015</p>
+            <h1 class="banner-title">
+              <span>洗淨歲月痕跡</span>
+              <span class="accent">傳承車廂裡的愛</span>
+            </h1>
+            <div class="banner-divider"></div>
+            <p class="banner-desc">每一台車都承載著家庭的記憶與故事。<br>尹澤鎂研創辦人阿永，以職人之心守護每一段珍貴的旅程。</p>
+            <div class="banner-actions">
+              <a class="btn-bronze" href="#services">
+                <i class="fas fa-list"></i> 了解服務項目
+              </a>
+              <a class="btn-glass" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank">
+                <i class="fas fa-shopping-bag"></i> 選購清潔產品
+              </a>
             </div>
-            <div class="hero-stat">
-              <div class="num">400<sup>+</sup></div>
-              <div class="label">影片記錄</div>
-            </div>
-            <div class="hero-stat">
-              <div class="num">★<sup>1st</sup></div>
-              <div class="label">2026全球冠軍</div>
-            </div>
+          </div>
+          <!-- 右側：main.jpg 縮小，四周大範圍淡出 -->
+          <div class="s1-img-wrap">
+            <img src="main.jpg" alt="出發清潔內裝到高雄找阿永">
           </div>
         </div>
       </div>
+
+      <!-- ══ Slide 2：選購清潔產品 ══ -->
+      <div class="banner-slide s2" :class="{ active: bannerIndex === 1 }">
+        <div class="banner-promo-bg"></div>
+        <div class="banner-promo-deco"></div>
+        <div class="banner-text banner-text-center">
+          <div class="banner-promo-tag">尹澤鎂研 · 自有品牌</div>
+          <div class="banner-promo-icon">🧴</div>
+          <h2 class="banner-promo-title">中性溫和<br><em>清潔產品</em></h2>
+          <p class="banner-promo-sub">阿永十年施作心得 · 在家也能延續專業級保養</p>
+          <a class="btn-bronze" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank">
+            <i class="fas fa-shopping-bag"></i> 立即選購
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ Arrows ══ -->
+    <div class="banner-arrows">
+      <button class="banner-arrow" @click="prevBanner()"><i class="fas fa-chevron-left"></i></button>
+      <button class="banner-arrow" @click="nextBanner()"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <!-- ══ Dots ══ -->
+    <div class="banner-dots">
+      <button class="banner-dot" :class="{ active: bannerIndex === 0 }" @click="bannerIndex = 0; resetBannerTimer()"></button>
+      <button class="banner-dot" :class="{ active: bannerIndex === 1 }" @click="bannerIndex = 1; resetBannerTimer()"></button>
     </div>
 
   </section>
@@ -1317,13 +1640,39 @@
         </div>
         <a class="btn-bronze reveal" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank"><i class="fas fa-shopping-bag"></i> 選購清潔產品</a>
       </div>
-      <div class="services-grid reveal">
-        <div class="service-card" v-for="(s, i) in services" :key="s.title">
-          <div class="service-num">0{{ i + 1 }}</div>
-          <div class="service-icon"><i :class="s.icon"></i></div>
-          <h3>{{ s.title }}</h3>
-          <p>{{ s.desc }}</p>
-          <div class="service-arrow"><i class="fas fa-arrow-right"></i></div>
+      <div class="accordion reveal">
+        <div
+          class="accordion-item"
+          v-for="(s, i) in services"
+          :key="s.title"
+          :class="{ active: activeService === i }"
+        >
+          <div class="accordion-header" @click="activeService = activeService === i ? -1 : i">
+            <div class="acc-num">0{{ i + 1 }}</div>
+            <div class="acc-icon"><i :class="s.icon"></i></div>
+            <div class="acc-title">{{ s.title }}</div>
+            <i class="fas fa-chevron-down acc-chevron"></i>
+          </div>
+          <div class="accordion-body">
+            <div class="accordion-body-inner">
+              <div class="accordion-body-pad">
+                <p class="acc-desc">{{ s.desc }}</p>
+                <div class="acc-photos" v-if="s.photos && s.photos.length">
+                  <img v-for="p in s.photos" :key="p" :src="p" :alt="s.title" loading="lazy" @click="lightboxImg = p">
+                </div>
+                <div class="acc-steps" v-if="s.steps && s.steps.length">
+                  <div class="acc-steps-title">施作流程</div>
+                  <ol>
+                    <li class="acc-step" v-for="(step, si) in s.steps" :key="si">
+                      <span class="step-num">{{ si + 1 }}</span>
+                      <span v-html="step"></span>
+                    </li>
+                  </ol>
+                  <p class="acc-steps-note" v-if="s.note" v-html="s.note"></p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1394,6 +1743,54 @@
         </div>
 
       </div>
+
+      <!-- Media Appearances -->
+      <div class="media-appearances reveal">
+        <div class="media-appearances-title">播客 · 媒體曝光</div>
+        <div class="media-grid">
+
+          <!-- YouTube -->
+          <a href="https://youtu.be/NR5js4TTeZk" target="_blank" class="media-card">
+            <div class="media-thumb">
+              <img src="https://img.youtube.com/vi/NR5js4TTeZk/hqdefault.jpg" alt="YouTube 採訪影片" loading="lazy">
+              <div class="media-play"><i class="fab fa-youtube"></i></div>
+            </div>
+            <div class="media-info">
+              <span class="media-platform">YouTube</span>
+              <p class="media-title">採訪影片</p>
+            </div>
+          </a>
+
+          <!-- 屏東時報 -->
+          <a href="https://pingtungtimes.com.tw/?p=118673" target="_blank" class="media-card">
+            <div class="media-icon-bg news"><i class="fas fa-newspaper"></i></div>
+            <div class="media-info">
+              <span class="media-platform">屏東時報</span>
+              <p class="media-title">媒體專題報導</p>
+            </div>
+          </a>
+
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/p/CedoB1VJB_g/" target="_blank" class="media-card">
+            <div class="media-icon-bg ig"><i class="fab fa-instagram"></i></div>
+            <div class="media-info">
+              <span class="media-platform">Instagram</span>
+              <p class="media-title">IG 精選貼文</p>
+            </div>
+          </a>
+
+          <!-- Apple Podcast -->
+          <a href="https://podcasts.apple.com/tw/podcast/ep-51-%E5%B0%8F%E8%80%81%E5%A9%86%E7%9A%84%E5%A4%A7%E7%A7%98%E5%AF%86-%E6%B1%BD%E8%BB%8A%E9%86%AB%E7%BE%8E%E9%81%94%E4%BA%BA%E6%9C%80inside%E7%9A%84%E8%81%B7%E6%A5%AD%E8%A6%96%E8%A7%92-feat-%E5%B0%B9%E6%BE%A4%E9%8E%82%E7%A1%8F%E5%B7%A5%E4%BD%9C%E5%AE%A4%E8%B2%A0%E8%B2%AC%E4%BA%BA%E9%98%BF%E6%B0%B8/id1573198974?i=1000565342802" target="_blank" class="media-card">
+            <div class="media-icon-bg podcast"><i class="fas fa-podcast"></i></div>
+            <div class="media-info">
+              <span class="media-platform">Apple Podcast</span>
+              <p class="media-title">EP 51 · 小老婆的大秘密｜汽車醫美達人最 Inside 的職業視角</p>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1405,25 +1802,25 @@
           <p class="section-tag dark">Portfolio</p>
           <h2 class="section-title dark">作品集<em>·施作紀錄</em></h2>
         </div>
-        <a href="https://www.youtube.com/channel/UC8rg7ITYWzRLrtjyJL2p2Yw" target="_blank" class="link-more reveal">查看所有影片</a>
+        <a href="https://www.youtube.com/@%E5%85%A7%E8%A3%9D%E6%B8%85%E6%BD%94%E4%BF%9D%E9%A4%8Ailuv%E5%B0%B9%E6%BE%A4/shorts" target="_blank" class="link-more reveal">查看全部短影片</a>
       </div>
       <div class="video-grid reveal">
-        <div class="video-wrap"
-             v-for="v in videos"
-             :key="v.id">
-          <a class="video-card"
-             :href="'https://www.youtube.com/watch?v=' + v.id"
-             target="_blank">
-            <img
-              :src="'https://img.youtube.com/vi/' + v.id + '/hqdefault.jpg'"
-              :alt="v.title"
-              loading="lazy">
-            <div class="video-overlay">
-              <div class="play-btn"><i class="fas fa-play"></i></div>
-            </div>
-          </a>
-          <p class="video-caption">{{ v.title }}</p>
-        </div>
+        <a class="video-card"
+           v-for="id in videos"
+           :key="id"
+           :href="'https://www.youtube.com/shorts/' + id"
+           target="_blank">
+          <img
+            :src="'https://img.youtube.com/vi/' + id + '/hqdefault.jpg'"
+            alt="短影片"
+            loading="lazy">
+          <div class="video-overlay">
+            <div class="play-btn"><i class="fas fa-play"></i></div>
+          </div>
+        </a>
+      </div>
+      <div class="load-more-wrap reveal" v-if="videosToShow < allVideoIds.length">
+        <button class="load-more-btn" @click="videosToShow += 24">載入更多 <i class="fas fa-chevron-down"></i></button>
       </div>
     </div>
   </section>
@@ -1479,10 +1876,10 @@
             <div class="shop-banner-text">
               <div class="shop-banner-tag">尹澤鎂研自有品牌</div>
               <h3 class="shop-banner-title">中性溫和清潔產品</h3>
-              <p class="shop-banner-desc">阿永將十年施作心得化為自有清潔品牌，現已上架 7-11 購物商城。讓您在家也能延續專業級的車室保養體驗。</p>
+              <p class="shop-banner-desc">阿永將十年施作心得化為自有清潔品牌，現已上架線上購物商城。讓您在家也能延續專業級的車室保養體驗。</p>
             </div>
             <a class="shop-banner-btn" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank">
-              <i class="fas fa-external-link-alt"></i> 前往 7-11 購物商城
+              <i class="fas fa-external-link-alt"></i> 選購清潔產品
             </a>
           </div>
         </div>
@@ -1526,17 +1923,34 @@
     <i class="fas fa-chevron-up"></i>
   </button>
 
+  <!-- ═══ LIGHTBOX ═══ -->
+  <div class="lightbox" v-if="lightboxImg" @click.self="lightboxImg = null">
+    <button class="lightbox-close" @click="lightboxImg = null"><i class="fas fa-times"></i></button>
+    <img :src="lightboxImg" alt="preview">
+  </div>
 
 </div>
 
 <script>
-const { createApp, ref, onMounted, onUnmounted } = Vue;
+const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
 
 createApp({
   setup() {
     const scrolled = ref(false);
+
+    // ── Banner carousel ──
+    const bannerIndex = ref(0);
+    let bannerTimer = null;
+    function nextBanner() { bannerIndex.value = (bannerIndex.value + 1) % 2; }
+    function prevBanner() { bannerIndex.value = (bannerIndex.value - 1 + 2) % 2; }
+    function resetBannerTimer() {
+      clearInterval(bannerTimer);
+      bannerTimer = setInterval(nextBanner, 5000);
+    }
     const showBackTop = ref(false);
     const mobileOpen = ref(false);
+    const activeService = ref(0);
+    const lightboxImg = ref(null);
 
     const tickerItems = [
       '內裝不拆清洗', '內裝拆洗', '內裝深層清潔', '頂棚翻新',
@@ -1551,34 +1965,104 @@ createApp({
     ];
 
     const services = [
-      { icon: 'fas fa-spray-can', title: '內裝不拆清洗', desc: '不需拆卸座椅，現場快速有效清潔，適合日常保養與輕度污漬處理，還您清新整潔的車廂環境。' },
-      { icon: 'fas fa-tools', title: '內裝拆洗', desc: '座椅、地毯全面拆卸清洗，深度去除累積的汙垢與異味，適合多年未清洗或嚴重髒污的車輛。' },
-      { icon: 'fas fa-broom', title: '內裝深層清潔', desc: '針對頑固汙漬、菸味、寵物毛屑等進行專業深層處理，從纖維深處徹底清除，恢復如新狀態。' },
-      { icon: 'fas fa-couch', title: '頂棚絨布．坐椅皮革舊翻新', desc: '老舊脫落的頂棚絨布與褪色皮革全面修復翻新，重現出廠時的整潔質感，提升整體車室質感。' },
-      { icon: 'fas fa-magic', title: '皮革局部受傷修復還原', desc: '針對皮革座椅的刮傷、褪色、龜裂進行精準修復，色差還原技術讓受損痕跡無痕消除。' },
-      { icon: 'fas fa-shield-alt', title: '白色內裝／淺色抗污處理（特斯拉）', desc: '專為白色或淺色內裝設計的奈米抗污塗層，防止日常污染滲入材質，特別適合特斯拉純白內裝。' },
-      { icon: 'fas fa-car-alt', title: '安卓機．行車記錄器安裝', desc: '專業車機升級安裝，包含安卓多媒體主機與高畫質行車記錄器，完美整合線路，美觀安全兼具。' },
+      {
+        icon: 'fas fa-tools',
+        title: '內裝拆洗大整理',
+        desc: '拆卸座椅、地毯及門板飾板，逐件徹底清洗，深度去除長年積累的頑垢、異味與隱藏汙染，適合多年未保養或嚴重髒污車輛，讓車廂全面煥然一新。',
+        photos: ['1/S__9330757_0.jpg','1/S__9330758_0.jpg','1/S__9330759_0.jpg','1/S__9330760_0.jpg','1/S__9330770_0.jpg','1/S__9330771_0.jpg','1/S__9330809_0.jpg','1/S__9330810_0.jpg','1/S__9330811_0.jpg','1/S__9330812_0.jpg','1/S__9330813_0.jpg'],
+        steps: [
+          '內裝深層吸塵',
+          '全車座椅拆除，使用溫和洗潔劑清洗',
+          '地毯拆除清洗，包含地毯底部清潔',
+          '內裝溫和洗潔劑清洗，包含儀錶板、方向盤、冷氣孔、中央扶手、車內門板',
+          '車頂蓬清洗',
+          '安全帶清洗',
+          '拆下來的板件清洗',
+          '後車廂清潔',
+          '安裝回去，使用高溫蒸氣清潔內裝收尾',
+        ],
+        note: '<span class="step-note">作業時間：4 天</span>',
+      },
+      {
+        icon: 'fas fa-spray-can',
+        title: '內裝不拆清洗',
+        desc: '保留座椅原位，以專業設備現場施作，快速清除日常汙漬、異味與細菌，兼顧便利與清潔效果，適合定期保養，維持車廂清新舒適的乘車品質。',
+        photos: ['2/S__9330816_0.jpg','2/S__9330817_0.jpg','2/S__9330818_0.jpg','2/S__9330819_0.jpg','2/S__9330820_0.jpg','2/S__9330821_0.jpg'],
+        steps: [
+          '內裝深層吸塵（後車廂）',
+          '內裝溫和洗潔劑清洗，包含車內門板、儀錶板、方向盤、冷氣孔、中央扶手',
+          '全車皮革座椅不拆溫和洗潔劑清洗',
+          '後車廂清潔',
+          '高溫蒸氣清潔內裝收尾',
+        ],
+        note: '不包含清洗車頂蓬、地毯、安全帶。<span class="step-note">作業時間：8–9.5 小時</span>',
+      },
+      {
+        icon: 'fas fa-broom',
+        title: '內裝深層清潔',
+        desc: '以專業機具深入纖維底層，集中處理頑固油漬、菸味、寵物毛屑及皮屑，全面清除肉眼難察的藏污，打造潔淨無異味的健康車室環境。',
+        photos: [],
+        steps: null,
+      },
+      {
+        icon: 'fas fa-couch',
+        title: '頂棚絨布．坐椅皮革舊翻新',
+        desc: '老舊鬆脫的頂棚絨布與黯淡褪色的皮革，經專業翻新工藝全面修復，恢復飽滿色澤與柔順觸感，讓車廂重現原廠般的精緻質感。',
+        photos: ['4/S__9330774_0.jpg','4/S__9330775_0.jpg','4/S__9330776_0.jpg','4/S__9330777_0.jpg','4/S__9330778_0.jpg','4/S__9330779_0.jpg','4/S__9330780_0.jpg','4/S__9330781_0.jpg','4/S__9330782_0.jpg','4/S__9330783_0.jpg','4/S__9330803_0.jpg','4/S__9330804_0.jpg','4/S__9330805_0.jpg','4/S__9330806_0.jpg','4/S__9330833_0.jpg','4/S__9330834_0.jpg','4/S__9330835_0.jpg','4/S__9330836_0.jpg'],
+        steps: null,
+      },
+      {
+        icon: 'fas fa-magic',
+        title: '皮革局部受傷修復還原',
+        desc: '精準處理皮革座椅的刮傷、龜裂與褪色，以色差調配與無縫修復技術還原原貌，讓受損痕跡自然消失，無需整件更換，省費又美觀。',
+        photos: ['5/S__9330786_0.jpg','5/S__9330787_0.jpg','5/S__9330788_0.jpg','5/S__9330789_0.jpg','5/S__9330790_0.jpg'],
+        steps: null,
+      },
+      {
+        icon: 'fas fa-shield-alt',
+        title: '白色內裝／淺色抗污處理（特斯拉）',
+        desc: '針對白色與淺色內裝開發的奈米防污塗層，有效阻隔汙染滲入材質，大幅降低日常清潔難度，特別適合特斯拉白色純素皮革，讓淺色車廂長保如新。',
+        photos: [],
+        steps: null,
+      },
+      {
+        icon: 'fas fa-car-alt',
+        title: '安卓機．行車記錄器安裝',
+        desc: '提供安卓多媒體主機與高畫質行車記錄器的專業安裝服務，走線整齊美觀，介面操作流暢穩定，為愛車升級智慧駕駛體驗，安全與科技感兼具。',
+        photos: ['7/S__9330795_0.jpg','7/S__9330796_0.jpg','7/S__9330797_0.jpg','7/S__9330798_0.jpg','7/S__9330824_0.jpg','7/S__9330825_0.jpg','7/S__9330826_0.jpg','7/S__9330827_0.jpg','7/S__9330828_0.jpg','7/S__9330829_0.jpg','7/S__9330830_0.jpg'],
+        steps: null,
+      },
     ];
 
 
-    const videos = [
-      { id: 'gpXiA_03Iz8', title: '2026年2月20日 施作紀錄', date: '2026.02.20' },
-      { id: '2OIxoLfBWx0', title: '2026年2月19日 施作紀錄', date: '2026.02.19' },
-      { id: 'QDSmTuIUeJM', title: '2025年12月26日 施作紀錄', date: '2025.12.26' },
-      { id: 'uovKL7bCMEs', title: '2025年12月10日 施作紀錄', date: '2025.12.10' },
-      { id: 'RjgFBBK3l0c', title: '2025年11月12日 施作紀錄', date: '2025.11.12' },
-      { id: 'CSvO5zDFNoo', title: '2025年7月31日 施作紀錄', date: '2025.07.31' },
-      { id: 'D2-PTJ1lNJQ', title: '2025年5月23日 施作紀錄', date: '2025.05.23' },
-      { id: 'jR0z4mFExRg', title: '新手爸爸不再車內抽菸了，老婆待產中…祝福天下媽媽', date: '2024' },
-      { id: 'pk_bjcsirhw', title: '雨季來臨避免車內過度潮濕，建議放除濕劑或固定發動引擎開冷氣', date: '2024' },
-      { id: 'p6zN3D1s7ZM', title: '國中特教老師先前也是田徑選手，前車主有抽菸及養狗，導致內裝有異味', date: '2024' },
-      { id: '-LWWuQBXFtk', title: '車主購買這台X-TRAIL 4年了，平常周末很常帶妹妹小朋友出遊', date: '2024' },
-      { id: 'pcDT-p5qq3E', title: '車主購買了二手出租車，家裡小朋友不小心在車內尿尿了，來找阿永內裝拆洗', date: '2024' },
-      { id: 'ZbOIEbQeAM4', title: '車主長時常駕駛這台車載毛小孩出遊，導致長期下來狗毛很多', date: '2024' },
-      { id: 'nktdI800aTA', title: '車主本身車子停戶外很少開車，朋友把茶放在車內後座忘記拿', date: '2024' },
-      { id: 'MLSrC2x1cR0', title: '海軍長官購買二手車後，每次開完車身上都有一股菸味，決定清洗這台ALTIS', date: '2024' },
-      { id: 'H9yJZ0PeqBg', title: '施作紀錄精選', date: '2024' },
+    const allVideoIds = [
+      "FzmEcoa-XYc","kwWg8U0yLos","S8XBl6ujtxM","FY7qe_ql8k0","UdMym_hiHZM","qDRK3DNNTXM","YXYCmw78ITc","3pEsV4j29_E","sWk-OZSZ4ug","i7ZUovo8qIA",
+      "ydnvRe2jP3c","KGc5ZgozA5U","y1npaxDGtkg","r4Vx1CKIWeY","rL4_9v96gJ0","MFI-o6DR6UY","ljU67cpeSgw","GKlURjYOvGs","MfR_tEb3VK0","coCYA0YzLn4",
+      "3liObdUgmkc","ERSS4olJ_rE","D6OU0Iu9UiA","m6sCACT04R0","rj-Fx943u-g","GTWrBwja12U","2Qs4NVWcIV8","otqNZlCz_io","krNxqIZWzj8","dOgxFz4Is_Q",
+      "IHD0KYtlHi4","vd3y_VYfByQ","yYpDvjSMl5M","clTjpIsUnIw","oANI96_He6k","sJYfIFdS0vU","HgLzWOPAwR8","iiszt6ite48","rpSXMyDfHU4","B_dXs1x8E34",
+      "RSH1ifWOC8w","FNSUpBFbJRU","KcDW_g0Q050","RxlvQkXGimY","Phw4uYmbEnY","6n_IY9fWxvg","2jvIo_-IMlk","F6lyN44fKPE",
+      "w9NpCWRQgAI","PrOZWm0puS0","YS3ZUz2tilI","oj6QI-tOI9E","NoDiyOF-wYE","7DIIn7njz5Y","0mnTfxJYwc8","Js91ORmqjto","NHUM8Onrkl8","DCEHQ7utPNw",
+      "B9VSRtUH-_4","M3WMLUieZEE","iPJIaYduslA","mkmVRiiTwk0","mz2d_JhJJlM","TENfRXaWyTM","VAIwl5fjiig","PfFHqsqNJmA","Obnj3UCi9lc","D7vKPjdRNLw",
+      "Dmz_kM-ibKM","Uy6fprQJKdY","P7VCmqf47rk","ylS7lHAOkWQ","LlhHqiiPfuU","czqgBCs8qJw","E2VtZz9vXs0","KrfiX5Y5Vo4","bckqUBHaxCI","29IfOB8GUag",
+      "uaPmZqUOKZk","7n-g2n0MeQ0","yV2Pbd0oKkc","-xBYlblOo24","0lM5QlwAvJI","A0pELjb7EmM","TF0G34w0MxQ","e9SXyGSsLsY","klf0lrgkrlY","pzuhlEYn5Og",
+      "9tYn9MFvBZI","RxSwySvQcXM","_SkvSFpY92k","8G7EphB98kY","nHvYnGHx2KQ","2TBxbIZ-zTM","TTL9ap9pQ2c","muweX6mDkhc","H3_AqvzcIqQ","Jae_4DU2Tqw",
+      "twNzIWpqixc","P1Gb7fnf6Qo","5Dngoz-TBhE","4ZrvY89H8dE","cuINoxBihVE","oIm3IM5-TG4","KW8J9WWjVMc","Qg6W64QsAWA","qkytXJfCfqY","iblfLanTUaE",
+      "IYM690UlA0Y","Axk49qoHcCE","X0znmeWJtig","vnU9cHX8aos","x8cw9pytkwY","OpsQO7BPucE","wTiKBjDCL48","oAvDf5GcSwQ","cYXIffury3U","M4uWK51ekas",
+      "v2rUV0IRh2E","NRBbF0BpzMU","XdXRDSJzosI","7ryIzSO5yos","3bbO_Q-SRIk","eP9E1z8VnLo","hdd4axPBGf0","62QlhiWcJ_w","Mv8qE_X7_zA","jaLDJKqmNN8",
+      "-CRytXuFNg4","Vjj59I5Voig","rlSmsZi2HTQ","bximiSe1scU","rC_HwbJhSW8","LMZliV6Mvfg","dtI-mfOGp8o","dZ1pd-awVKQ","6qgxk_Ildu8","XEpCAjyliL0",
+      "YBdfu6VJnmc","mEaWwYYqjpA","azLxlRSEEJo","1nb5mLjDoHQ","uYbWl8j33zA","bc9Jq77mEOc","HcSsgjk5zmg","eo0o3YCM2uQ","k2k4XR5u_gg","fk-3IMRi-IE",
+      "97Qo0KNQtLw","GXa33Z_yUQw","MT-oNDaMo5A","66VJ6iMqyXU","h93B3mrHtOg","RuZkGblKG0w","QJ7yez2EE_E","jnX0hXzv_7Y","2xcKbSs5rIk","KR4m1ouN1IE",
+      "Z5zY-Z_ZfqU","tq1Rc94-7RI","8sx06FO_iKY","gD_JTrpNQ0g","lQTD9No8xsM","XdONVj5fZeg","CHYxRy0RV1I","6HvXSF8nXsM","T6J3qL0l40Y","di8P7L9WCvs",
+      "v8R9HPWAut8","d-sx1KQm5SA","-NPV54hGbRM","OkGxY6_r28o","QQtRESCCYyI","x4WkUTxvEDE","Jh6ZbWBGbOo","ydgU6c03tK8","VlaRVFPc1UM","QlWqHngKJQs",
+      "wYuWnIuDbeI","PO_Olo5aOvg","x1LDhAFOswk","jGhKUy-APuA","_NuvEBLluTE","OfdoH5euvCY","meShIJCoI3c","zcF_-XJwnwI","N3oJj2EV56k","dlcpftbPFqA",
+      "rVd1kmrFShg","Itu85KLtcBY","TuZ3gK5CZYg","iKqh8MFO6x8","hQFJl7NyTuA","6LE_qyf2-DY","u1uyTbFHNu4","h2SwCKv0yx8","NAEKWLRqI7Y","HKK0teel6Lc",
+      "1S5PtViDKuo","S17hSS0yLKg","z1ezmO4_NeQ","oK_hoPxYgDQ","0cBzD1ixwBw","w04MFrDIp9M","KcatZzwF5R4","8m6fllPOgAc","PjA1VioblpE","Y838PtolbgM",
+      "UrtTX2RuYz8","a9pCVBB3-4E","HI-w7snEvMY","2Q2BUS4hX8Q","CJglX8i8KKg","mD9Gf_tvcYw","kMXHgz6tiaI","m8QZdqEIq-w","936w2XTvf_I","TsPE_G7IzYA",
+      "rQ_0WcvBNAA","NUALFxpgejI","eXazelGbPKE","XxTFsDqSujg","OkariTTRiI8","LVf0PLVKn0Y","3c2eD8LfkTg","xO5CjSj4BXA","JHYqWOl-YMs","PmMGkRjE-uM",
+      "3Iq1DFCG1t8","Phr0xM8lMlw","JQs5FkZ4Zuw","GVEGq2clLZ4","IWctQQlIPdY","QcReF-GO3fQ","nKj7tJQ4gbc","yxhED67MiWs","-pl4Q_DokEM",
     ];
+    const videosToShow = ref(24);
+    const videos = computed(() => allVideoIds.slice(0, videosToShow.value));
 
     function scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1599,15 +2083,26 @@ createApp({
       showBackTop.value = window.scrollY > 500;
     }
 
+    function onKeydown(e) {
+      if (e.key === 'Escape') lightboxImg.value = null;
+    }
+
     onMounted(() => {
       window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('keydown', onKeydown);
       setTimeout(initReveal, 100);
+      resetBannerTimer();
     });
-    onUnmounted(() => window.removeEventListener('scroll', onScroll));
+    onUnmounted(() => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('keydown', onKeydown);
+      clearInterval(bannerTimer);
+    });
 
     return {
-      scrolled, showBackTop, mobileOpen,
-      tickerItems, values, services, videos,
+      scrolled, showBackTop, mobileOpen, activeService, lightboxImg,
+      tickerItems, values, services, allVideoIds, videosToShow, videos,
+      bannerIndex, nextBanner, prevBanner, resetBannerTimer,
       scrollToTop,
     };
   }
