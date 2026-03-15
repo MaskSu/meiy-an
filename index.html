@@ -11,13 +11,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* ── Bronze (Primary) ── */
-      --bronze:        #B87333;
-      --bronze-light:  #CD9B5A;
-      --bronze-bright: #DAA520;
-      --bronze-pale:   #F0D090;
-      --bronze-deep:   #7A4F1E;
-      --bronze-glow:   rgba(184,115,51,0.25);
+      /* ── Light Copper (Primary) ── */
+      --bronze:        #C8906B;
+      --bronze-light:  #D4A87A;
+      --bronze-bright: #B87A4A;
+      --bronze-pale:   #8B5A2B;
+      --bronze-deep:   #6B3E1A;
+      --bronze-glow:   rgba(200,144,107,0.15);
 
       /* ── Morandi Green (Secondary) ── */
       --sage:          #8FA48E;
@@ -26,28 +26,30 @@
       --sage-mist:     #D4E0D5;
       --sage-lt:       #B8CBB9;
 
-      /* ── Backgrounds ── */
-      --bg-darkest:    #0F0B06;
-      --bg-dark:       #1C1208;
-      --bg-mid:        #251A0C;
-      --bg-card:       #2E2010;
-      --bg-light:      #F5ECD8;
-      --bg-cream:      #FAF5EC;
-      --bg-section:    #F0E8D6;
+      /* ── Backgrounds (LIGHT) ── */
+      --bg-darkest:    #2E2418;
+      --bg-dark:       #3D2E1E;
+      --bg-mid:        #FAF7F2;
+      --bg-card:       #FFFFFF;
+      --bg-light:      #F5F0E8;
+      --bg-cream:      #FDFAF5;
+      --bg-section:    #F0EBE1;
+      --bg-sage-light: #EDF2ED;
+      --bg-copper-lt:  #F7EFE6;
 
-      /* ── Text ── */
-      --text:          #2C1E0A;
-      --text-mid:      #5C4A2A;
-      --text-mute:     #8A7A5A;
-      --text-inv:      #F5ECD8;
-      --text-inv-dim:  #C8B898;
-      --text-inv-mute: #8A7A5A;
+      /* ── Text (dark on light bg) ── */
+      --text:          #2A1E10;
+      --text-mid:      #5A4028;
+      --text-mute:     #8A7060;
+      --text-inv:      #F7F2EB;
+      --text-inv-dim:  #D4C8B0;
+      --text-inv-mute: #9A8870;
 
       /* ── Misc ── */
-      --border-light:  rgba(184,115,51,0.2);
-      --border-dark:   rgba(218,165,32,0.15);
-      --shadow:        0 8px 40px rgba(15,11,6,0.4);
-      --shadow-bronze: 0 4px 24px rgba(184,115,51,0.3);
+      --border-light:  rgba(184,120,80,0.18);
+      --border-dark:   rgba(184,120,80,0.12);
+      --shadow:        0 4px 24px rgba(100,60,20,0.10);
+      --shadow-bronze: 0 4px 20px rgba(200,144,107,0.25);
       --r:             4px;
       --tr:            0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
@@ -55,8 +57,8 @@
     html { scroll-behavior: smooth; font-size: 16px; }
     body {
       font-family: 'Noto Serif TC', 'Cormorant Garamond', Georgia, serif;
-      background: var(--bg-darkest);
-      color: var(--text-inv);
+      background: var(--bg-cream);
+      color: var(--text);
       overflow-x: hidden;
       line-height: 1.7;
     }
@@ -89,9 +91,9 @@
       transition: background var(--tr), box-shadow var(--tr);
     }
     .nav.scrolled {
-      background: rgba(15,11,6,0.96);
+      background: rgba(253,250,245,0.97);
       backdrop-filter: blur(12px);
-      box-shadow: 0 1px 0 var(--border-dark);
+      box-shadow: 0 1px 0 var(--border-light);
     }
 
     .nav-logo {
@@ -108,8 +110,8 @@
       padding: 3px;
     }
     .nav-logo-text { line-height: 1.2; }
-    .nav-logo-text .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--bronze-pale); font-weight: 300; }
-    .nav-logo-text .sub { font-family: 'Montserrat', sans-serif; font-size: 0.55rem; letter-spacing: 0.28em; color: var(--bronze); text-transform: uppercase; }
+    .nav-logo-text .brand { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--bronze-pale); font-weight: 300; transition: color 0.3s; }
+    .nav-logo-text .sub { font-family: 'Montserrat', sans-serif; font-size: 0.55rem; letter-spacing: 0.28em; color: var(--sage-dark); text-transform: uppercase; }
 
     .nav-links {
       display: flex;
@@ -121,10 +123,10 @@
       font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--text-inv-dim);
+      color: var(--text-mid);
       transition: color 0.3s;
     }
-    .nav-links a:hover { color: var(--bronze-bright); }
+    .nav-links a:hover { color: var(--bronze); }
 
     .nav-cta {
       font-family: 'Montserrat', sans-serif;
@@ -132,16 +134,16 @@
       letter-spacing: 0.15em;
       text-transform: uppercase;
       background: transparent;
-      color: var(--bronze-bright);
-      border: 1px solid var(--bronze);
+      color: var(--bronze);
+      border: 1px solid var(--bronze-light);
       padding: 0.5rem 1.4rem;
       border-radius: 2px;
       cursor: pointer;
       transition: background 0.3s, color 0.3s;
     }
-    .nav-cta:hover { background: var(--bronze); color: var(--bg-darkest); }
+    .nav-cta:hover { background: var(--bronze); color: white; }
 
-    .nav-mobile { display: none; background: none; border: none; color: var(--bronze-pale); font-size: 1.2rem; cursor: pointer; }
+    .nav-mobile { display: none; background: none; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; }
 
     /* ═══════════════════════════════════════
        HERO
@@ -157,8 +159,8 @@
     .hero-bg {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 70% 50%, rgba(184,115,51,0.12) 0%, transparent 60%),
-                  linear-gradient(135deg, var(--bg-darkest) 0%, var(--bg-dark) 50%, #1A1005 100%);
+      background: radial-gradient(ellipse at 70% 50%, rgba(200,144,107,0.10) 0%, transparent 60%),
+                  linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-copper-lt) 50%, #F5EFE5 100%);
     }
 
     /* Decorative circles */
@@ -167,7 +169,7 @@
       position: absolute;
       width: 600px; height: 600px;
       border-radius: 50%;
-      border: 1px solid rgba(184,115,51,0.08);
+      border: 1px solid rgba(200,144,107,0.12);
       top: 50%; left: 60%;
       transform: translate(-50%, -50%);
     }
@@ -176,7 +178,7 @@
       position: absolute;
       width: 900px; height: 900px;
       border-radius: 50%;
-      border: 1px solid rgba(184,115,51,0.05);
+      border: 1px solid rgba(200,144,107,0.07);
       top: 50%; left: 60%;
       transform: translate(-50%, -50%);
     }
@@ -203,17 +205,17 @@
       font-size: 0.62rem;
       letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: var(--bronze);
+      color: var(--sage-dark);
       margin-bottom: 1.5rem;
     }
-    .hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--bronze); }
+    .hero-eyebrow::before { content: ''; display: block; width: 2rem; height: 1px; background: var(--sage-dark); }
 
     .hero-title {
       font-family: 'Noto Serif TC', serif;
       font-size: clamp(2.2rem, 4vw, 3.8rem);
       font-weight: 700;
       line-height: 1.25;
-      color: var(--bronze-pale);
+      color: var(--text);
       margin-bottom: 1rem;
     }
     .hero-title span { display: block; }
@@ -238,7 +240,7 @@
 
     .hero-desc {
       font-size: 0.95rem;
-      color: var(--text-inv-dim);
+      color: var(--text-mid);
       line-height: 1.9;
       margin-bottom: 2.5rem;
       max-width: 420px;
@@ -303,7 +305,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid var(--border-dark);
+      border: 1px solid var(--border-light);
       animation: spinSlow 20s linear infinite;
     }
     .hero-logo-ring::before {
@@ -321,7 +323,7 @@
       position: absolute;
       inset: 24px;
       border-radius: 50%;
-      border: 1px solid rgba(184,115,51,0.08);
+      border: 1px solid rgba(200,144,107,0.12);
       animation: spinSlow 30s linear infinite reverse;
     }
 
@@ -332,7 +334,7 @@
       background: white;
       border-radius: 50%;
       padding: 16px;
-      box-shadow: 0 0 60px rgba(184,115,51,0.2), 0 0 120px rgba(184,115,51,0.08);
+      box-shadow: 0 0 40px rgba(200,144,107,0.18), var(--shadow);
     }
 
     .hero-stats {
@@ -343,11 +345,11 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1px;
-      background: var(--border-dark);
-      border: 1px solid var(--border-dark);
+      background: var(--border-light);
+      border: 1px solid var(--border-light);
     }
     .hero-stat {
-      background: rgba(28,18,8,0.8);
+      background: rgba(255,255,255,0.85);
       backdrop-filter: blur(8px);
       padding: 1.2rem;
       text-align: center;
@@ -356,7 +358,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 2rem;
       font-weight: 300;
-      color: var(--bronze-bright);
+      color: var(--bronze);
       line-height: 1;
     }
     .hero-stat .num sup { font-size: 0.9rem; }
@@ -364,7 +366,7 @@
       font-family: 'Montserrat', sans-serif;
       font-size: 0.58rem;
       letter-spacing: 0.2em;
-      color: var(--text-inv-mute);
+      color: var(--text-mute);
       text-transform: uppercase;
       margin-top: 0.2rem;
     }
@@ -378,7 +380,7 @@
       flex-direction: column;
       align-items: center;
       gap: 0.4rem;
-      color: var(--text-inv-mute);
+      color: var(--text-mute);
     }
     .scroll-indicator span {
       font-family: 'Montserrat', sans-serif;
@@ -415,6 +417,8 @@
     .section-tag::before { content: ''; display: block; width: 1.5rem; height: 1px; }
     .section-tag.light { color: var(--bronze); }
     .section-tag.light::before { background: var(--bronze); }
+    .section-tag.copper { color: var(--bronze); }
+    .section-tag.copper::before { background: var(--bronze); }
     .section-tag.dark { color: var(--sage-dark); }
     .section-tag.dark::before { background: var(--sage-dark); }
 
@@ -424,8 +428,8 @@
       font-weight: 700;
       line-height: 1.3;
     }
-    .section-title.light { color: var(--bronze-pale); }
-    .section-title.light em { font-style: italic; font-family: 'Cormorant Garamond', serif; color: var(--bronze-bright); font-weight: 300; font-size: 1.15em; }
+    .section-title.light { color: var(--text); }
+    .section-title.light em { font-style: italic; font-family: 'Cormorant Garamond', serif; color: var(--bronze); font-weight: 300; font-size: 1.15em; }
     .section-title.dark { color: var(--text); }
     .section-title.dark em { font-style: italic; font-family: 'Cormorant Garamond', serif; color: var(--bronze); font-weight: 300; font-size: 1.15em; }
 
@@ -433,7 +437,7 @@
        TICKER
     ═══════════════════════════════════════ */
     .ticker {
-      background: var(--bronze-deep);
+      background: var(--sage-dark);
       padding: 0.7rem 0;
       overflow: hidden;
       white-space: nowrap;
@@ -459,7 +463,7 @@
     /* ═══════════════════════════════════════
        ABOUT
     ═══════════════════════════════════════ */
-    .about { background: var(--bg-cream); }
+    .about { background: var(--bg-light); }
 
     .about-grid {
       display: grid;
@@ -535,7 +539,7 @@
     /* ═══════════════════════════════════════
        SERVICES
     ═══════════════════════════════════════ */
-    .services { background: var(--bg-dark); }
+    .services { background: var(--bg-sage-light); }
 
     .services-header {
       display: flex;
@@ -550,12 +554,12 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1px;
-      background: var(--border-dark);
-      border: 1px solid var(--border-dark);
+      background: var(--border-light);
+      border: 1px solid var(--border-light);
     }
 
     .service-card {
-      background: var(--bg-mid);
+      background: white;
       padding: 2.2rem 1.8rem;
       cursor: pointer;
       position: relative;
@@ -572,19 +576,19 @@
       transform-origin: left;
       transition: transform 0.4s ease;
     }
-    .service-card:hover { background: var(--bg-card); }
+    .service-card:hover { background: var(--bg-copper-lt); }
     .service-card:hover::before { transform: scaleX(1); }
 
     .service-num {
       font-family: 'Cormorant Garamond', serif;
       font-size: 3rem;
       font-weight: 300;
-      color: rgba(184,115,51,0.12);
+      color: rgba(200,144,107,0.18);
       line-height: 1;
       margin-bottom: 1rem;
       transition: color 0.3s;
     }
-    .service-card:hover .service-num { color: rgba(184,115,51,0.22); }
+    .service-card:hover .service-num { color: rgba(200,144,107,0.32); }
 
     .service-icon {
       width: 42px; height: 42px;
@@ -605,13 +609,13 @@
       font-family: 'Noto Serif TC', serif;
       font-size: 0.95rem;
       font-weight: 700;
-      color: var(--bronze-pale);
+      color: var(--text);
       margin-bottom: 0.7rem;
       line-height: 1.4;
     }
     .service-card p {
       font-size: 0.78rem;
-      color: var(--text-inv-mute);
+      color: var(--text-mid);
       line-height: 1.75;
     }
 
@@ -636,7 +640,7 @@
     /* ═══════════════════════════════════════
        NEWS (Championship)
     ═══════════════════════════════════════ */
-    .news { background: var(--bg-section); }
+    .news { background: var(--bg-copper-lt); }
 
     .news-header {
       display: flex;
@@ -649,8 +653,8 @@
 
     /* Championship Feature Card */
     .championship-card {
-      background: var(--bg-dark);
-      border: 1px solid var(--border-dark);
+      background: white;
+      border: 1px solid var(--border-light);
       border-radius: var(--r);
       overflow: hidden;
       display: grid;
@@ -660,7 +664,7 @@
     }
 
     .champ-visual {
-      background: linear-gradient(135deg, #1C1208 0%, #2E1A06 50%, #1A1005 100%);
+      background: linear-gradient(135deg, #F0E8DC 0%, #E8D8C4 50%, #DDD0BC 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -673,7 +677,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 50% 60%, rgba(218,165,32,0.12) 0%, transparent 65%);
+      background: radial-gradient(ellipse at 50% 60%, rgba(200,144,107,0.20) 0%, transparent 65%);
     }
 
     /* Trophy CSS Art */
@@ -743,14 +747,14 @@
       font-family: 'Montserrat', sans-serif;
       font-size: 0.6rem;
       letter-spacing: 0.35em;
-      color: var(--bronze);
+      color: var(--bronze-pale);
       text-transform: uppercase;
       margin-bottom: 0.5rem;
     }
     .champ-award-name {
       font-family: 'Noto Serif TC', serif;
       font-size: 1.05rem;
-      color: var(--bronze-pale);
+      color: var(--text);
       text-align: center;
       line-height: 1.5;
     }
@@ -759,13 +763,13 @@
       display: flex;
       gap: 0.25rem;
       margin-top: 0.8rem;
-      color: var(--bronze-bright);
+      color: var(--bronze);
       font-size: 0.9rem;
     }
 
     .champ-content {
       padding: 3rem;
-      background: var(--bg-mid);
+      background: white;
     }
     .champ-tag {
       display: inline-block;
@@ -784,13 +788,13 @@
       font-family: 'Noto Serif TC', serif;
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--bronze-pale);
+      color: var(--text);
       line-height: 1.4;
       margin-bottom: 1rem;
     }
     .champ-body {
       font-size: 0.88rem;
-      color: var(--text-inv-dim);
+      color: var(--text-mid);
       line-height: 1.9;
       margin-bottom: 1.5rem;
     }
@@ -799,7 +803,7 @@
       align-items: center;
       gap: 1.5rem;
       padding-top: 1.2rem;
-      border-top: 1px solid var(--border-dark);
+      border-top: 1px solid var(--border-light);
       flex-wrap: wrap;
     }
     .champ-meta-item {
@@ -809,7 +813,7 @@
       font-family: 'Montserrat', sans-serif;
       font-size: 0.65rem;
       letter-spacing: 0.1em;
-      color: var(--text-inv-mute);
+      color: var(--text-mute);
     }
     .champ-meta-item i { color: var(--bronze); }
 
@@ -871,7 +875,7 @@
     /* ═══════════════════════════════════════
        PORTFOLIO (YouTube Videos)
     ═══════════════════════════════════════ */
-    .portfolio { background: var(--bg-mid); }
+    .portfolio { background: var(--bg-light); }
 
     .portfolio-header {
       display: flex;
@@ -970,7 +974,7 @@
     /* ═══════════════════════════════════════
        CONTACT
     ═══════════════════════════════════════ */
-    .contact { background: var(--bg-darkest); }
+    .contact { background: var(--bg-sage-light); }
 
     .contact-grid {
       display: grid;
@@ -983,17 +987,17 @@
 
     .contact-info {}
     .contact-info .section-title { margin-bottom: 1.5rem; }
-    .contact-desc { font-size: 0.9rem; color: var(--text-inv-dim); line-height: 1.9; margin-bottom: 2.5rem; }
+    .contact-desc { font-size: 0.9rem; color: var(--text-mid); line-height: 1.9; margin-bottom: 2.5rem; }
 
     .social-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1px;
-      background: var(--border-dark);
-      border: 1px solid var(--border-dark);
+      background: var(--border-light);
+      border: 1px solid var(--border-light);
     }
     .social-card {
-      background: var(--bg-dark);
+      background: white;
       padding: 1.4rem;
       display: flex;
       flex-direction: column;
@@ -1003,7 +1007,7 @@
       transition: background 0.3s;
       text-decoration: none;
     }
-    .social-card:hover { background: var(--bg-mid); }
+    .social-card:hover { background: var(--bg-light); }
     .social-icon {
       width: 44px; height: 44px;
       border-radius: 50%;
@@ -1025,18 +1029,18 @@
       font-family: 'Montserrat', sans-serif;
       font-size: 0.62rem;
       letter-spacing: 0.15em;
-      color: var(--text-inv-dim);
+      color: var(--text);
       text-transform: uppercase;
     }
     .social-handle {
       font-size: 0.68rem;
-      color: var(--text-inv-mute);
+      color: var(--text-mute);
     }
 
     /* 7-11 Shop Banner */
     .shop-banner {
-      background: var(--bg-mid);
-      border: 1px solid var(--border-dark);
+      background: white;
+      border: 1px solid var(--border-light);
       border-radius: var(--r);
       overflow: hidden;
     }
@@ -1068,7 +1072,7 @@
       color: var(--bronze-pale); margin-bottom: 0.4rem;
     }
     .shop-banner-desc {
-      font-size: 0.8rem; color: var(--text-inv-mute); line-height: 1.7;
+      font-size: 0.8rem; color: var(--text-mid); line-height: 1.7;
     }
     .shop-banner-btn {
       display: inline-flex; align-items: center; gap: 0.5rem;
@@ -1090,8 +1094,8 @@
        FOOTER
     ═══════════════════════════════════════ */
     .footer {
-      background: var(--bg-darkest);
-      border-top: 1px solid var(--border-dark);
+      background: var(--bg-dark);
+      border-top: 1px solid var(--border-light);
       padding: 2rem 0;
     }
     .footer-inner {
@@ -1117,7 +1121,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 1rem;
       letter-spacing: 0.1em;
-      color: var(--bronze-pale);
+      color: var(--text-inv);
       font-weight: 300;
     }
     .footer-copy {
@@ -1162,9 +1166,9 @@
       right: 1.5rem; bottom: 1.8rem;
       width: 44px; height: 44px;
       border-radius: 50%;
-      background: var(--bronze-deep);
-      border: 1px solid var(--bronze);
-      color: var(--bronze-pale);
+      background: var(--bronze);
+      border: 1px solid var(--bronze-light);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1335,8 +1339,8 @@
     <div class="container">
       <div class="services-header">
         <div class="reveal">
-          <p class="section-tag light">Services</p>
-          <h2 class="section-title light">專業服務<em>項目</em></h2>
+          <p class="section-tag dark">Services</p>
+          <h2 class="section-title dark">專業服務<em>項目</em></h2>
         </div>
         <a class="btn-bronze reveal" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank"><i class="fas fa-shopping-bag"></i> 選購清潔產品</a>
       </div>
@@ -1388,7 +1392,7 @@
           <span class="champ-tag">重大喜訊</span>
           <h3 class="champ-title">尹澤鎂研榮獲 2026 全球汽車內裝清潔競賽總冠軍</h3>
           <p class="champ-body">
-            尹澤鎂研創辦人阿永，代表台灣出征 2026 年全球汽車內裝清潔競賽（Global Auto Interior Detailing Championship），在來自 28 個國家、超過 300 位選手的激烈角逐中，以獨創的「中性溫和深層工法」及精準細膩的施作技術，獲得所有評審評分第一，一舉奪得本屆賽事<strong style="color:var(--bronze-bright)">總冠軍</strong>大獎。
+            尹澤鎂研創辦人阿永，代表台灣出征 2026 年全球汽車內裝清潔競賽（Global Auto Interior Detailing Championship），在來自 28 個國家、超過 300 位選手的激烈角逐中，以獨創的「中性溫和深層工法」及精準細膩的施作技術，獲得所有評審評分第一，一舉奪得本屆賽事<strong style="color:var(--bronze)">總冠軍</strong>大獎。
             <br><br>
             頒獎典禮上，評審委員特別指出：「阿永的工法不僅展現了極致的技術水準，更體現了對每一台車主珍貴回憶的用心守護，這正是真正的職人精神。」這項殊榮不僅是對阿永十年耕耘的肯定，更是台灣汽車內裝美容產業的驕傲。
           </p>
@@ -1420,8 +1424,8 @@
     <div class="container">
       <div class="portfolio-header">
         <div class="reveal">
-          <p class="section-tag light">Portfolio</p>
-          <h2 class="section-title light">作品集<em>·施作紀錄</em></h2>
+          <p class="section-tag dark">Portfolio</p>
+          <h2 class="section-title dark">作品集<em>·施作紀錄</em></h2>
         </div>
         <a href="https://www.youtube.com/channel/UC8rg7ITYWzRLrtjyJL2p2Yw" target="_blank" class="link-more reveal">查看所有影片</a>
       </div>
@@ -1450,8 +1454,8 @@
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info reveal">
-          <p class="section-tag light">Contact</p>
-          <h2 class="section-title light">聯絡<em>阿永</em></h2>
+          <p class="section-tag dark">Contact</p>
+          <h2 class="section-title dark">聯絡<em>阿永</em></h2>
           <p class="contact-desc">
             無論是愛車的日常保養、頑固汙漬處理，或是想了解各項服務的詳情，歡迎透過以下社群媒體聯絡我們，阿永將親自回覆您的每一則訊息。
           </p>
