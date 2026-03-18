@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200" fill="none">
+  <!-- 瓶蓋 -->
+  <rect x="45" y="10" width="30" height="12" rx="4" fill="#B87333"/>
+  <!-- 瓶頸 -->
+  <rect x="50" y="22" width="20" height="18" rx="3" fill="#D4956A"/>
+  <!-- 瓶身 -->
+  <path d="M28 55 Q25 65 25 90 L25 155 Q25 170 40 170 L80 170 Q95 170 95 155 L95 90 Q95 65 92 55 Z" fill="#1E120A"/>
+  <!-- 瓶身漸層高光 -->
+  <path d="M35 65 Q33 80 33 105 L33 150 Q33 162 40 163 L50 163 L50 65 Z" fill="rgba(255,255,255,0.07)"/>
+  <!-- 標籤區 -->
+  <rect x="33" y="90" width="54" height="60" rx="5" fill="#2A1A0E"/>
+  <!-- 標籤文字線條 -->
+  <rect x="40" y="102" width="40" height="3" rx="1.5" fill="#B87333"/>
+  <rect x="40" y="110" width="40" height="3" rx="1.5" fill="#B87333"/>
+  <rect x="40" y="118" width="28" height="3" rx="1.5" fill="rgba(184,115,51,0.5)"/>
+  <!-- 圓點裝飾 -->
+  <circle cx="50" cy="132" r="3" fill="#B87333"/>
+  <circle cx="60" cy="132" r="3" fill="#B87333"/>
+  <circle cx="70" cy="132" r="3" fill="#B87333"/>
+  <!-- 瓶底 -->
+  <ellipse cx="60" cy="170" rx="35" ry="5" fill="#150D07"/>
+</svg>
