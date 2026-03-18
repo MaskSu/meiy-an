@@ -404,9 +404,32 @@
       border-radius: 1px;
     }
     .banner-promo-icon {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      line-height: 1;
+      margin-bottom: 1.4rem;
+    }
+    .promo-product-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: nowrap;
+    }
+    .promo-product-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(184,115,51,0.6);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+      flex-shrink: 0;
+      transition: transform 0.25s, border-color 0.25s;
+    }
+    .promo-product-circle:hover { transform: scale(1.1); border-color: #B87333; }
+    .promo-product-circle img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    @media (max-width: 480px) {
+      .promo-product-circle { width: 52px; height: 52px; }
+      .promo-product-row { gap: 0.5rem; }
     }
     .banner-promo-title {
       font-size: clamp(2.4rem, 5vw, 4.5rem);
@@ -1583,7 +1606,15 @@
         <div class="banner-promo-deco"></div>
         <div class="banner-text banner-text-center">
           <div class="banner-promo-tag">尹澤鎂研 · 自有品牌</div>
-          <div class="banner-promo-icon"><img src="icon-bottle.svg" alt="清潔產品" style="width:110px;height:auto;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.4));"></div>
+          <div class="banner-promo-icon">
+            <div class="promo-product-row">
+              <div class="promo-product-circle"><img src="pic/S__9494870_0.jpg" alt="活性潔皮劑 泡沫"></div>
+              <div class="promo-product-circle"><img src="pic/S__9494871_0.jpg" alt="活性潔皮劑 大桶"></div>
+              <div class="promo-product-circle"><img src="pic/S__9494873_0.jpg" alt="活性潔皮劑 噴霧"></div>
+              <div class="promo-product-circle"><img src="pic/S__9494881_0.jpg" alt="Car Shampoo 500ml"></div>
+              <div class="promo-product-circle"><img src="pic/S__9494882_0.jpg" alt="Car Shampoo 大桶"></div>
+            </div>
+          </div>
           <h2 class="banner-promo-title">中性溫和<br><em>清潔產品</em></h2>
           <p class="banner-promo-sub">阿永十年施作心得 · 在家也能延續專業級保養</p>
           <a class="btn-bronze" href="https://myship.7-11.com.tw/general/detail/GM2510126490504" target="_blank">
