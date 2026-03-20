@@ -1399,6 +1399,18 @@
       letter-spacing: 0.12em;
       color: var(--text-inv-mute);
     }
+    .footer-counter {
+      font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--text-inv-mute);
+      margin-top: 0.4rem;
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .footer-counter span { color: rgba(184,115,51,0.8); font-weight: 500; }
 
     /* ═══════════════════════════════════════
        FLOATING BUTTONS
@@ -1979,6 +1991,10 @@
           <span>I LUV尹澤鎂研</span>
         </div>
         <p class="footer-copy">© 2026 I LUV尹澤鎂研 · 版權所有 · 用心守護每一段旅程</p>
+        <div class="footer-counter">
+          <span id="busuanzi_container_site_pv">瀏覽人次 <span id="busuanzi_value_site_pv">--</span></span>
+          <span id="busuanzi_container_site_uv">訪客人數 <span id="busuanzi_value_site_uv">--</span></span>
+        </div>
       </div>
     </div>
   </footer>
@@ -2247,6 +2263,9 @@ createApp({
   }
 }).mount('#app');
 </script>
+
+<!-- 不蒜子瀏覽計數器 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <!-- 結構化資料：WebSite Schema（讓 Google 顯示品牌名稱而非域名） -->
 <script type="application/ld+json">
