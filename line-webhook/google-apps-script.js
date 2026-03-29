@@ -31,6 +31,8 @@ function doPost(e) {
       return savePhoto(data);
     } else if (data.action === 'log_car_machine') {
       return logCarMachine(data);
+    } else if (data.action === 'create_appointment') {
+      return createAppointment(data);
     }
 
     return jsonResponse({ status: 'error', message: 'unknown action' });
@@ -203,6 +205,48 @@ function logCarMachine(data) {
 
   return jsonResponse({ status: 'ok' });
 }
+
+// ══════════════════════════════════════════
+//  建立 Google Calendar 預約事件
+// ══════════════════════════════════════════
+function createAppointment(data) {
+  try {
+    const cal = CalendarApp.getDefaultCalendar();
+    const start = new Date(data.startTime);
+    const end = new Date(data.endTime);
+
+    const event = cal.createEvent(data.title, start, end, {
+      description: data.description || '',
+      location: '高雄市鳥松區中正路101號',
+    });
+
+    // 記錄到「預約記錄」表
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let sheet = ss.getSheetByName('預約記錄');
+    if (!sheet) {
+      sheet = ss.insertSheet('預約記錄');
+      sheet.getRange(1, 1, 1, 5).setValues([['預約時間', '客戶名稱', '用戶ID', '建立時間', '日曆事件ID']]);
+      sheet.getRange(1, 1, 1, 5).setFontWeight('bold');
+    }
+
+    const timeStr = Utilities.formatDate(start, 'Asia/Taipei', 'yyyy-MM-dd HH:mm');
+    const nowStr = Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd HH:mm:ss');
+
+    sheet.appendRow([
+      timeStr,
+      data.customerName || data.customerId,
+      data.customerId,
+      nowStr,
+      event.getId(),
+    ]);
+
+    return jsonResponse({ status: 'ok', eventId: event.getId() });
+  } catch (err) {
+    console.error('建立日曆事件失敗：', err.toString());
+    return jsonResponse({ status: 'error', message: err.toString() });
+  }
+}
+
 
 // ══════════════════════════════════════════
 //  工具函式

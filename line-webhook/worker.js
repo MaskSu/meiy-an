@@ -21,7 +21,9 @@ const IMAGE_REPLY_COOLDOWN = 10000; // 10 秒內不重複回覆
 //  迎賓語與第一道選項
 // ══════════════════════════════════════════════════
 
-const WELCOME_TEXT = '您好！感謝您的訊息 😊 內裝的部分，我通常會先看過車況再報價，這樣比較準確不會有落差。\n\n請問您的車子目前遇到什麼狀況呢？先選一下，方便的話再傳幾張照片給我，我馬上幫您評估 👇';
+function getWelcomeText(name) {
+  return `${name} 您好！😊\n\n只需要 3 步驟就能完成評估：\n① 選擇車況問題\n② 選擇車款\n③ 拍照上傳\n\n先選一下目前的狀況吧 👇`;
+}
 
 const WELCOME_OPTIONS = [
   { label: '煙味或異味',   text: '車內有煙味或異味' },
@@ -42,7 +44,7 @@ const WELCOME_OPTIONS = [
 //  拍照提示（所有內裝服務共用）
 // ══════════════════════════════════════════════════
 
-const PHOTO_TIPS = '📸 拍照小技巧：\n① 站車外往車內拍有問題的地方\n② 不要使用廣角或變焦\n③ 光線充足，車門打開拍';
+const PHOTO_TIPS = '📸 拍照小技巧（可參考上方圖片）：\n① 車門打開，站車外往內拍\n② 拍近一點，對準問題部位\n③ 光線充足，不用開廣角\n\n照片越清楚，報價越準確哦！';
 
 
 // ══════════════════════════════════════════════════
@@ -373,6 +375,15 @@ function buildWelcomeFlexMessage(introText) {
 export default {
   async fetch(request, env, ctx) {
 
+    // GET /ics — 產生 .ics 日曆檔（萬用格式，支援 Apple / Android / Google）
+    const url = new URL(request.url);
+    if (request.method === 'GET' && url.pathname === '/ics') {
+      return handleIcsPage(url.searchParams);
+    }
+    if (request.method === 'GET' && url.pathname === '/ics-raw') {
+      return handleIcsRaw(url.searchParams);
+    }
+
     if (request.method !== 'POST') {
       return new Response('Method Not Allowed', { status: 405 });
     }
@@ -390,12 +401,18 @@ export default {
     // 分組處理
     const followEvents = [];
     const textEvents = [];
+    const postbackEvents = [];
     const imageGroups = {};
 
     for (const event of events) {
       // follow 事件：用戶加好友或解除封鎖
       if (event.type === 'follow') {
         followEvents.push(event);
+        continue;
+      }
+      // postback 事件：日期時間選擇器回傳
+      if (event.type === 'postback') {
+        postbackEvents.push(event);
         continue;
       }
       if (event.type !== 'message') continue;
@@ -408,13 +425,15 @@ export default {
       }
     }
 
+    const workerBaseUrl = new URL(request.url).origin;
     const followPromises = followEvents.map(event => handleFollow(event, env));
-    const textPromises = textEvents.map(event => handleText(event, env));
+    const textPromises = textEvents.map(event => handleText(event, env, workerBaseUrl));
+    const postbackPromises = postbackEvents.map(event => handlePostback(event, env, workerBaseUrl));
     const imagePromises = Object.values(imageGroups).map(
       userEvents => handleImageBatch(userEvents, env)
     );
 
-    const allWork = Promise.all([...followPromises, ...textPromises, ...imagePromises]);
+    const allWork = Promise.all([...followPromises, ...textPromises, ...postbackPromises, ...imagePromises]);
     ctx.waitUntil(allWork);
     await allWork;
 
@@ -475,8 +494,353 @@ async function handleFollow(event, env) {
   const userId = event.source.userId;
   await setUserState(env, userId, 'idle');
 
-  const welcomeMsg = buildWelcomeFlexMessage(WELCOME_TEXT);
+  const name = await getUserDisplayName(userId, env.LINE_CHANNEL_ACCESS_TOKEN);
+  const welcomeMsg = buildWelcomeFlexMessage(getWelcomeText(name));
   await replyMessage(event.replyToken, [welcomeMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
+}
+
+
+// ══════════════════════════════════════════════════
+//  .ics 日曆（萬用格式：Apple / Android / Google）
+// ══════════════════════════════════════════════════
+
+// 共用：產生 .ics 內容
+function buildIcsContent(title, start, end, location, description) {
+  const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//ILUV//LineBot//TW',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `DTSTART;TZID=Asia/Taipei:${start}`,
+    `DTEND;TZID=Asia/Taipei:${end}`,
+    `SUMMARY:${title}`,
+    `LOCATION:${location}`,
+    `DESCRIPTION:${description.replace(/\n/g, '\\n')}`,
+    `DTSTAMP:${now}`,
+    `UID:${start}-${Date.now()}@iluv-linebot`,
+    'STATUS:CONFIRMED',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+}
+
+// /ics-raw — 直接回傳 .ics 檔案（手機會用日曆 app 開啟）
+function handleIcsRaw(params) {
+  const title = params.get('t') || '預約';
+  const start = params.get('s') || '';
+  const end = params.get('e') || '';
+  const location = params.get('l') || '';
+  const description = params.get('d') || '';
+
+  if (!start || !end) {
+    return new Response('Missing start/end', { status: 400 });
+  }
+
+  const ics = buildIcsContent(title, start, end, location, description);
+
+  return new Response(ics, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/calendar; charset=utf-8',
+      'Content-Disposition': 'attachment; filename="appointment.ics"',
+    },
+  });
+}
+
+// /ics — HTML 引導頁面（LINE 內建瀏覽器會開這個）
+function handleIcsPage(params) {
+  const title = params.get('t') || '預約';
+  const start = params.get('s') || '';
+  const end = params.get('e') || '';
+  const location = params.get('l') || '';
+
+  if (!start || !end) {
+    return new Response('Missing start/end', { status: 400 });
+  }
+
+  const dYear = start.slice(0, 4);
+  const dMonth = start.slice(4, 6);
+  const dDay = start.slice(6, 8);
+  const dHour = start.slice(9, 11);
+  const dMin = start.slice(11, 13);
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const dateObj = new Date(parseInt(dYear), parseInt(dMonth) - 1, parseInt(dDay));
+  const weekday = weekdays[dateObj.getDay()];
+  const displayDate = `${dMonth}/${dDay}（${weekday}）${dHour}:${dMin}`;
+
+  // 把 /ics 的參數原封不動轉給 /ics-raw
+  const rawUrl = `/ics-raw?${params.toString()}`;
+
+  const html = `<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>加入日曆</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: white; border-radius: 16px; padding: 32px 24px; max-width: 360px; width: 100%; box-shadow: 0 2px 12px rgba(0,0,0,0.1); text-align: center; }
+    .icon { font-size: 48px; margin-bottom: 16px; }
+    .title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 8px; }
+    .info { font-size: 15px; color: #666; margin-bottom: 4px; }
+    .loc { font-size: 13px; color: #999; margin-top: 12px; }
+    .btn { display: block; width: 100%; padding: 14px; margin-top: 24px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; color: white; background: linear-gradient(135deg, #1DB446, #17a03d); cursor: pointer; text-decoration: none; text-align: center; }
+    .btn:active { opacity: 0.8; }
+    .hint { font-size: 12px; color: #aaa; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📅</div>
+    <div class="title">${escapeHtml(title)}</div>
+    <div class="info">${displayDate}</div>
+    <div class="loc">📍 ${escapeHtml(location)}</div>
+    <a class="btn" href="${escapeHtml(rawUrl)}">加入我的日曆</a>
+    <div class="hint">支援 iPhone / Android / Google 日曆</div>
+  </div>
+</body>
+</html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+
+// ══════════════════════════════════════════════════
+//  處理 Postback 事件（日期時間選擇器回傳）
+// ══════════════════════════════════════════════════
+
+async function handlePostback(event, env, workerBaseUrl) {
+  const userId = event.source.userId;
+
+  // 解析 postback data
+  const params = new URLSearchParams(event.postback.data);
+  const action = params.get('action');
+
+  // ── 第一步：老闆選了「開始時間」→ 用 Quick Reply 選結束時間 ──
+  if (action === 'schedule_start' && userId === env.OWNER_USER_ID) {
+    const customerId = params.get('customerId');
+    const datetime = event.postback.params?.datetime;
+
+    if (!datetime || !customerId) {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '選擇時間失敗，請再試一次' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      return;
+    }
+
+    // 暫存開始時間到 KV（10 分鐘過期）
+    if (env.CHAT_STATE) {
+      await env.CHAT_STATE.put(`schedule_${userId}`, JSON.stringify({ customerId, startDatetime: datetime }), { expirationTtl: 600 });
+    }
+
+    const [datePart, timePart] = datetime.split('T');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+    const displayDate = `${month}/${day}（${getWeekday(year, month, day)}）`;
+    const customerName = await getUserDisplayName(customerId, env.LINE_CHANNEL_ACCESS_TOKEN);
+
+    // 預設結束 = 開始 +1 小時（Cloudflare Worker 是 UTC，需手動轉台灣 UTC+8）
+    const startMs = new Date(`${datePart}T${timePart}:00+08:00`).getTime();
+    const toTaiwanStr = (ms) => {
+      const d = new Date(ms + 8 * 3600000); // 加 8 小時偏移，讓 toISOString 輸出台灣時間
+      return d.toISOString().slice(0, 16);
+    };
+    const defEndStr = toTaiwanStr(startMs + 3600000);
+
+    // 最遠可選 30 天後
+    const maxEnd = toTaiwanStr(startMs + 30 * 86400000);
+
+    // 用 Quick Reply 帶 datetimepicker（比 Flex 按鈕穩定）
+    const msg = {
+      type: 'text',
+      text: `${customerName}\n開始：${displayDate} ${hour}:${minute}\n\n請點下方選擇結束時間 👇`,
+      quickReply: {
+        items: [
+          {
+            type: 'action',
+            action: {
+              type: 'datetimepicker',
+              label: '選擇結束時間',
+              data: 'action=schedule_end',
+              mode: 'datetime',
+              initial: defEndStr,
+              min: datetime,
+              max: maxEnd,
+            },
+          },
+        ],
+      },
+    };
+
+    await replyMessage(event.replyToken, [msg], env.LINE_CHANNEL_ACCESS_TOKEN);
+    return;
+  }
+
+  // ── 第二步：老闆選了「結束時間」→ 產生預約卡片 ──
+  if (action === 'schedule_end' && userId === env.OWNER_USER_ID) {
+    const endDatetime = event.postback.params?.datetime;
+
+    // 從 KV 取出暫存的開始時間
+    let scheduleData = null;
+    if (env.CHAT_STATE) {
+      const raw = await env.CHAT_STATE.get(`schedule_${userId}`);
+      if (raw) scheduleData = JSON.parse(raw);
+    }
+
+    if (!scheduleData || !endDatetime) {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '操作逾時，請重新點「約時間」' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      return;
+    }
+
+    const { customerId, startDatetime } = scheduleData;
+    const customerName = await getUserDisplayName(customerId, env.LINE_CHANNEL_ACCESS_TOKEN);
+
+    // 清除暫存
+    if (env.CHAT_STATE) await env.CHAT_STATE.delete(`schedule_${userId}`);
+
+    // 解析開始 & 結束時間
+    const [sDatePart, sTimePart] = startDatetime.split('T');
+    const [sY, sM, sD] = sDatePart.split('-');
+    const [sH, sMin] = sTimePart.split(':');
+
+    const [eDatePart, eTimePart] = endDatetime.split('T');
+    const [eY, eM, eD] = eDatePart.split('-');
+    const [eH, eMin] = eTimePart.split(':');
+
+    const displayStartDate = `${sM}/${sD}（${getWeekday(sY, sM, sD)}）`;
+    const displayStartTime = `${sH}:${sMin}`;
+    const displayEndTime = `${eH}:${eMin}`;
+
+    // 如果跨天，結束顯示日期
+    const isSameDay = sDatePart === eDatePart;
+    const displayEndFull = isSameDay
+      ? displayEndTime
+      : `${eM}/${eD}（${getWeekday(eY, eM, eD)}）${displayEndTime}`;
+    const displayTimeRange = `${displayStartTime} - ${displayEndFull}`;
+
+    const icsStart = `${sY}${sM}${sD}T${sH}${sMin}00`;
+    const icsEnd = `${eY}${eM}${eD}T${eH}${eMin}00`;
+    const location = '高雄市鳥松區中正路101號';
+
+    // 客人的 .ics
+    const customerIcsUrl = `${workerBaseUrl}/ics-raw?` + new URLSearchParams({
+      t: `內裝清潔-${customerName}`,
+      s: icsStart, e: icsEnd, l: location,
+      d: `車內清潔/修復 預約評估\n📍 ${location}（近文山派出所、長庚醫院）`,
+      openExternalBrowser: '1',
+    }).toString();
+
+    // 老闆的 .ics
+    const ownerIcsUrl = `${workerBaseUrl}/ics-raw?` + new URLSearchParams({
+      t: `內裝清潔-${customerName}`,
+      s: icsStart, e: icsEnd, l: location,
+      d: `客戶：${customerName}\n服務：車內清潔/修復評估\n📍 ${location}`,
+      openExternalBrowser: '1',
+    }).toString();
+
+    // 客人的預約確認卡片
+    const customerMsg = {
+      type: 'flex',
+      altText: `預約確認：${displayStartDate} ${displayTimeRange}`,
+      contents: {
+        type: 'bubble',
+        body: {
+          type: 'box', layout: 'vertical', spacing: 'md', paddingAll: 'lg',
+          contents: [
+            { type: 'text', text: '預約確認 ✅', weight: 'bold', size: 'xl', color: '#1DB446' },
+            { type: 'separator', margin: 'lg' },
+            {
+              type: 'box', layout: 'vertical', spacing: 'sm', margin: 'lg',
+              contents: [
+                { type: 'box', layout: 'horizontal', contents: [
+                  { type: 'text', text: '日期', size: 'sm', color: '#888888', flex: 2 },
+                  { type: 'text', text: displayStartDate, size: 'sm', flex: 5, wrap: true },
+                ]},
+                { type: 'box', layout: 'horizontal', contents: [
+                  { type: 'text', text: '時間', size: 'sm', color: '#888888', flex: 2 },
+                  { type: 'text', text: displayTimeRange, size: 'sm', flex: 5, wrap: true },
+                ]},
+                { type: 'box', layout: 'horizontal', contents: [
+                  { type: 'text', text: '地點', size: 'sm', color: '#888888', flex: 2 },
+                  { type: 'text', text: location, size: 'sm', flex: 5, wrap: true },
+                ]},
+              ],
+            },
+            { type: 'separator', margin: 'lg' },
+            { type: 'button', style: 'primary', height: 'sm', margin: 'lg',
+              action: { type: 'uri', label: '加入我的日曆', uri: customerIcsUrl } },
+            { type: 'text', text: '支援 iPhone / Android / Google 日曆', size: 'xxs', color: '#AAAAAA', align: 'center', margin: 'sm' },
+          ],
+        },
+      },
+    };
+    await pushMessage(customerId, [customerMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
+
+    // 老闆的預約確認卡片
+    const ownerMsg = {
+      type: 'flex',
+      altText: `預約完成：${customerName} ${displayStartDate} ${displayTimeRange}`,
+      contents: {
+        type: 'bubble',
+        body: {
+          type: 'box', layout: 'vertical', spacing: 'md', paddingAll: 'lg',
+          contents: [
+            { type: 'text', text: '預約已送出 ✅', weight: 'bold', size: 'xl', color: '#1DB446' },
+            { type: 'separator', margin: 'lg' },
+            {
+              type: 'box', layout: 'vertical', spacing: 'sm', margin: 'lg',
+              contents: [
+                { type: 'box', layout: 'horizontal', contents: [
+                  { type: 'text', text: '客戶', size: 'sm', color: '#888888', flex: 2 },
+                  { type: 'text', text: customerName, size: 'sm', flex: 5, wrap: true },
+                ]},
+                { type: 'box', layout: 'horizontal', contents: [
+                  { type: 'text', text: '日期', size: 'sm', color: '#888888', flex: 2 },
+                  { type: 'text', text: displayStartDate, size: 'sm', flex: 5, wrap: true },
+                ]},
+                { type: 'box', layout: 'horizontal', contents: [
+                  { type: 'text', text: '時間', size: 'sm', color: '#888888', flex: 2 },
+                  { type: 'text', text: displayTimeRange, size: 'sm', flex: 5, wrap: true },
+                ]},
+              ],
+            },
+            { type: 'separator', margin: 'lg' },
+            { type: 'button', style: 'primary', height: 'sm', margin: 'lg',
+              action: { type: 'uri', label: '加入我的日曆', uri: ownerIcsUrl } },
+          ],
+        },
+      },
+    };
+    await replyMessage(event.replyToken, [ownerMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
+
+    // 記錄
+    await logToSheet({
+      action: 'log_conversation',
+      timestamp: Date.now(),
+      customerName,
+      userId: customerId,
+      role: 'system',
+      msgType: 'text',
+      content: `【預約】${displayStartDate} ${displayTimeRange}`,
+    }, env);
+    return;
+  }
+}
+
+// 取得星期幾的中文
+function getWeekday(year, month, day) {
+  const days = ['日', '一', '二', '三', '四', '五', '六'];
+  const d = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  return days[d.getDay()];
 }
 
 
@@ -484,7 +848,7 @@ async function handleFollow(event, env) {
 //  處理文字訊息（題庫核心邏輯）
 // ══════════════════════════════════════════════════
 
-async function handleText(event, env) {
+async function handleText(event, env, workerBaseUrl) {
   const userMsg = event.message.text.trim();
   const userId = event.source.userId;
   const customerName = await getUserDisplayName(userId, env.LINE_CHANNEL_ACCESS_TOKEN);
@@ -536,12 +900,12 @@ async function handleText(event, env) {
     await removeActiveCase(env, targetUserId);
 
     // 通知客戶：案件已結束，可以開始新的詢問
+    const targetName = await getUserDisplayName(targetUserId, env.LINE_CHANNEL_ACCESS_TOKEN);
     const thankYouMsg = buildWelcomeFlexMessage(
-      '感謝您的支持！🎉 您的案件已完成～\n\n如果之後有其他需要，歡迎隨時點選下方服務項目，我們很樂意為您服務 😊'
+      `${targetName} 感謝您的支持！🎉 案件已完成～\n\n之後有需要歡迎隨時點選下方服務項目 😊`
     );
     await pushMessage(targetUserId, [thankYouMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
 
-    const targetName = await getUserDisplayName(targetUserId, env.LINE_CHANNEL_ACCESS_TOKEN);
     replyText = `✅ 已結案：${targetName}\n客戶會收到感謝通知和新的服務選單`;
 
     // 記錄結案
@@ -556,6 +920,91 @@ async function handleText(event, env) {
     }, env);
 
     await replyMessage(event.replyToken, [{ type: 'text', text: replyText }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    return;
+  }
+
+  // ────────────────────────────────────────
+  //  優先級 0c：老闆輸入「約時間」→ 選客戶 → 選日期時間
+  // ────────────────────────────────────────
+  if (userMsg === '約時間' && userId === env.OWNER_USER_ID) {
+    const cases = await getActiveCases(env);
+    const entries = Object.entries(cases);
+    if (entries.length === 0) {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '目前沒有進行中的案件，無法約時間哦 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    } else {
+      const options = entries.slice(0, 12).map(([uid, info]) => ({
+        label: info.name.slice(0, 20),
+        text: `約時間｜${uid}`,
+      }));
+      options.push({ label: '✖ 取消', text: '約時間｜取消' });
+      await replyMessage(event.replyToken, [
+        buildTextMessage('請選擇要約時間的客戶 👇', options),
+      ], env.LINE_CHANNEL_ACCESS_TOKEN);
+    }
+    return;
+  }
+
+  // 0d：老闆選了客戶 → 彈出日期時間選擇器
+  if (userMsg.startsWith('約時間｜') && userId === env.OWNER_USER_ID) {
+    const targetUserId = userMsg.replace('約時間｜', '');
+
+    if (targetUserId === '取消') {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '已取消 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      return;
+    }
+
+    const targetName = await getUserDisplayName(targetUserId, env.LINE_CHANNEL_ACCESS_TOKEN);
+
+    // 用 Flex Message 嵌入 datetime picker 按鈕
+    const now = new Date();
+    const minDate = now.toISOString().slice(0, 10); // 今天
+    const maxDate = new Date(now.getTime() + 30 * 86400000).toISOString().slice(0, 10); // 30天後
+
+    const pickerMsg = {
+      type: 'flex',
+      altText: `為 ${targetName} 選擇預約時間`,
+      contents: {
+        type: 'bubble',
+        body: {
+          type: 'box',
+          layout: 'vertical',
+          spacing: 'md',
+          paddingAll: 'lg',
+          contents: [
+            {
+              type: 'text',
+              text: `為 ${targetName} 預約時間`,
+              weight: 'bold',
+              size: 'lg',
+              wrap: true,
+            },
+            {
+              type: 'text',
+              text: '第 1 步：選擇開始日期和時間',
+              size: 'sm',
+              color: '#888888',
+              margin: 'sm',
+            },
+            {
+              type: 'button',
+              style: 'primary',
+              height: 'md',
+              margin: 'xl',
+              action: {
+                type: 'datetimepicker',
+                label: '選擇開始時間',
+                data: `action=schedule_start&customerId=${targetUserId}`,
+                mode: 'datetime',
+                min: `${minDate}T08:00`,
+                max: `${maxDate}T20:00`,
+              },
+            },
+          ],
+        },
+      },
+    };
+
+    await replyMessage(event.replyToken, [pickerMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
     return;
   }
 
@@ -832,7 +1281,7 @@ async function handleText(event, env) {
     RESET_TRIGGERS.some(t => userMsg.toLowerCase().includes(t)) ||
     GREETING_TRIGGERS.some(t => userMsg.toLowerCase().includes(t))
   )) {
-    replyText = WELCOME_TEXT;
+    replyText = getWelcomeText(customerName);
     useWelcomeFlex = true;
   }
 
@@ -859,7 +1308,7 @@ async function handleText(event, env) {
   // ────────────────────────────────────────
   else {
     if (currentState === 'idle') {
-      replyText = WELCOME_TEXT;
+      replyText = getWelcomeText(customerName);
       useWelcomeFlex = true;
     } else {
       replyText = '收到您的訊息了！老闆看到會盡快回覆您哦 😊';

@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 /**
- * 一次性腳本：為老闆建立 LINE Rich Menu「待結案」按鈕
+ * 一次性腳本：為老闆建立 LINE Rich Menu（雙按鈕：待結案 + 約時間）
  *
  * 使用方式：
  *   npm install canvas        （第一次需要安裝）
  *   node setup-rich-menu.js <LINE_CHANNEL_ACCESS_TOKEN> <OWNER_USER_ID>
- *
- * 執行後老闆的 LINE 聊天室底部會出現「📋 待結案」，
- * 點展開後會看到一個漂亮的按鈕，點按鈕發送「結案」觸發 bot。
  */
 
 const TOKEN = process.argv[2];
@@ -22,8 +19,22 @@ const API = 'https://api.line.me/v2/bot';
 const headers = { Authorization: `Bearer ${TOKEN}` };
 
 // ══════════════════════════════════════
-//  用 canvas 產生按鈕圖片
+//  用 canvas 產生雙按鈕圖片
 // ══════════════════════════════════════
+
+function drawRoundedRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
 
 function createButtonImage() {
   const { createCanvas } = require('canvas');
@@ -31,41 +42,42 @@ function createButtonImage() {
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');
 
-  // 背景：深色
+  // 背景
   ctx.fillStyle = '#1A1A2E';
   ctx.fillRect(0, 0, W, H);
 
-  // 圓角按鈕
-  const btnW = 1000, btnH = 200;
-  const btnX = (W - btnW) / 2;
+  const btnW = 1050, btnH = 200, radius = 40;
   const btnY = (H - btnH) / 2;
-  const radius = 40;
+  const gap = 100;
+  const totalW = btnW * 2 + gap;
+  const startX = (W - totalW) / 2;
 
-  ctx.beginPath();
-  ctx.moveTo(btnX + radius, btnY);
-  ctx.lineTo(btnX + btnW - radius, btnY);
-  ctx.arcTo(btnX + btnW, btnY, btnX + btnW, btnY + radius, radius);
-  ctx.lineTo(btnX + btnW, btnY + btnH - radius);
-  ctx.arcTo(btnX + btnW, btnY + btnH, btnX + btnW - radius, btnY + btnH, radius);
-  ctx.lineTo(btnX + radius, btnY + btnH);
-  ctx.arcTo(btnX, btnY + btnH, btnX, btnY + btnH - radius, radius);
-  ctx.lineTo(btnX, btnY + radius);
-  ctx.arcTo(btnX, btnY, btnX + radius, btnY, radius);
-  ctx.closePath();
-
-  // 按鈕漸層
-  const grad = ctx.createLinearGradient(btnX, btnY, btnX + btnW, btnY + btnH);
-  grad.addColorStop(0, '#4A90D9');
-  grad.addColorStop(1, '#357ABD');
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // 按鈕文字
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 72px "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif';
+  ctx.font = 'bold 64px "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('查看待結案客戶', W / 2, H / 2);
+
+  // 左按鈕：待結案（藍色）
+  drawRoundedRect(ctx, startX, btnY, btnW, btnH, radius);
+  const grad1 = ctx.createLinearGradient(startX, btnY, startX + btnW, btnY + btnH);
+  grad1.addColorStop(0, '#4A90D9');
+  grad1.addColorStop(1, '#357ABD');
+  ctx.fillStyle = grad1;
+  ctx.fill();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText('待結案', startX + btnW / 2, btnY + btnH / 2);
+
+  // 右按鈕：約時間（綠色）
+  const btn2X = startX + btnW + gap;
+  drawRoundedRect(ctx, btn2X, btnY, btnW, btnH, radius);
+  const grad2 = ctx.createLinearGradient(btn2X, btnY, btn2X + btnW, btnY + btnH);
+  grad2.addColorStop(0, '#27AE60');
+  grad2.addColorStop(1, '#1E8449');
+  ctx.fillStyle = grad2;
+  ctx.fill();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText('約時間', btn2X + btnW / 2, btnY + btnH / 2);
 
   return canvas.toBuffer('image/png');
 }
@@ -98,12 +110,18 @@ async function main() {
     body: JSON.stringify({
       size: { width: 2500, height: 422 },
       selected: false,
-      name: '老闆結案選單',
-      chatBarText: '📋 待結案',
-      areas: [{
-        bounds: { x: 0, y: 0, width: 2500, height: 422 },
-        action: { type: 'message', label: '查看待結案客戶', text: '結案' },
-      }],
+      name: '老闆工具列',
+      chatBarText: '📋 管理工具',
+      areas: [
+        {
+          bounds: { x: 0, y: 0, width: 1250, height: 422 },
+          action: { type: 'message', label: '待結案', text: '結案' },
+        },
+        {
+          bounds: { x: 1250, y: 0, width: 1250, height: 422 },
+          action: { type: 'message', label: '約時間', text: '約時間' },
+        },
+      ],
     }),
   });
 
@@ -119,7 +137,6 @@ async function main() {
   const png = createButtonImage();
   console.log('   圖片大小:', png.length, 'bytes');
 
-  // 用 https 模組上傳（避免 fetch 的 Buffer 相容問題）
   const uploadOk = await new Promise((resolve, reject) => {
     const https = require('https');
     const req = https.request({
@@ -165,8 +182,9 @@ async function main() {
 
   console.log('4/4 完成！');
   console.log('');
-  console.log('✅ 老闆的 LINE 聊天室底部現在會出現「📋 待結案」');
-  console.log('   點開後會看到藍色按鈕「查看待結案客戶」，點了就列出名單。');
+  console.log('✅ 老闆的 LINE 聊天室底部現在有兩個按鈕：');
+  console.log('   🔵 待結案 — 列出可結案的客戶');
+  console.log('   🟢 約時間 — 為客戶預約時間');
   console.log('');
   console.log('📌 Rich Menu ID:', richMenuId);
 }
