@@ -1,1 +1,2 @@
 line-webhook/.wrangler/*
+line-webhook/node_modules

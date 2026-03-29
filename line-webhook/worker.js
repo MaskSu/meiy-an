@@ -7,6 +7,9 @@
  *   LINE_CHANNEL_ACCESS_TOKEN - LINE Channel Access Token（用來發訊息）
  *   GAS_URL                  - Google Apps Script URL（用來存照片 + 記錄）
  *   OWNER_USER_ID            - 老闆的 LINE userId（用來接收通知）
+ *
+ * KV Namespace（在 wrangler.toml 綁定）：
+ *   CHAT_STATE               - 記錄客戶對話狀態（idle / active）
  */
 
 // 用來防止同一用戶短時間內收到多次照片回覆
@@ -69,9 +72,8 @@ const SERVICE_CONFIG = {
       { label: '皮革黏膩',   text: '追問｜smoke｜皮革黏膩' },
     ],
     photos: [
-      'https://www.yinzemy.com/1/S__9330757_0.jpg',
-      'https://www.yinzemy.com/1/S__9330813_0.jpg',
-      'https://www.yinzemy.com/1/S__9330757_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
     ],
   },
   used: {
@@ -85,9 +87,8 @@ const SERVICE_CONFIG = {
       { label: '皮革有油垢', text: '追問｜used｜皮革有油垢' },
     ],
     photos: [
-      'https://www.yinzemy.com/1/S__9330809_0.jpg',
-      'https://www.yinzemy.com/1/S__9330810_0.jpg',
-      'https://www.yinzemy.com/1/S__9330809_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
     ],
   },
   dirty: {
@@ -100,9 +101,8 @@ const SERVICE_CONFIG = {
       { label: '不確定',   text: '追問｜dirty｜不確定' },
     ],
     photos: [
-      'https://www.yinzemy.com/1/S__9330758_0.jpg',
-      'https://www.yinzemy.com/1/S__9330811_0.jpg',
-      'https://www.yinzemy.com/1/S__9330758_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
     ],
   },
   dusty: {
@@ -115,9 +115,8 @@ const SERVICE_CONFIG = {
       { label: '不確定',   text: '追問｜dusty｜不確定' },
     ],
     photos: [
-      'https://www.yinzemy.com/2/S__9330816_0.jpg',
-      'https://www.yinzemy.com/2/S__9330821_0.jpg',
-      'https://www.yinzemy.com/2/S__9330816_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
     ],
   },
   spill: {
@@ -131,9 +130,9 @@ const SERVICE_CONFIG = {
       { label: '打翻超過一天', text: '追問｜spill｜超過一天' },
     ],
     photos: [
-      'https://www.yinzemy.com/2/S__9330817_0.jpg',
-      'https://www.yinzemy.com/2/S__9330818_0.jpg',
-      'https://www.yinzemy.com/2/S__9330817_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces-wet.jpg',
     ],
   },
   flood: {
@@ -147,9 +146,9 @@ const SERVICE_CONFIG = {
       { label: '不確定原因', text: '追問｜flood｜不確定原因' },
     ],
     photos: [
-      'https://www.yinzemy.com/1/S__9330759_0.jpg',
-      'https://www.yinzemy.com/1/S__9330770_0.jpg',
-      'https://www.yinzemy.com/1/S__9330759_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces-wet.jpg',
     ],
   },
   leather: {
@@ -158,9 +157,8 @@ const SERVICE_CONFIG = {
     followUpText: null,
     followUp: null,
     photos: [
-      'https://www.yinzemy.com/5/S__9330786_0.jpg',
-      'https://www.yinzemy.com/5/S__9330790_0.jpg',
-      'https://www.yinzemy.com/5/S__9330786_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
     ],
   },
   ceiling: {
@@ -172,9 +170,8 @@ const SERVICE_CONFIG = {
       { label: '沒有天窗', text: '追問｜ceiling｜沒有天窗' },
     ],
     photos: [
-      'https://www.yinzemy.com/4/S__9330774_0.jpg',
-      'https://www.yinzemy.com/4/S__9330783_0.jpg',
-      'https://www.yinzemy.com/4/S__9330774_0.jpg',
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
     ],
   },
 };
@@ -233,7 +230,11 @@ const ALL_BRANDS = { ...CAR_BRANDS, ...OTHER_CAR_BRANDS };
 //  入口觸發詞 & 固定關鍵字回覆
 // ══════════════════════════════════════════════════
 
-const ENTRY_TRIGGERS = ['你好', '哈囉', '嗨', 'hi', 'hello', '安安', '開始', '菜單', '選單', '服務'];
+// 重選觸發詞（不管 idle/active 都可以觸發，客戶明確要重選）
+const RESET_TRIGGERS = ['菜單', '選單', '重新選擇', '重選'];
+
+// 招呼觸發詞（只在 idle 狀態才觸發選單）
+const GREETING_TRIGGERS = ['你好', '哈囉', '嗨', 'hi', 'hello', '安安', '開始', '服務'];
 
 const KEYWORD_REPLIES = {
   '地址': '📍 我們在高雄市鳥松區中正路101號哦！\n（近文山派出所、長庚醫院）\n\n歡迎過來看看～\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號',
@@ -387,10 +388,16 @@ export default {
     const { events } = JSON.parse(body);
 
     // 分組處理
+    const followEvents = [];
     const textEvents = [];
     const imageGroups = {};
 
     for (const event of events) {
+      // follow 事件：用戶加好友或解除封鎖
+      if (event.type === 'follow') {
+        followEvents.push(event);
+        continue;
+      }
       if (event.type !== 'message') continue;
       if (event.message.type === 'text') {
         textEvents.push(event);
@@ -401,18 +408,76 @@ export default {
       }
     }
 
+    const followPromises = followEvents.map(event => handleFollow(event, env));
     const textPromises = textEvents.map(event => handleText(event, env));
     const imagePromises = Object.values(imageGroups).map(
       userEvents => handleImageBatch(userEvents, env)
     );
 
-    const allWork = Promise.all([...textPromises, ...imagePromises]);
+    const allWork = Promise.all([...followPromises, ...textPromises, ...imagePromises]);
     ctx.waitUntil(allWork);
     await allWork;
 
     return new Response('OK', { status: 200 });
   }
 };
+
+
+// ══════════════════════════════════════════════════
+//  KV 狀態管理（idle = 顯示選單 / active = 對話中）
+// ══════════════════════════════════════════════════
+
+async function getUserState(env, userId) {
+  if (!env.CHAT_STATE) return 'idle';
+  const state = await env.CHAT_STATE.get(userId);
+  return state || 'idle';
+}
+
+async function setUserState(env, userId, state) {
+  if (!env.CHAT_STATE) return;
+  // active 狀態 10 天後自動過期回 idle，避免卡住（老闆通常 7 天內結案）
+  await env.CHAT_STATE.put(userId, state, { expirationTtl: 864000 });
+}
+
+// ── 進行中案件清單（供老闆結案用）──
+
+async function getActiveCases(env) {
+  if (!env.CHAT_STATE) return {};
+  const raw = await env.CHAT_STATE.get('active_cases');
+  return raw ? JSON.parse(raw) : {};
+}
+
+async function addActiveCase(env, userId, customerName) {
+  if (!env.CHAT_STATE) return;
+  const cases = await getActiveCases(env);
+  cases[userId] = { name: customerName, ts: Date.now() };
+  // 清理超過 10 天的舊案件
+  const TEN_DAYS = 864000000;
+  for (const [uid, info] of Object.entries(cases)) {
+    if (Date.now() - info.ts > TEN_DAYS) delete cases[uid];
+  }
+  await env.CHAT_STATE.put('active_cases', JSON.stringify(cases));
+}
+
+async function removeActiveCase(env, userId) {
+  if (!env.CHAT_STATE) return;
+  const cases = await getActiveCases(env);
+  delete cases[userId];
+  await env.CHAT_STATE.put('active_cases', JSON.stringify(cases));
+}
+
+
+// ══════════════════════════════════════════════════
+//  處理 Follow 事件（用戶加好友 → 發送歡迎選單）
+// ══════════════════════════════════════════════════
+
+async function handleFollow(event, env) {
+  const userId = event.source.userId;
+  await setUserState(env, userId, 'idle');
+
+  const welcomeMsg = buildWelcomeFlexMessage(WELCOME_TEXT);
+  await replyMessage(event.replyToken, [welcomeMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
+}
 
 
 // ══════════════════════════════════════════════════
@@ -423,15 +488,76 @@ async function handleText(event, env) {
   const userMsg = event.message.text.trim();
   const userId = event.source.userId;
   const customerName = await getUserDisplayName(userId, env.LINE_CHANNEL_ACCESS_TOKEN);
+  const currentState = await getUserState(env, userId);
 
   let replyText = '';
   let replyOptions = null;
   let photos = [];
   let useWelcomeFlex = false;   // true = 用 Flex Message 按鈕卡片取代 Quick Reply
   let isCarMachineDone = false;
+  let newState = null;          // null = 不改變，'active' / 'idle' = 更新 KV
   let carBrand = '';
   let carModel = '';
   let carOem = '';
+
+  // ────────────────────────────────────────
+  //  優先級 0：老闆結案（只有老闆能觸發）
+  // ────────────────────────────────────────
+
+  // 0a：老闆輸入「結案」→ 顯示進行中案件清單
+  if (userMsg === '結案' && userId === env.OWNER_USER_ID) {
+    const cases = await getActiveCases(env);
+    const entries = Object.entries(cases);
+    if (entries.length === 0) {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '目前沒有進行中的案件哦 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    } else {
+      const options = entries.slice(0, 12).map(([uid, info]) => ({
+        label: info.name.slice(0, 20),
+        text: `結案｜${uid}`,
+      }));
+      options.push({ label: '✖ 取消', text: '結案｜取消' });
+      await replyMessage(event.replyToken, [
+        buildTextMessage('請選擇要結案的客戶 👇', options),
+      ], env.LINE_CHANNEL_ACCESS_TOKEN);
+    }
+    return;
+  }
+
+  // 0b：老闆選了要結案的客戶（或取消）
+  if (userMsg.startsWith('結案｜') && userId === env.OWNER_USER_ID) {
+    const targetUserId = userMsg.replace('結案｜', '');
+
+    // 取消操作
+    if (targetUserId === '取消') {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '已取消 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      return;
+    }
+    await setUserState(env, targetUserId, 'idle');
+    await removeActiveCase(env, targetUserId);
+
+    // 通知客戶：案件已結束，可以開始新的詢問
+    const thankYouMsg = buildWelcomeFlexMessage(
+      '感謝您的支持！🎉 您的案件已完成～\n\n如果之後有其他需要，歡迎隨時點選下方服務項目，我們很樂意為您服務 😊'
+    );
+    await pushMessage(targetUserId, [thankYouMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
+
+    const targetName = await getUserDisplayName(targetUserId, env.LINE_CHANNEL_ACCESS_TOKEN);
+    replyText = `✅ 已結案：${targetName}\n客戶會收到感謝通知和新的服務選單`;
+
+    // 記錄結案
+    await logToSheet({
+      action: 'log_conversation',
+      timestamp: Date.now(),
+      customerName: targetName,
+      userId: targetUserId,
+      role: 'system',
+      msgType: 'text',
+      content: '【結案】老闆已結案，客戶狀態重設為 idle',
+    }, env);
+
+    await replyMessage(event.replyToken, [{ type: 'text', text: replyText }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    return;
+  }
 
   // ────────────────────────────────────────
   //  優先級 1：內裝服務選項 → 詢問車款廠牌
@@ -441,6 +567,7 @@ async function handleText(event, env) {
     const config = SERVICE_CONFIG[serviceKey];
     replyText = config.brandAsk;
     replyOptions = buildBrandOptions(`內裝｜${serviceKey}｜`);
+    newState = 'active';
   }
 
   // ────────────────────────────────────────
@@ -449,6 +576,7 @@ async function handleText(event, env) {
   else if (userMsg === '安裝安卓車機') {
     replyText = '好的！安卓車機需要先確認車款才能報價哦～\n請問您的車子是什麼廠牌？👇';
     replyOptions = buildBrandOptions('車機｜');
+    newState = 'active';
   }
 
   // ────────────────────────────────────────
@@ -460,9 +588,8 @@ async function handleText(event, env) {
     const config = SERVICE_CONFIG[sKey];
 
     if (!config) {
-      // 無效的 serviceKey，回主選單
-      replyText = WELCOME_TEXT;
-      useWelcomeFlex = true;
+      // 無效的 serviceKey
+      replyText = '收到您的訊息了！老闆看到會盡快回覆您哦 😊';
 
     } else if (parts.length === 3) {
       // ── 選了廠牌，顯示車型 ──
@@ -473,11 +600,16 @@ async function handleText(event, env) {
         replyOptions = Object.keys(OTHER_CAR_BRANDS).map(b => ({
           label: b, text: `內裝｜${sKey}｜${b}`
         }));
-        if (replyOptions.length < 13) {
-          replyOptions.push({ label: '手動輸入', text: `內裝｜${sKey}｜手動輸入` });
+        replyOptions.push({ label: '以上都沒有', text: `內裝｜${sKey}｜找不到廠牌` });
+      } else if (brand === '找不到廠牌') {
+        // 廠牌不在列表 → 跳過車型，直接進拍照流程
+        photos = config.photos || [];
+        if (config.followUp && config.followUp.length > 0) {
+          replyText = `沒問題！\n\n${PHOTO_TIPS}\n\n${config.followUpText}`;
+          replyOptions = config.followUp;
+        } else {
+          replyText = `沒問題！\n\n${PHOTO_TIPS}\n\n拍好直接傳過來就可以囉！😊`;
         }
-      } else if (brand === '手動輸入') {
-        replyText = '好的！請直接告訴我您的車子廠牌和型號就可以囉，例如「Luxgen URX」😊';
       } else if (ALL_BRANDS[brand]) {
         replyText = `${brand} 沒問題！請問是哪個車型呢？👇`;
         const models = ALL_BRANDS[brand];
@@ -485,10 +617,17 @@ async function handleText(event, env) {
           label: m, text: `內裝｜${sKey}｜${brand}｜${m}`
         }));
         if (replyOptions.length < 13) {
-          replyOptions.push({ label: '其他型號', text: `內裝｜${sKey}｜${brand}｜其他型號` });
+          replyOptions.push({ label: '以上都沒有', text: `內裝｜${sKey}｜${brand}｜找不到車型` });
         }
       } else {
-        replyText = `好的！${brand} 的車子，請問是哪個型號呢？直接打字告訴我就可以囉 😊`;
+        // 未知廠牌（不該發生，但防呆）→ 跳過車型，直接進拍照流程
+        photos = config.photos || [];
+        if (config.followUp && config.followUp.length > 0) {
+          replyText = `沒問題！\n\n${PHOTO_TIPS}\n\n${config.followUpText}`;
+          replyOptions = config.followUp;
+        } else {
+          replyText = `沒問題！\n\n${PHOTO_TIPS}\n\n拍好直接傳過來就可以囉！😊`;
+        }
       }
 
     } else if (parts.length >= 4) {
@@ -496,8 +635,15 @@ async function handleText(event, env) {
       const brand = parts[2];
       const model = parts.slice(3).join('｜');
 
-      if (model === '其他型號') {
-        replyText = `好的！請直接告訴我您的 ${brand} 是哪個車型就可以囉 😊`;
+      if (model === '找不到車型') {
+        // 型號不在列表 → 跳過車型，直接進拍照流程
+        photos = config.photos || [];
+        if (config.followUp && config.followUp.length > 0) {
+          replyText = `收到！${brand} 👌\n\n${PHOTO_TIPS}\n\n${config.followUpText}`;
+          replyOptions = config.followUp;
+        } else {
+          replyText = `收到！${brand} 👌\n\n${PHOTO_TIPS}\n\n拍好直接傳過來就可以囉！😊`;
+        }
       } else {
         photos = config.photos || [];
 
@@ -507,12 +653,6 @@ async function handleText(event, env) {
         } else {
           replyText = `收到！${brand} ${model} 👌\n\n${PHOTO_TIPS}\n\n拍好直接傳過來就可以囉！😊`;
         }
-
-        // 通知老闆：客戶選了服務+車款
-        notifyOwner(
-          `📋 客戶詢問\n👤 ${customerName}\n🚗 ${brand} ${model}\n📌 ${config.name}\n\n等待客戶傳照片中`,
-          env, userId
-        );
       }
     }
   }
@@ -532,11 +672,15 @@ async function handleText(event, env) {
         replyOptions = Object.keys(OTHER_CAR_BRANDS).map(b => ({
           label: b, text: `車機｜${b}`
         }));
-        if (replyOptions.length < 13) {
-          replyOptions.push({ label: '手動輸入', text: '車機｜手動輸入' });
-        }
-      } else if (brand === '手動輸入') {
-        replyText = '好的！請直接告訴我您的車子廠牌和型號就可以囉，例如「Luxgen URX」😊';
+        replyOptions.push({ label: '以上都沒有', text: '車機｜找不到廠牌' });
+      } else if (brand === '找不到廠牌') {
+        // 廠牌不在列表 → 跳過車型，直接問 OEM
+        replyText = '沒問題！麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
+        replyOptions = [
+          { label: '原廠車機', text: '車機｜其他｜其他｜原廠車機' },
+          { label: '已改裝過', text: '車機｜其他｜其他｜已改裝過' },
+          { label: '不確定',   text: '車機｜其他｜其他｜不確定' },
+        ];
       } else if (ALL_BRANDS[brand]) {
         replyText = `${brand} 沒問題！請問是哪個車型呢？👇`;
         const models = ALL_BRANDS[brand];
@@ -544,10 +688,16 @@ async function handleText(event, env) {
           label: m, text: `車機｜${brand}｜${m}`
         }));
         if (replyOptions.length < 13) {
-          replyOptions.push({ label: '其他型號', text: `車機｜${brand}｜其他型號` });
+          replyOptions.push({ label: '以上都沒有', text: `車機｜${brand}｜找不到車型` });
         }
       } else {
-        replyText = `好的！${brand} 的車子，請問是哪個型號呢？直接打字告訴我就可以囉 😊`;
+        // 未知廠牌（防呆）→ 跳過車型，直接問 OEM
+        replyText = '沒問題！麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
+        replyOptions = [
+          { label: '原廠車機', text: '車機｜其他｜其他｜原廠車機' },
+          { label: '已改裝過', text: '車機｜其他｜其他｜已改裝過' },
+          { label: '不確定',   text: '車機｜其他｜其他｜不確定' },
+        ];
       }
 
     } else if (parts.length === 3) {
@@ -555,8 +705,14 @@ async function handleText(event, env) {
       carBrand = parts[1];
       carModel = parts[2];
 
-      if (carModel === '其他型號') {
-        replyText = `好的！請直接告訴我您的 ${carBrand} 是哪個車型就可以囉 😊`;
+      if (carModel === '找不到車型') {
+        // 型號不在列表 → 跳過車型，直接問 OEM
+        replyText = `好的！${carBrand} 的車子 🔧\n\n麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
+        replyOptions = [
+          { label: '原廠車機', text: `車機｜${carBrand}｜其他｜原廠車機` },
+          { label: '已改裝過', text: `車機｜${carBrand}｜其他｜已改裝過` },
+          { label: '不確定',   text: `車機｜${carBrand}｜其他｜不確定` },
+        ];
       } else {
         replyText = `好的！${carBrand} ${carModel} 🔧\n\n麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
         replyOptions = [
@@ -588,12 +744,6 @@ async function handleText(event, env) {
     const serviceName = config ? config.name : '';
 
     replyText = `收到！${answer}，了解了 👌\n\n照片拍好直接傳過來就可以囉，我看完馬上回覆您！`;
-
-    // 通知老闆：客戶補充資訊
-    notifyOwner(
-      `📝 客戶補充\n👤 ${customerName}\n📌 ${serviceName}\n💬 ${answer}`,
-      env, userId
-    );
   }
 
   // ────────────────────────────────────────
@@ -612,17 +762,9 @@ async function handleText(event, env) {
     } else if (urgency === '排隊') {
       replyText = '好的！沒問題 👌 我看過照片後會跟您報價，再幫您安排預約時間。\n\n⭐ 最後確認一下，我看完照片後直接在 LINE 上跟您通話說明，方便嗎？😊';
       replyOptions = CONTACT_OPTIONS;
-      notifyOwner(
-        `📋 一般預約\n👤 ${customerName}\n💬 不急，願意排隊\n\n請查看照片後回覆報價`,
-        env, userId
-      );
     } else {
-      // 了解費用
+      // 了解費用 → 流程結束
       replyText = '沒問題！費用會依車款和車況有所不同，我看過照片後會先幫您估個大概的價格範圍，完全不用有壓力哦 😊\n\n有需要的時候隨時找我！';
-      notifyOwner(
-        `💡 了解費用\n👤 ${customerName}\n📅 先了解費用，不急\n\n有空回覆即可`,
-        env, userId
-      );
     }
   }
 
@@ -637,10 +779,6 @@ async function handleText(event, env) {
     } else {
       replyText = '沒問題！我看完照片後會用文字回覆您報價，通常一個工作天內會回覆您哦 💪';
     }
-    notifyOwner(
-      `✅ 客戶確認聯繫\n👤 ${customerName}\n💬 偏好：${choice === '好' ? 'LINE 對話' : '文字回覆'}\n\n請查看照片後回覆客戶`,
-      env, userId
-    );
   }
 
   // ────────────────────────────────────────
@@ -687,9 +825,13 @@ async function handleText(event, env) {
   }
 
   // ────────────────────────────────────────
-  //  優先級 10：入口觸發詞
+  //  優先級 10：觸發詞（只在 idle 時才顯示選單）
+  //  active 時一律不彈選單，避免干擾老闆與客戶的對話
   // ────────────────────────────────────────
-  else if (ENTRY_TRIGGERS.some(t => userMsg.toLowerCase().includes(t))) {
+  else if (currentState === 'idle' && (
+    RESET_TRIGGERS.some(t => userMsg.toLowerCase().includes(t)) ||
+    GREETING_TRIGGERS.some(t => userMsg.toLowerCase().includes(t))
+  )) {
     replyText = WELCOME_TEXT;
     useWelcomeFlex = true;
   }
@@ -705,17 +847,31 @@ async function handleText(event, env) {
   // ────────────────────────────────────────
   //  優先級 12：預約 / 報價相關
   // ────────────────────────────────────────
-  else if (/預約|報價|價格|費用|多少錢/.test(userMsg)) {
+  else if (currentState === 'idle' && /預約|報價|價格|費用|多少錢/.test(userMsg)) {
     replyText = '費用會依車況不同而異哦！請問您的車子目前遇到什麼狀況呢？先選一下，我馬上幫您評估 👇';
     useWelcomeFlex = true;
   }
 
   // ────────────────────────────────────────
-  //  預設：顯示服務選單
+  //  預設：依狀態決定行為
+  //  idle → 顯示服務選單（可能是新用戶或案件已結束）
+  //  active → 轉給老闆（正在對話中）
   // ────────────────────────────────────────
   else {
-    replyText = WELCOME_TEXT;
-    useWelcomeFlex = true;
+    if (currentState === 'idle') {
+      replyText = WELCOME_TEXT;
+      useWelcomeFlex = true;
+    } else {
+      replyText = '收到您的訊息了！老闆看到會盡快回覆您哦 😊';
+    }
+  }
+
+  // ── 更新 KV 狀態 + 案件清單 ──
+  if (newState) {
+    await setUserState(env, userId, newState);
+    if (newState === 'active') {
+      await addActiveCase(env, userId, customerName);
+    }
   }
 
   // ── 組裝 LINE 回覆訊息（上限 5 則）──
@@ -895,14 +1051,18 @@ async function getUserDisplayName(userId, accessToken) {
 }
 
 
+
 // ══════════════════════════════════════════════════
 //  推送通知給老闆
 // ══════════════════════════════════════════════════
 
-async function notifyOwner(text, env, skipUserId) {
+async function notifyOwner(text, env, customerUserId) {
   if (!env.OWNER_USER_ID) return;
   // 如果觸發者就是老闆本人，跳過通知（避免推播蓋掉 Quick Reply）
-  if (skipUserId && skipUserId === env.OWNER_USER_ID) return;
+  if (customerUserId && customerUserId === env.OWNER_USER_ID) return;
+
+  const messages = [{ type: 'text', text }];
+
   await fetch('https://api.line.me/v2/bot/message/push', {
     method: 'POST',
     headers: {
@@ -911,7 +1071,7 @@ async function notifyOwner(text, env, skipUserId) {
     },
     body: JSON.stringify({
       to: env.OWNER_USER_ID,
-      messages: [{ type: 'text', text }],
+      messages,
     }),
   });
 }
@@ -971,4 +1131,24 @@ async function replyMessage(replyToken, messages, accessToken) {
     },
     body: JSON.stringify({ replyToken, messages }),
   });
+}
+
+// 主動推播訊息給指定用戶（不需要 replyToken）
+async function pushMessage(userId, messages, accessToken) {
+  try {
+    const res = await fetch('https://api.line.me/v2/bot/message/push', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ to: userId, messages }),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('pushMessage error:', res.status, err);
+    }
+  } catch (e) {
+    console.error('pushMessage exception:', e.message);
+  }
 }
