@@ -21,8 +21,10 @@ const IMAGE_REPLY_COOLDOWN = 10000; // 10 秒內不重複回覆
 //  迎賓語與第一道選項
 // ══════════════════════════════════════════════════
 
+const BELA_AVATAR_URL = 'https://www.yinzemy.com/avatar/bela.jpg';
+
 function getWelcomeText(name) {
-  return `${name} 您好！😊\n\n只需要 3 步驟就能完成評估：\n① 選擇車況問題\n② 選擇車款\n③ 拍照上傳\n\n先選一下目前的狀況吧 👇`;
+  return `${name} Hello～我是阿永的小特助貝菈🌸有什麼車內問題都可以跟貝菈說唷！☺️\n\n只要 3 步驟就能完成評估：\n① 選車況問題\n② 選車款\n③ 拍照上傳\n\n先選一下目前的狀況吧 👇`;
 }
 
 const WELCOME_OPTIONS = [
@@ -31,6 +33,7 @@ const WELCOME_OPTIONS = [
   { label: '污垢嚴重',     text: '車內污垢嚴重' },
   { label: '許久未清潔',   text: '內裝許久未清潔' },
   { label: '打翻飲料',     text: '打翻冷熱飲' },
+  { label: '嘔吐',         text: '車內嘔吐' },
   { label: '地毯積水',     text: '地毯積水' },
   { label: '皮革受損',     text: '座椅皮革受損' },
   { label: '頂篷塌陷',     text: '頂篷絨布塌陷' },
@@ -44,7 +47,7 @@ const WELCOME_OPTIONS = [
 //  拍照提示（所有內裝服務共用）
 // ══════════════════════════════════════════════════
 
-const PHOTO_TIPS = '📸 拍照小技巧（可參考上方圖片）：\n① 車門打開，站車外往內拍\n② 拍近一點，對準問題部位\n③ 光線充足，不用開廣角\n\n照片越清楚，報價越準確哦！';
+const PHOTO_TIPS = '📸 拍照小技巧（可參考上方圖片）：\n① 車門打開，站車外往內拍\n② 拍近一點，對準問題部位\n③ 光線充足，不用開廣角\n\n照片越清楚，貝菈🌸越好幫你評估哦！';
 
 
 // ══════════════════════════════════════════════════
@@ -57,6 +60,7 @@ const TRIGGER_TO_KEY = {
   '車內污垢嚴重': 'dirty',
   '內裝許久未清潔': 'dusty',
   '打翻冷熱飲': 'spill',
+  '車內嘔吐': 'vomit',
   '地毯積水': 'flood',
   '座椅皮革受損': 'leather',
   '頂篷絨布塌陷': 'ceiling',
@@ -65,7 +69,7 @@ const TRIGGER_TO_KEY = {
 const SERVICE_CONFIG = {
   smoke: {
     name: '煙味或異味',
-    brandAsk: '好的！菸味跟異味要看滲入的程度來決定處理方式 💪\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
+    brandAsk: '好的！菸味跟異味要看滲入的程度來決定處理方式 💪\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
     followUpText: '再幫我確認一下，主要是哪種狀況呢？👇',
     followUp: [
       { label: '菸味很重',   text: '追問｜smoke｜菸味很重' },
@@ -80,7 +84,7 @@ const SERVICE_CONFIG = {
   },
   used: {
     name: '二手車整理',
-    brandAsk: '恭喜入手新車！🎉 二手車內裝通常有前車主的使用痕跡，清一次整體質感會差很多～\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
+    brandAsk: '恭喜入手新車！🎉 二手車內裝通常有前車主的使用痕跡，清一次整體質感會差很多～\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
     followUpText: '再幫我確認一下，車內有以下哪些狀況呢？👇',
     followUp: [
       { label: '有菸味',     text: '追問｜used｜有菸味' },
@@ -95,7 +99,7 @@ const SERVICE_CONFIG = {
   },
   dirty: {
     name: '污垢嚴重',
-    brandAsk: '了解！嚴重髒污通常建議做拆洗，把座椅跟地毯整個拆下來徹底清潔 💪\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
+    brandAsk: '了解！嚴重髒污通常建議做拆洗，把座椅跟地毯整個拆下來徹底清潔 💪\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
     followUpText: '再幫我確認一下，車內有異味嗎？👇',
     followUp: [
       { label: '有異味',   text: '追問｜dirty｜有異味' },
@@ -109,7 +113,7 @@ const SERVICE_CONFIG = {
   },
   dusty: {
     name: '許久未清潔',
-    brandAsk: '了解！久沒清潔的車子灰塵跟汙垢容易卡進縫隙，定期處理能延長內裝壽命哦～\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
+    brandAsk: '了解！久沒清潔的車子灰塵跟汙垢容易卡進縫隙，定期處理能延長內裝壽命哦～\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
     followUpText: '再幫我確認一下，車內有異味嗎？👇',
     followUp: [
       { label: '有異味',   text: '追問｜dusty｜有異味' },
@@ -123,7 +127,7 @@ const SERVICE_CONFIG = {
   },
   spill: {
     name: '打翻飲料',
-    brandAsk: '了解！飲料打翻要看滲入的範圍跟材質，處理方式會不太一樣～\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
+    brandAsk: '了解！飲料打翻要看滲入的範圍跟材質，處理方式會不太一樣～\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
     followUpText: '再幫我確認一下飲料的狀況，方便我評估 👇',
     followUp: [
       { label: '咖啡/茶',     text: '追問｜spill｜咖啡或茶' },
@@ -137,9 +141,24 @@ const SERVICE_CONFIG = {
       'https://www.yinzemy.com/sample-pic/fouces-wet.jpg',
     ],
   },
+  vomit: {
+    name: '嘔吐清潔',
+    brandAsk: '了解！嘔吐的話要盡快處理，不然味道跟污漬會越來越難清～貝菈🌸幫你問一下阿永 💪\n\n先幫我確認一下車款，方便評估哦～\n請問你的車子是什麼廠牌？👇',
+    followUpText: '再幫我確認一下狀況 👇',
+    followUp: [
+      { label: '剛發生',       text: '追問｜vomit｜剛發生' },
+      { label: '已超過一天',   text: '追問｜vomit｜已超過一天' },
+      { label: '味道很重',     text: '追問｜vomit｜味道很重' },
+      { label: '已經擦過',     text: '追問｜vomit｜已經擦過但還有痕跡' },
+    ],
+    photos: [
+      'https://www.yinzemy.com/sample-pic/normal.jpg',
+      'https://www.yinzemy.com/sample-pic/fouces.jpg',
+    ],
+  },
   flood: {
     name: '地毯積水',
-    brandAsk: '了解！地毯積水沒處理的話容易發霉產生異味，建議盡快處理比較好哦～\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
+    brandAsk: '了解！地毯積水沒處理的話容易發霉產生異味，建議盡快處理比較好哦～\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
     followUpText: '再幫我確認一下積水的狀況 👇',
     followUp: [
       { label: '下雨漏水',   text: '追問｜flood｜下雨漏水' },
@@ -155,7 +174,7 @@ const SERVICE_CONFIG = {
   },
   leather: {
     name: '皮革受損',
-    brandAsk: '了解！皮革受損可以做局部修復，不一定要整個換，省錢又美觀哦 👍\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
+    brandAsk: '了解！皮革受損可以做局部修復，不一定要整個換，省錢又美觀哦 👍\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
     followUpText: null,
     followUp: null,
     photos: [
@@ -165,8 +184,8 @@ const SERVICE_CONFIG = {
   },
   ceiling: {
     name: '頂篷塌陷',
-    brandAsk: '了解！頂篷塌陷是蠻多老車會遇到的問題，可以做翻新處理的～\n\n先幫我確認一下車款，方便我評估哦～\n請問您的車子是什麼廠牌？👇',
-    followUpText: '再幫我確認一下，您的車子有天窗嗎？👇',
+    brandAsk: '了解！頂篷塌陷是蠻多老車會遇到的問題，可以做翻新處理的～\n\n先幫我確認一下車款，方便貝菈🌸評估哦～\n請問你的車子是什麼廠牌？👇',
+    followUpText: '再幫我確認一下，你的車子有天窗嗎？👇',
     followUp: [
       { label: '有天窗',   text: '追問｜ceiling｜有天窗' },
       { label: '沒有天窗', text: '追問｜ceiling｜沒有天窗' },
@@ -179,21 +198,6 @@ const SERVICE_CONFIG = {
 };
 
 
-// ══════════════════════════════════════════════════
-//  急迫性篩選選項（照片上傳後詢問）
-// ══════════════════════════════════════════════════
-
-const URGENCY_OPTIONS = [
-  { label: '急！盡快處理', text: '時程｜緊急' },
-  { label: '不急，排隊就好', text: '時程｜排隊' },
-  { label: '先了解費用',   text: '時程｜了解費用' },
-];
-
-// LINE 聯繫確認選項
-const CONTACT_OPTIONS = [
-  { label: '好，沒問題',   text: '聯繫｜好' },
-  { label: '先用文字就好', text: '聯繫｜文字' },
-];
 
 
 // ══════════════════════════════════════════════════
@@ -239,10 +243,10 @@ const RESET_TRIGGERS = ['菜單', '選單', '重新選擇', '重選'];
 const GREETING_TRIGGERS = ['你好', '哈囉', '嗨', 'hi', 'hello', '安安', '開始', '服務'];
 
 const KEYWORD_REPLIES = {
-  '地址': '📍 我們在高雄市鳥松區中正路101號哦！\n（近文山派出所、長庚醫院）\n\n歡迎過來看看～\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號',
-  '在哪': '📍 我們在高雄市鳥松區中正路101號哦！\n（近文山派出所、長庚醫院）\n\n歡迎過來看看～\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號',
-  '電話': '📞 0966-909-981\n歡迎隨時來電，我們很樂意為您服務！',
-  '營業時間': '我們的營業時間是週一至週日 09:00–18:00 哦！\n📍 高雄市鳥松區中正路101號\n\n歡迎隨時聯繫我們 😊',
+  '地址': '📍 我們在高雄市鳥松區中正路101號哦！\n（近文山派出所、長庚醫院）\n\n歡迎過來找阿永～\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號',
+  '在哪': '📍 我們在高雄市鳥松區中正路101號哦！\n（近文山派出所、長庚醫院）\n\n歡迎過來找阿永～\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號',
+  '電話': '📞 0966-909-981\n歡迎隨時來電，阿永很樂意為你服務！',
+  '營業時間': '我們的營業時間是週一至週日 09:00–18:00 哦！\n📍 高雄市鳥松區中正路101號\n\n有問題隨時跟貝菈🌸說 😊',
 };
 
 
@@ -294,14 +298,14 @@ function buildWelcomeFlexMessage(introText) {
   const btn = (label, text) => ({
     type: 'button',
     style: 'secondary',
-    height: 'sm',
+    height: 'md',
     action: { type: 'message', label, text },
     flex: 1,
   });
 
   return {
     type: 'flex',
-    altText: '請問您的車子目前遇到什麼狀況呢？👇',
+    altText: '請問你的車子目前遇到什麼狀況呢？👇',
     contents: {
       type: 'bubble',
       body: {
@@ -336,13 +340,19 @@ function buildWelcomeFlexMessage(introText) {
             type: 'box', layout: 'horizontal', spacing: 'sm',
             contents: [
               btn('打翻飲料', '打翻冷熱飲'),
-              btn('地毯積水', '地毯積水'),
+              btn('嘔吐', '車內嘔吐'),
             ],
           },
           {
             type: 'box', layout: 'horizontal', spacing: 'sm',
             contents: [
+              btn('地毯積水', '地毯積水'),
               btn('皮革受損', '座椅皮革受損'),
+            ],
+          },
+          {
+            type: 'box', layout: 'horizontal', spacing: 'sm',
+            contents: [
               btn('頂篷塌陷', '頂篷絨布塌陷'),
             ],
           },
@@ -456,6 +466,18 @@ async function setUserState(env, userId, state) {
   if (!env.CHAT_STATE) return;
   // active 狀態 10 天後自動過期回 idle，避免卡住（老闆通常 7 天內結案）
   await env.CHAT_STATE.put(userId, state, { expirationTtl: 864000 });
+}
+
+// ── 記錄客戶選擇的服務項目（供照片通知用）──
+
+async function setUserService(env, userId, serviceName) {
+  if (!env.CHAT_STATE) return;
+  await env.CHAT_STATE.put(`service_${userId}`, serviceName, { expirationTtl: 864000 });
+}
+
+async function getUserService(env, userId) {
+  if (!env.CHAT_STATE) return '';
+  return (await env.CHAT_STATE.get(`service_${userId}`)) || '';
 }
 
 // ── 進行中案件清單（供老闆結案用）──
@@ -902,7 +924,7 @@ async function handleText(event, env, workerBaseUrl) {
     // 通知客戶：案件已結束，可以開始新的詢問
     const targetName = await getUserDisplayName(targetUserId, env.LINE_CHANNEL_ACCESS_TOKEN);
     const thankYouMsg = buildWelcomeFlexMessage(
-      `${targetName} 感謝您的支持！🎉 案件已完成～\n\n之後有需要歡迎隨時點選下方服務項目 😊`
+      `${targetName} 感謝你的支持！🎉 案件已完成～\n\n之後有需要歡迎隨時跟貝菈🌸說哦 😊`
     );
     await pushMessage(targetUserId, [thankYouMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
 
@@ -1017,15 +1039,18 @@ async function handleText(event, env, workerBaseUrl) {
     replyText = config.brandAsk;
     replyOptions = buildBrandOptions(`內裝｜${serviceKey}｜`);
     newState = 'active';
+    // 記錄客戶選的服務項目（供照片通知老闆時使用）
+    await setUserService(env, userId, config.name);
   }
 
   // ────────────────────────────────────────
   //  優先級 2：安卓車機 → 進入廠牌選單
   // ────────────────────────────────────────
   else if (userMsg === '安裝安卓車機') {
-    replyText = '好的！安卓車機需要先確認車款才能報價哦～\n請問您的車子是什麼廠牌？👇';
+    replyText = '好的！安卓車機需要先確認車款才能報價哦～\n請問你的車子是什麼廠牌？👇';
     replyOptions = buildBrandOptions('車機｜');
     newState = 'active';
+    await setUserService(env, userId, '安卓車機');
   }
 
   // ────────────────────────────────────────
@@ -1038,14 +1063,14 @@ async function handleText(event, env, workerBaseUrl) {
 
     if (!config) {
       // 無效的 serviceKey
-      replyText = '收到您的訊息了！老闆看到會盡快回覆您哦 😊';
+      replyText = '收到你的訊息了！阿永看到會盡快回覆你哦 😊';
 
     } else if (parts.length === 3) {
       // ── 選了廠牌，顯示車型 ──
       const brand = parts[2];
 
       if (brand === '其他品牌') {
-        replyText = '請選擇您的車子廠牌：';
+        replyText = '請選擇你的車子廠牌：';
         replyOptions = Object.keys(OTHER_CAR_BRANDS).map(b => ({
           label: b, text: `內裝｜${sKey}｜${b}`
         }));
@@ -1117,14 +1142,14 @@ async function handleText(event, env, workerBaseUrl) {
       const brand = parts[1];
 
       if (brand === '其他品牌') {
-        replyText = '請選擇您的車子廠牌：';
+        replyText = '請選擇你的車子廠牌：';
         replyOptions = Object.keys(OTHER_CAR_BRANDS).map(b => ({
           label: b, text: `車機｜${b}`
         }));
         replyOptions.push({ label: '以上都沒有', text: '車機｜找不到廠牌' });
       } else if (brand === '找不到廠牌') {
         // 廠牌不在列表 → 跳過車型，直接問 OEM
-        replyText = '沒問題！麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
+        replyText = '沒問題！麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
         replyOptions = [
           { label: '原廠車機', text: '車機｜其他｜其他｜原廠車機' },
           { label: '已改裝過', text: '車機｜其他｜其他｜已改裝過' },
@@ -1141,7 +1166,7 @@ async function handleText(event, env, workerBaseUrl) {
         }
       } else {
         // 未知廠牌（防呆）→ 跳過車型，直接問 OEM
-        replyText = '沒問題！麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
+        replyText = '沒問題！麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
         replyOptions = [
           { label: '原廠車機', text: '車機｜其他｜其他｜原廠車機' },
           { label: '已改裝過', text: '車機｜其他｜其他｜已改裝過' },
@@ -1156,14 +1181,14 @@ async function handleText(event, env, workerBaseUrl) {
 
       if (carModel === '找不到車型') {
         // 型號不在列表 → 跳過車型，直接問 OEM
-        replyText = `好的！${carBrand} 的車子 🔧\n\n麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
+        replyText = `好的！${carBrand} 的車子 🔧\n\n麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
         replyOptions = [
           { label: '原廠車機', text: `車機｜${carBrand}｜其他｜原廠車機` },
           { label: '已改裝過', text: `車機｜${carBrand}｜其他｜已改裝過` },
           { label: '不確定',   text: `車機｜${carBrand}｜其他｜不確定` },
         ];
       } else {
-        replyText = `好的！${carBrand} ${carModel} 🔧\n\n麻煩您幫我拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
+        replyText = `好的！${carBrand} ${carModel} 🔧\n\n麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
         replyOptions = [
           { label: '原廠車機', text: `車機｜${carBrand}｜${carModel}｜原廠車機` },
           { label: '已改裝過', text: `車機｜${carBrand}｜${carModel}｜已改裝過` },
@@ -1177,7 +1202,7 @@ async function handleText(event, env, workerBaseUrl) {
       carModel = parts[2];
       carOem = parts.slice(3).join('｜');
 
-      replyText = `好的！${carBrand} ${carModel}（${carOem}），我這邊馬上幫您確認規格跟費用，很快回覆您！💪`;
+      replyText = `好的！${carBrand} ${carModel}（${carOem}），貝菈🌸這邊馬上幫你確認規格跟費用，很快回覆你！💪`;
       isCarMachineDone = true;
     }
   }
@@ -1192,49 +1217,14 @@ async function handleText(event, env, workerBaseUrl) {
     const config = SERVICE_CONFIG[sKey];
     const serviceName = config ? config.name : '';
 
-    replyText = `收到！${answer}，了解了 👌\n\n照片拍好直接傳過來就可以囉，我看完馬上回覆您！`;
+    replyText = `收到！${answer}，了解了 👌\n\n照片拍好直接傳過來就可以囉，貝菈🌸看完馬上回覆你！`;
   }
 
   // ────────────────────────────────────────
-  //  優先級 6：時程｜ → 急迫性篩選（預約制）
-  // ────────────────────────────────────────
-  else if (userMsg.startsWith('時程｜')) {
-    const urgency = userMsg.replace('時程｜', '');
-
-    if (urgency === '緊急') {
-      replyText = '收到！我了解狀況比較緊急 💪\n\n我會盡快看過照片幫您安排，請稍候！\n\n⭐ 最後確認一下，我看完照片後直接在 LINE 上跟您通話說明，方便嗎？😊';
-      replyOptions = CONTACT_OPTIONS;
-      notifyOwner(
-        `🚨 緊急案件！\n👤 ${customerName}\n💬 客戶表示狀況緊急，需要盡快處理\n\n⚡ 請優先查看照片並安排`,
-        env, userId
-      );
-    } else if (urgency === '排隊') {
-      replyText = '好的！沒問題 👌 我看過照片後會跟您報價，再幫您安排預約時間。\n\n⭐ 最後確認一下，我看完照片後直接在 LINE 上跟您通話說明，方便嗎？😊';
-      replyOptions = CONTACT_OPTIONS;
-    } else {
-      // 了解費用 → 流程結束
-      replyText = '沒問題！費用會依車款和車況有所不同，我看過照片後會先幫您估個大概的價格範圍，完全不用有壓力哦 😊\n\n有需要的時候隨時找我！';
-    }
-  }
-
-  // ────────────────────────────────────────
-  //  優先級 7：聯繫｜ → LINE 聯繫確認
-  // ────────────────────────────────────────
-  else if (userMsg.startsWith('聯繫｜')) {
-    const choice = userMsg.replace('聯繫｜', '');
-
-    if (choice === '好') {
-      replyText = '太好了！我看完照片後會直接用 LINE 通話跟您說明，通常一個工作天內會聯繫您哦，感謝您！💪';
-    } else {
-      replyText = '沒問題！我看完照片後會用文字回覆您報價，通常一個工作天內會回覆您哦 💪';
-    }
-  }
-
-  // ────────────────────────────────────────
-  //  優先級 8：不方便拍照 → 詢問是否軍職
+  //  優先級 6：不方便拍照 → 詢問是否軍職
   // ────────────────────────────────────────
   else if (userMsg === '不方便拍照') {
-    replyText = '沒問題！請問方便讓我了解一下原因嗎？這樣我比較好幫您安排 😊';
+    replyText = '沒問題！方便讓貝菈🌸了解一下原因嗎？這樣比較好幫你安排哦 😊';
     replyOptions = [
       { label: '軍職不便',   text: '拍照｜軍職' },
       { label: '其他原因',   text: '拍照｜其他' },
@@ -1248,13 +1238,13 @@ async function handleText(event, env, workerBaseUrl) {
     const reason = userMsg.replace('拍照｜', '');
 
     if (reason === '軍職') {
-      replyText = '了解！軍職確實不方便拍照也不方便跑一趟 💪\n\n我會請老闆盡快直接在 LINE 上聯繫您，幫您處理！請放心 😊';
+      replyText = '了解！軍職確實不方便拍照也不方便跑一趟 💪\n\n貝菈🌸會請阿永盡快在 LINE 上聯繫你，幫你處理！請放心 😊';
       notifyOwner(
         `🚨 軍職客戶 - 請盡快聯繫！\n👤 ${customerName}\n💬 軍職，無法拍照也無法到現場\n\n⚡ 請立即主動聯繫客戶`,
         env, userId
       );
     } else {
-      replyText = '沒問題！您可以直接用文字描述一下車子目前的狀況，我先幫您初步評估～\n\n或者直接開車過來讓我現場看也可以哦！\n\n📍 高雄市鳥松區中正路101號\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號';
+      replyText = '沒問題！你可以直接用文字描述一下車子目前的狀況，貝菈🌸先幫你初步評估～\n\n或者直接開車過來讓阿永現場看也可以哦！\n\n📍 高雄市鳥松區中正路101號\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號';
       notifyOwner(
         `📋 客戶詢問\n👤 ${customerName}\n💬 不方便拍照，需要文字溝通或到店評估`,
         env, userId
@@ -1266,7 +1256,7 @@ async function handleText(event, env, workerBaseUrl) {
   //  優先級 9：直接到店評估
   // ────────────────────────────────────────
   else if (userMsg === '直接到店評估') {
-    replyText = '歡迎直接過來！😊\n\n📍 高雄市鳥松區中正路101號\n（近文山派出所、長庚醫院）\n\n🕘 營業時間：週一至週日 09:00–18:00\n\n💡 建議來之前先傳個訊息跟我說一下，確認我在店裡哦！\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號';
+    replyText = '歡迎直接過來！😊\n\n📍 高雄市鳥松區中正路101號\n（近文山派出所、長庚醫院）\n\n🕘 營業時間：週一至週日 09:00–18:00\n\n💡 建議來之前先跟貝菈🌸說一聲，確認阿永在店裡哦！\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號';
     notifyOwner(
       `🏪 客戶想到店\n👤 ${customerName}\n💬 想直接到店評估`,
       env, userId
@@ -1297,7 +1287,7 @@ async function handleText(event, env, workerBaseUrl) {
   //  優先級 12：預約 / 報價相關
   // ────────────────────────────────────────
   else if (currentState === 'idle' && /預約|報價|價格|費用|多少錢/.test(userMsg)) {
-    replyText = '費用會依車況不同而異哦！請問您的車子目前遇到什麼狀況呢？先選一下，我馬上幫您評估 👇';
+    replyText = '費用會依車況不同而異哦！先選一下你的車子目前的狀況，貝菈🌸馬上幫你評估 👇';
     useWelcomeFlex = true;
   }
 
@@ -1311,7 +1301,7 @@ async function handleText(event, env, workerBaseUrl) {
       replyText = getWelcomeText(customerName);
       useWelcomeFlex = true;
     } else {
-      replyText = '收到您的訊息了！老闆看到會盡快回覆您哦 😊';
+      replyText = '收到你的訊息了！阿永看到會盡快回覆你哦 😊';
     }
   }
 
@@ -1323,11 +1313,11 @@ async function handleText(event, env, workerBaseUrl) {
     }
   }
 
-  // ── 組裝 LINE 回覆訊息（上限 5 則）──
+  // ── 組裝 LINE 回覆訊息 ──
+
   const messages = [];
 
   if (useWelcomeFlex) {
-    // 用 Flex Message 按鈕卡片呈現服務選單
     messages.push(buildWelcomeFlexMessage(replyText));
   } else {
     // 參考照片放前面，讓客戶先看到
@@ -1401,16 +1391,21 @@ async function handleImageBatch(imageEvents, env) {
     const lastReply = recentImageReplies.get(userId) || 0;
     const shouldReply = (now - lastReply) > IMAGE_REPLY_COOLDOWN;
 
+    // 取得客戶選的服務項目
+    const serviceName = await getUserService(env, userId);
+
     if (shouldReply) {
-      const urgencyReplyText = '收到您的照片了！😊 快完成囉，再幫我回答一下～\n\n請問目前車子的狀況急不急呢？👇';
+      const replyText = '收到你的照片了！😊 貝菈🌸會請阿永看過照片回覆你哦～💪';
       await replyMessage(firstEvent.replyToken, [
-        buildTextMessage(urgencyReplyText, URGENCY_OPTIONS),
+        { type: 'text', text: replyText },
       ], env.LINE_CHANNEL_ACCESS_TOKEN);
 
       recentImageReplies.set(userId, now);
 
+      // 通知老闆（帶入服務項目）
+      const serviceInfo = serviceName ? `\n🔧 服務項目：${serviceName}` : '';
       notifyOwner(
-        `📸 客戶照片通知\n👤 ${customerName}\n📷 ${imageEvents.length} 張照片\n\n請到 LINE Official Account 查看並回覆`,
+        `📸 客戶照片通知\n👤 ${customerName}${serviceInfo}\n📷 ${imageEvents.length} 張照片\n\n請到 LINE Official Account 查看並回覆`,
         env, userId
       );
     }
@@ -1442,7 +1437,6 @@ async function handleImageBatch(imageEvents, env) {
     }, env);
 
     if (shouldReply) {
-      const urgencyLogText = '收到您的照片了！😊 快完成囉，再幫我回答一下～\n\n請問目前車子的狀況急不急呢？\n\n【選項】\n1. 急！盡快處理\n2. 不急，排隊就好\n3. 先了解費用';
       await logToSheet({
         action: 'log_conversation',
         timestamp: now,
@@ -1450,7 +1444,7 @@ async function handleImageBatch(imageEvents, env) {
         userId,
         role: 'bot',
         msgType: 'text',
-        content: urgencyLogText,
+        content: '收到你的照片了！😊 貝菈🌸會請阿永看過照片回覆你哦～💪',
       }, env);
     }
 
