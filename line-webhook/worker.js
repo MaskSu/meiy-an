@@ -23,9 +23,11 @@ const IMAGE_REPLY_COOLDOWN = 10000; // 10 秒內不重複回覆
 
 const BELA_AVATAR_URL = 'https://www.yinzemy.com/avatar/bela.jpg';
 
-function getWelcomeText(name) {
-  return `${name} Hello～我是阿永的小特助貝菈🌸有什麼車內問題都可以跟貝菈說唷！☺️\n\n只要 3 步驟就能完成評估：\n① 選車況問題\n② 選車款\n③ 拍照上傳\n\n先選一下目前的狀況吧 👇`;
+function getWelcomeIntro(name) {
+  return `${name} Hello～我是阿永的小特助貝菈🌸有什麼車內問題都可以跟貝菈說唷！☺️`;
 }
+
+const WELCOME_MENU_TEXT = '只要 3 步驟就能完成評估：\n① 選車況問題\n② 選車款\n③ 拍照上傳\n\n先選一下目前的狀況吧 👇';
 
 const WELCOME_OPTIONS = [
   { label: '煙味或異味',   text: '車內有煙味或異味' },
@@ -517,8 +519,16 @@ async function handleFollow(event, env) {
   await setUserState(env, userId, 'idle');
 
   const name = await getUserDisplayName(userId, env.LINE_CHANNEL_ACCESS_TOKEN);
-  const welcomeMsg = buildWelcomeFlexMessage(getWelcomeText(name));
-  await replyMessage(event.replyToken, [welcomeMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
+
+  // 第一段：貝菈照片 + 自我介紹
+  await replyMessage(event.replyToken, [
+    buildImageMessage(BELA_AVATAR_URL),
+    { type: 'text', text: getWelcomeIntro(name) },
+  ], env.LINE_CHANNEL_ACCESS_TOKEN);
+
+  // 1 秒後推送選單
+  await new Promise(r => setTimeout(r, 1000));
+  await pushMessage(userId, [buildWelcomeFlexMessage(WELCOME_MENU_TEXT)], env.LINE_CHANNEL_ACCESS_TOKEN);
 }
 
 
@@ -1271,7 +1281,7 @@ async function handleText(event, env, workerBaseUrl) {
     RESET_TRIGGERS.some(t => userMsg.toLowerCase().includes(t)) ||
     GREETING_TRIGGERS.some(t => userMsg.toLowerCase().includes(t))
   )) {
-    replyText = getWelcomeText(customerName);
+    replyText = WELCOME_MENU_TEXT;
     useWelcomeFlex = true;
   }
 
@@ -1298,7 +1308,7 @@ async function handleText(event, env, workerBaseUrl) {
   // ────────────────────────────────────────
   else {
     if (currentState === 'idle') {
-      replyText = getWelcomeText(customerName);
+      replyText = WELCOME_MENU_TEXT;
       useWelcomeFlex = true;
     } else {
       replyText = '收到你的訊息了！阿永看到會盡快回覆你哦 😊';
@@ -1315,21 +1325,28 @@ async function handleText(event, env, workerBaseUrl) {
 
   // ── 組裝 LINE 回覆訊息 ──
 
-  const messages = [];
-
   if (useWelcomeFlex) {
-    messages.push(buildWelcomeFlexMessage(replyText));
+    // 第一段：貝菈照片 + 自我介紹（reply）
+    await replyMessage(event.replyToken, [
+      buildImageMessage(BELA_AVATAR_URL),
+      { type: 'text', text: getWelcomeIntro(customerName) },
+    ], env.LINE_CHANNEL_ACCESS_TOKEN);
+
+    // 1 秒後推送選單（push）
+    await new Promise(r => setTimeout(r, 1000));
+    await pushMessage(userId, [buildWelcomeFlexMessage(replyText)], env.LINE_CHANNEL_ACCESS_TOKEN);
   } else {
+    const messages = [];
     // 參考照片放前面，讓客戶先看到
     for (const url of photos.slice(0, 3)) {
       messages.push(buildImageMessage(url));
     }
     // 文字訊息（含快速選項按鈕）放最後
     messages.push(buildTextMessage(replyText, replyOptions));
-  }
 
-  // LINE Reply API 上限 5 則訊息
-  await replyMessage(event.replyToken, messages.slice(0, 5), env.LINE_CHANNEL_ACCESS_TOKEN);
+    // LINE Reply API 上限 5 則訊息
+    await replyMessage(event.replyToken, messages.slice(0, 5), env.LINE_CHANNEL_ACCESS_TOKEN);
+  }
 
   // ── 車機詢問完成：記錄 + 通知老闆 ──
   if (isCarMachineDone) {
