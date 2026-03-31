@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>後台管理 | I LUV尹澤鎂研</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bronze: #C8906B;
+      --bronze-light: #D4A87A;
+      --bronze-bright: #B87A4A;
+      --sage: #8FA48E;
+      --sage-dark: #5F7560;
+      --sage-deep: #3B4C3C;
+      --sage-mist: #D4E0D5;
+      --bg-cream: #FDFAF5;
+      --bg-light: #F5F0E8;
+      --bg-card: #FFFFFF;
+      --text: #2A1E10;
+      --text-mid: #5A4028;
+      --text-mute: #8A7060;
+      --border-light: rgba(184,120,80,0.18);
+      --danger: #D9534F;
+      --danger-light: #F8E0DF;
+      --r: 8px;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-cream);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, var(--sage-deep), var(--sage-dark));
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .header h1 { font-size: 18px; font-weight: 500; }
+    .header .logo-text { font-size: 12px; opacity: 0.7; }
+    .header .user-email { font-size: 11px; opacity: 0.6; }
+
+    /* ── Auth Screen ── */
+    .auth-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 40px 28px;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 4px 24px rgba(100,60,20,0.10);
+      text-align: center;
+    }
+    .auth-card h2 { font-size: 22px; margin-bottom: 6px; color: var(--sage-deep); }
+    .auth-card .sub { font-size: 13px; color: var(--text-mute); margin-bottom: 20px; }
+    .auth-card .spinner-small {
+      width: 28px; height: 28px; margin: 16px auto;
+      border: 3px solid var(--border-light);
+      border-top-color: var(--bronze);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .auth-card .err-msg { color: var(--danger); font-size: 14px; margin-top: 16px; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border-light);
+      position: sticky;
+      top: 54px;
+      z-index: 99;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-mute);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--bronze-bright);
+      border-bottom-color: var(--bronze);
+      background: var(--bg-card);
+    }
+    .tab-btn i { display: block; font-size: 18px; margin-bottom: 4px; }
+
+    /* ── Content ── */
+    .content { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+    /* ── Service Card ── */
+    .service-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(100,60,20,0.06);
+      overflow: hidden;
+    }
+    .service-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+    .service-header h3 {
+      font-size: 15px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .service-header .count {
+      background: var(--sage-mist);
+      color: var(--sage-dark);
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 400;
+    }
+    .service-header .chevron {
+      color: var(--text-mute);
+      transition: transform 0.2s;
+      font-size: 14px;
+    }
+    .service-header .chevron.open { transform: rotate(180deg); }
+    .service-body { padding: 0 16px 16px; }
+
+    /* ── Photo Grid ── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .photo-cell {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-light);
+    }
+    .photo-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-cell .del-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .photo-cell:hover .del-btn,
+    .photo-cell:active .del-btn { opacity: 1; }
+    @media (hover: none) {
+      .photo-cell .del-btn { opacity: 0.85; }
+    }
+
+    .add-photo-cell {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      border: 2px dashed var(--border-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-mute);
+      font-size: 12px;
+      gap: 4px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .add-photo-cell:active {
+      border-color: var(--bronze);
+      background: var(--bg-light);
+    }
+    .add-photo-cell i { font-size: 22px; }
+
+    /* ── Video List ── */
+    .video-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .video-item:last-child { border-bottom: none; }
+    .video-thumb {
+      width: 80px;
+      height: 45px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #000;
+    }
+    .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .video-id {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-mid);
+      word-break: break-all;
+    }
+    .video-del {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--danger-light);
+      color: var(--danger);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .add-video-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .add-video-row input {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--r);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+    .add-video-row input:focus { border-color: var(--bronze); }
+    .add-video-row button {
+      padding: 12px 16px;
+      background: var(--sage);
+      color: #fff;
+      border: none;
+      border-radius: var(--r);
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .add-video-row button:active { background: var(--sage-dark); }
+
+    .video-count {
+      font-size: 13px;
+      color: var(--text-mute);
+      margin-bottom: 12px;
+    }
+
+    /* ── Save Bar ── */
+    .save-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      padding: 12px 16px;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .save-bar .save-btn {
+      flex: 1;
+      padding: 14px;
+      background: var(--bronze);
+      color: #fff;
+      border: none;
+      border-radius: var(--r);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .save-bar .save-btn:active { background: var(--bronze-bright); }
+    .save-bar .save-btn:disabled { opacity: 0.6; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--sage-deep);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Loading overlay ── */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+    }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-light);
+      border-top-color: var(--bronze);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 250;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 8px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .empty-hint {
+      text-align: center;
+      color: var(--text-mute);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+    .hidden { display: none !important; }
+    .pb-80 { padding-bottom: 80px; }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- AUTH CHECK (shown while verifying Gmail) -->
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <h2>I LUV尹澤鎂研</h2>
+      <p class="sub">後台管理系統</p>
+      <div class="spinner-small" id="authSpinner"></div>
+      <div id="authStatus" style="font-size:13px; color:var(--text-mute);">正在驗證 Google 帳號...</div>
+      <div class="err-msg hidden" id="authErr"></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="mainScreen" class="hidden">
+    <div class="header">
+      <div>
+        <h1>後台管理</h1>
+        <div class="logo-text">I LUV尹澤鎂研</div>
+        <div class="user-email" id="userEmail"></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="photos" onclick="switchTab('photos')">
+        <i class="fas fa-images"></i>服務照片
+      </button>
+      <button class="tab-btn" data-tab="videos" onclick="switchTab('videos')">
+        <i class="fas fa-video"></i>施作影片
+      </button>
+    </div>
+
+    <div class="content pb-80" id="tabPhotos"></div>
+    <div class="content pb-80 hidden" id="tabVideos"></div>
+
+    <div class="save-bar">
+      <button class="save-btn" id="saveBtn" onclick="doSave()">
+        <i class="fas fa-save"></i> 儲存變更
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="loading-overlay hidden" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="lightbox hidden" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept="image/*" multiple style="display:none" onchange="handleFileSelect(event)">
+
+<script>
+// ══════════════════════════════════════════
+//  google.script.run Promise 包裝
+// ══════════════════════════════════════════
+function gasRun(fnName) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return new Promise(function(resolve, reject) {
+    var runner = google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(reject);
+    runner[fnName].apply(runner, args);
+  });
+}
+
+// ══════════════════════════════════════════
+//  State
+// ══════════════════════════════════════════
+var services = [];
+var videos = [];
+var dirty = false;
+var uploadingServiceIdx = -1;
+var expandedServices = {};
+
+// ══════════════════════════════════════════
+//  Init — 自動驗證 Gmail
+// ══════════════════════════════════════════
+(function init() {
+  gasRun('clientCheckAuth')
+    .then(function(result) {
+      if (result.status === 'ok') {
+        document.getElementById('userEmail').textContent = result.email;
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('mainScreen').classList.remove('hidden');
+        loadData();
+      } else {
+        showAuthError(result.message || '驗證失敗');
+      }
+    })
+    .catch(function(e) {
+      showAuthError('無法連線，請確認已登入 Google 帳號後重新整理');
+    });
+})();
+
+function showAuthError(msg) {
+  document.getElementById('authSpinner').classList.add('hidden');
+  document.getElementById('authStatus').classList.add('hidden');
+  var errEl = document.getElementById('authErr');
+  errEl.textContent = msg;
+  errEl.classList.remove('hidden');
+}
+
+// ══════════════════════════════════════════
+//  Load Data
+// ══════════════════════════════════════════
+function loadData() {
+  showLoading(true);
+  gasRun('clientGetConfig')
+    .then(function(result) {
+      if (result.status === 'ok') {
+        services = result.services || [];
+        videos = result.videos || [];
+        renderPhotos();
+        renderVideos();
+        dirty = false;
+      } else {
+        toast('載入失敗：' + (result.message || ''));
+      }
+      showLoading(false);
+    })
+    .catch(function(e) {
+      toast('無法載入資料');
+      showLoading(false);
+    });
+}
+
+// ══════════════════════════════════════════
+//  Tab switching
+// ══════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  document.getElementById('tabPhotos').classList.toggle('hidden', tab !== 'photos');
+  document.getElementById('tabVideos').classList.toggle('hidden', tab !== 'videos');
+}
+
+// ══════════════════════════════════════════
+//  Render: Service Photos
+// ══════════════════════════════════════════
+function renderPhotos() {
+  var container = document.getElementById('tabPhotos');
+  if (!services.length) {
+    container.innerHTML = '<div class="empty-hint"><i class="fas fa-inbox"></i><br>尚無服務項目資料<br>請先在 GAS 執行 migratePhotos()</div>';
+    return;
+  }
+
+  container.innerHTML = services.map(function(svc, si) {
+    var isOpen = expandedServices[si] !== false;
+    var photos = svc.photos || [];
+    return '<div class="service-card">' +
+      '<div class="service-header" onclick="toggleExpand(' + si + ')">' +
+        '<h3>' + escHtml(svc.title) + ' <span class="count">' + photos.length + ' 張</span></h3>' +
+        '<i class="fas fa-chevron-down chevron ' + (isOpen ? 'open' : '') + '"></i>' +
+      '</div>' +
+      '<div class="service-body ' + (isOpen ? '' : 'hidden') + '">' +
+        '<div class="photo-grid">' +
+          photos.map(function(url, pi) {
+            return '<div class="photo-cell" onclick="openLightbox(\'' + escAttr(url) + '\')">' +
+              '<img src="' + escAttr(url) + '" loading="lazy" alt="">' +
+              '<button class="del-btn" onclick="event.stopPropagation(); delPhoto(' + si + ', ' + pi + ')" title="刪除照片">' +
+                '<i class="fas fa-times"></i>' +
+              '</button>' +
+            '</div>';
+          }).join('') +
+          '<div class="add-photo-cell" onclick="triggerUpload(' + si + ')">' +
+            '<i class="fas fa-plus"></i>新增' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleExpand(si) {
+  expandedServices[si] = expandedServices[si] === false ? true : false;
+  renderPhotos();
+}
+
+function delPhoto(si, pi) {
+  var url = services[si].photos[pi];
+  if (!confirm('確定要刪除這張照片嗎？')) return;
+
+  var fileId = extractDriveFileId(url);
+  if (fileId) {
+    gasRun('clientDeletePhoto', fileId).catch(function() {});
+  }
+
+  services[si].photos.splice(pi, 1);
+  dirty = true;
+  renderPhotos();
+  toast('照片已移除');
+}
+
+function extractDriveFileId(url) {
+  var m = url.match(/googleusercontent\.com\/d\/([^/?]+)/);
+  return m ? m[1] : null;
+}
+
+// ══════════════════════════════════════════
+//  Photo Upload
+// ══════════════════════════════════════════
+function triggerUpload(si) {
+  uploadingServiceIdx = si;
+  document.getElementById('fileInput').click();
+}
+
+function handleFileSelect(event) {
+  var files = Array.from(event.target.files);
+  if (!files.length || uploadingServiceIdx < 0) return;
+
+  var si = uploadingServiceIdx;
+  showLoading(true);
+  var uploaded = 0;
+
+  function uploadNext(idx) {
+    if (idx >= files.length) {
+      renderPhotos();
+      showLoading(false);
+      toast('已上傳 ' + uploaded + ' 張照片');
+      event.target.value = '';
+      return;
+    }
+
+    var file = files[idx];
+    var reader = new FileReader();
+    reader.onload = function() {
+      var base64 = reader.result.split(',')[1];
+      gasRun('clientUploadPhoto', base64, file.name, si)
+        .then(function(result) {
+          if (result.status === 'ok' && result.url) {
+            services[si].photos.push(result.url);
+            dirty = true;
+            uploaded++;
+          } else {
+            toast('上傳失敗：' + (result.message || ''));
+          }
+          uploadNext(idx + 1);
+        })
+        .catch(function(e) {
+          toast('上傳錯誤');
+          uploadNext(idx + 1);
+        });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  uploadNext(0);
+}
+
+// ══════════════════════════════════════════
+//  Render: Videos
+// ══════════════════════════════════════════
+function renderVideos() {
+  var container = document.getElementById('tabVideos');
+  var listHtml = videos.map(function(id, vi) {
+    return '<div class="video-item">' +
+      '<div class="video-thumb">' +
+        '<img src="https://i.ytimg.com/vi/' + escAttr(id) + '/hqdefault.jpg" loading="lazy" alt="">' +
+      '</div>' +
+      '<div class="video-id">' + escHtml(id) + '</div>' +
+      '<button class="video-del" onclick="delVideo(' + vi + ')" title="刪除"><i class="fas fa-trash"></i></button>' +
+    '</div>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="add-video-row">' +
+      '<input type="text" id="newVideoId" placeholder="YouTube 影片 ID 或網址" inputmode="url">' +
+      '<button onclick="addVideo()"><i class="fas fa-plus"></i> 新增</button>' +
+    '</div>' +
+    '<div class="video-count">共 ' + videos.length + ' 部影片</div>' +
+    (videos.length ? listHtml : '<div class="empty-hint">尚無影片</div>');
+}
+
+function addVideo() {
+  var val = document.getElementById('newVideoId').value.trim();
+  if (!val) return;
+
+  var id = extractYoutubeId(val);
+  if (!id) { toast('無效的 YouTube ID 或網址'); return; }
+  if (videos.indexOf(id) >= 0) { toast('此影片已存在'); return; }
+
+  videos.unshift(id);
+  dirty = true;
+  renderVideos();
+  toast('影片已新增');
+}
+
+function delVideo(vi) {
+  videos.splice(vi, 1);
+  dirty = true;
+  renderVideos();
+  toast('影片已移除');
+}
+
+function extractYoutubeId(input) {
+  if (/^[A-Za-z0-9_-]{11}$/.test(input)) return input;
+  try {
+    var url = new URL(input);
+    if (url.searchParams.has('v')) return url.searchParams.get('v');
+    if (url.hostname === 'youtu.be') return url.pathname.slice(1).split('/')[0];
+    var m = url.pathname.match(/\/shorts\/([A-Za-z0-9_-]+)/);
+    if (m) return m[1];
+    m = url.pathname.match(/\/embed\/([A-Za-z0-9_-]+)/);
+    if (m) return m[1];
+  } catch (e) {}
+  if (input.length >= 10 && input.length <= 12 && /^[A-Za-z0-9_-]+$/.test(input)) return input;
+  return null;
+}
+
+// ══════════════════════════════════════════
+//  Save
+// ══════════════════════════════════════════
+function doSave() {
+  var btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  showLoading(true);
+
+  var svcData = services.map(function(s) {
+    return { index: s.index, title: s.title, photos: s.photos };
+  });
+
+  gasRun('clientSavePhotos', svcData)
+    .then(function(result) {
+      if (result.status !== 'ok') {
+        toast('照片儲存失敗：' + (result.message || ''));
+        showLoading(false);
+        btn.disabled = false;
+        return;
+      }
+      return gasRun('clientSaveVideos', videos);
+    })
+    .then(function(result) {
+      if (!result) return;
+      if (result.status !== 'ok') {
+        toast('影片儲存失敗：' + (result.message || ''));
+      } else {
+        dirty = false;
+        toast('儲存成功！');
+      }
+      showLoading(false);
+      btn.disabled = false;
+    })
+    .catch(function(e) {
+      toast('儲存錯誤');
+      showLoading(false);
+      btn.disabled = false;
+    });
+}
+
+// ══════════════════════════════════════════
+//  Lightbox
+// ══════════════════════════════════════════
+function openLightbox(url) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightbox').classList.remove('hidden');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.add('hidden');
+  document.getElementById('lightboxImg').src = '';
+}
+
+// ══════════════════════════════════════════
+//  Utilities
+// ══════════════════════════════════════════
+function showLoading(show) {
+  document.getElementById('loading').classList.toggle('hidden', !show);
+}
+
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(function() { el.classList.remove('show'); }, 2500);
+}
+
+function escHtml(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function escAttr(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+window.addEventListener('beforeunload', function(e) {
+  if (dirty) { e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+
+</body>
+</html>

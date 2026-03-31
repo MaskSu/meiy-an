@@ -2070,7 +2070,11 @@ createApp({
       { icon: 'fas fa-award', title: '職人精神', desc: '十年磨一劍，以專業成就卓越品質。' },
     ];
 
-    const services = [
+    // ★ Google Sheets 發布的 CSV 網址（兩個工作表各一個）
+    const PHOTOS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIHficmb9uGX6g7Hj8v84DYu_GO_G75-KLv98ZtRfIqvkvxOnLBlbaYo4UGcV6NgO6viWNkiQ-kg60/pub?gid=207390563&single=true&output=csv';
+    const VIDEOS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQIHficmb9uGX6g7Hj8v84DYu_GO_G75-KLv98ZtRfIqvkvxOnLBlbaYo4UGcV6NgO6viWNkiQ-kg60/pub?gid=1822285795&single=true&output=csv';
+
+    const services = ref([
       {
         icon: 'fas fa-tools',
         title: '內裝拆洗大整理',
@@ -2138,10 +2142,10 @@ createApp({
         photos: ['7/S__9330795_0.jpg','7/S__9330796_0.jpg','7/S__9330797_0.jpg','7/S__9330798_0.jpg','7/S__9330824_0.jpg','7/S__9330825_0.jpg','7/S__9330826_0.jpg','7/S__9330827_0.jpg','7/S__9330828_0.jpg','7/S__9330829_0.jpg','7/S__9330830_0.jpg'],
         steps: null,
       },
-    ];
+    ]);
 
 
-    const allVideoIds = [
+    const allVideoIds = ref([
       "FzmEcoa-XYc","kwWg8U0yLos","S8XBl6ujtxM","FY7qe_ql8k0","UdMym_hiHZM","qDRK3DNNTXM","YXYCmw78ITc","3pEsV4j29_E","sWk-OZSZ4ug","i7ZUovo8qIA",
       "ydnvRe2jP3c","KGc5ZgozA5U","y1npaxDGtkg","r4Vx1CKIWeY","rL4_9v96gJ0","MFI-o6DR6UY","ljU67cpeSgw","GKlURjYOvGs","MfR_tEb3VK0","coCYA0YzLn4",
       "3liObdUgmkc","ERSS4olJ_rE","D6OU0Iu9UiA","m6sCACT04R0","rj-Fx943u-g","GTWrBwja12U","2Qs4NVWcIV8","otqNZlCz_io","krNxqIZWzj8","dOgxFz4Is_Q",
@@ -2166,9 +2170,9 @@ createApp({
       "UrtTX2RuYz8","a9pCVBB3-4E","HI-w7snEvMY","2Q2BUS4hX8Q","CJglX8i8KKg","mD9Gf_tvcYw","kMXHgz6tiaI","m8QZdqEIq-w","936w2XTvf_I","TsPE_G7IzYA",
       "rQ_0WcvBNAA","NUALFxpgejI","eXazelGbPKE","XxTFsDqSujg","OkariTTRiI8","LVf0PLVKn0Y","3c2eD8LfkTg","xO5CjSj4BXA","JHYqWOl-YMs","PmMGkRjE-uM",
       "3Iq1DFCG1t8","Phr0xM8lMlw","JQs5FkZ4Zuw","GVEGq2clLZ4","IWctQQlIPdY","QcReF-GO3fQ","nKj7tJQ4gbc","yxhED67MiWs","-pl4Q_DokEM",
-    ];
+    ]);
     const videosToShow = ref(24);
-    const videos = computed(() => allVideoIds.slice(0, videosToShow.value));
+    const videos = computed(() => allVideoIds.value.slice(0, videosToShow.value));
 
     function scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2243,11 +2247,71 @@ createApp({
       if (e.key === 'Escape') lightboxImg.value = null;
     }
 
+    // ── CSV 解析器（處理帶引號欄位）──
+    function parseCSV(text) {
+      const rows = []; let row = []; let cell = ''; let inQ = false;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQ) {
+          if (ch === '"') { if (text[i+1] === '"') { cell += '"'; i++; } else { inQ = false; } }
+          else { cell += ch; }
+        } else {
+          if (ch === '"') { inQ = true; }
+          else if (ch === ',') { row.push(cell); cell = ''; }
+          else if (ch === '\n' || (ch === '\r' && text[i+1] === '\n')) {
+            if (ch === '\r') i++;
+            row.push(cell); cell = ''; rows.push(row); row = [];
+          } else if (ch === '\r') { row.push(cell); cell = ''; rows.push(row); row = []; }
+          else { cell += ch; }
+        }
+      }
+      if (cell || row.length) { row.push(cell); rows.push(row); }
+      return rows;
+    }
+
+    // ── 從 Google Sheets CSV 載入照片 + 影片 ──
+    async function loadDynamicConfig() {
+      try {
+        // 載入服務照片
+        if (PHOTOS_CSV_URL && !PHOTOS_CSV_URL.startsWith('PASTE')) {
+          const pRes = await fetch(PHOTOS_CSV_URL);
+          const pCsv = await pRes.text();
+          const pRows = parseCSV(pCsv);
+          for (let i = 1; i < pRows.length; i++) {
+            const idx = parseInt(pRows[i][0]);
+            const photosJson = pRows[i][2];
+            if (isNaN(idx) || !photosJson) continue;
+            const local = services.value[idx];
+            if (!local) continue;
+            try {
+              const photos = JSON.parse(photosJson);
+              if (Array.isArray(photos) && photos.length) local.photos = photos;
+            } catch (e) {}
+          }
+        }
+        // 載入影片列表
+        if (VIDEOS_CSV_URL && !VIDEOS_CSV_URL.startsWith('PASTE')) {
+          const vRes = await fetch(VIDEOS_CSV_URL);
+          const vCsv = await vRes.text();
+          const vRows = parseCSV(vCsv);
+          const ids = [];
+          for (let i = 1; i < vRows.length; i++) {
+            const id = (vRows[i][0] || '').trim();
+            if (id) ids.push(id);
+          }
+          if (ids.length) allVideoIds.value = ids;
+        }
+      } catch (e) {
+        console.warn('CSV 載入失敗，使用靜態資料:', e);
+      }
+    }
+
     onMounted(() => {
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('keydown', onKeydown);
       setTimeout(initReveal, 100);
       resetBannerTimer();
+      loadDynamicConfig();
     });
     onUnmounted(() => {
       window.removeEventListener('scroll', onScroll);

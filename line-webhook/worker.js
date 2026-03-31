@@ -1427,20 +1427,7 @@ async function handleImageBatch(imageEvents, env) {
       );
     }
 
-    // 存照片到 Google Drive
-    if (env.GAS_URL) {
-      const savePromises = imageEvents.map(event =>
-        postToGAS(env.GAS_URL, {
-          action: 'save_photo',
-          userId,
-          customerName,
-          messageId: event.message.id,
-          timestamp: event.timestamp,
-          accessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-        }).catch(err => console.error('Photo save error:', err.message))
-      );
-      await Promise.all(savePromises);
-    }
+    // 已停用：不再上傳照片到 Google Drive
 
     // 記錄對話
     await logToSheet({
@@ -1542,12 +1529,8 @@ async function notifyOwner(text, env, customerUserId) {
 // ══════════════════════════════════════════════════
 
 async function logToSheet(data, env) {
-  if (!env.GAS_URL) return;
-  try {
-    await postToGAS(env.GAS_URL, data);
-  } catch (err) {
-    console.error('logToSheet error:', err.message);
-  }
+  // 已停用：不再寫入 Google Sheets
+  return;
 }
 
 
