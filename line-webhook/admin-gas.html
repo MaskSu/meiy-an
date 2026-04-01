@@ -1,435 +1,585 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>後台管理 | I LUV尹澤鎂研</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>後台管理 | I LUV尹澤鎂研</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<style>
+:root {
+  --bronze: #C8906B;
+  --bronze-light: #D4A87A;
+  --bronze-bright: #B87A4A;
+  --bronze-bg: rgba(200,144,107,0.08);
+  --bronze-border: rgba(200,144,107,0.25);
+  --sage: #8FA48E;
+  --sage-dark: #5F7560;
+  --sage-deep: #3B4C3C;
+  --sage-mist: #D4E0D5;
+  --bg: #f5f5f7;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --text-primary: #1a202c;
+  --text-secondary: #6b7280;
+  --danger: #ef4444;
+  --danger-bg: rgba(239,68,68,0.08);
+  --success: #22c55e;
+}
 
-    :root {
-      --bronze: #C8906B;
-      --bronze-light: #D4A87A;
-      --bronze-bright: #B87A4A;
-      --sage: #8FA48E;
-      --sage-dark: #5F7560;
-      --sage-deep: #3B4C3C;
-      --sage-mist: #D4E0D5;
-      --bg-cream: #FDFAF5;
-      --bg-light: #F5F0E8;
-      --bg-card: #FFFFFF;
-      --text: #2A1E10;
-      --text-mid: #5A4028;
-      --text-mute: #8A7060;
-      --border-light: rgba(184,120,80,0.18);
-      --danger: #D9534F;
-      --danger-light: #F8E0DF;
-      --r: 8px;
-    }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { overflow-x: hidden; }
+body {
+  font-family: 'Noto Sans TC', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
 
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
-      background: var(--bg-cream);
-      color: var(--text);
-      min-height: 100vh;
-      -webkit-tap-highlight-color: transparent;
-    }
+/* ===== HEADER ===== */
+.admin-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.admin-header h1 {
+  font-size: 17px; font-weight: 700;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.admin-header h1 i { color: var(--bronze); font-size: 18px; }
+.header-right {
+  text-align: right;
+}
+.header-brand {
+  font-size: 11px; color: var(--text-secondary);
+}
+.header-user {
+  font-size: 11px; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 5px;
+  justify-content: flex-end;
+}
+.header-user i { color: var(--success); font-size: 8px; }
 
-    /* ── Header ── */
-    .header {
-      background: linear-gradient(135deg, var(--sage-deep), var(--sage-dark));
-      color: #fff;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-    .header h1 { font-size: 18px; font-weight: 500; }
-    .header .logo-text { font-size: 12px; opacity: 0.7; }
-    .header .user-email { font-size: 11px; opacity: 0.6; }
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 52px;
+  z-index: 99;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.tab-btn.active {
+  color: var(--bronze-bright);
+  border-bottom-color: var(--bronze);
+}
+.tab-btn i { font-size: 16px; }
 
-    /* ── Auth Screen ── */
-    .auth-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .auth-card {
-      background: var(--bg-card);
-      border-radius: 16px;
-      padding: 40px 28px;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 4px 24px rgba(100,60,20,0.10);
-      text-align: center;
-    }
-    .auth-card h2 { font-size: 22px; margin-bottom: 6px; color: var(--sage-deep); }
-    .auth-card .sub { font-size: 13px; color: var(--text-mute); margin-bottom: 20px; }
-    .auth-card .spinner-small {
-      width: 28px; height: 28px; margin: 16px auto;
-      border: 3px solid var(--border-light);
-      border-top-color: var(--bronze);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    .auth-card .err-msg { color: var(--danger); font-size: 14px; margin-top: 16px; }
+/* ===== CONTENT ===== */
+.admin-content {
+  padding: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 100px;
+}
 
-    /* ── Tabs ── */
-    .tabs {
-      display: flex;
-      background: var(--bg-light);
-      border-bottom: 1px solid var(--border-light);
-      position: sticky;
-      top: 54px;
-      z-index: 99;
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 12px 8px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-mute);
-      background: none;
-      border: none;
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .tab-btn.active {
-      color: var(--bronze-bright);
-      border-bottom-color: var(--bronze);
-      background: var(--bg-card);
-    }
-    .tab-btn i { display: block; font-size: 18px; margin-bottom: 4px; }
+/* ===== SERVICE CARD ===== */
+.service-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.service-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  min-height: 52px;
+}
+.service-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+.service-header .count {
+  background: var(--sage-mist);
+  color: var(--sage-dark);
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+.service-header .chevron {
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+  font-size: 14px;
+}
+.service-header .chevron.open { transform: rotate(180deg); }
+.service-body { padding: 0 16px 16px; }
 
-    /* ── Content ── */
-    .content { padding: 16px; max-width: 600px; margin: 0 auto; }
+/* ===== PHOTO GRID ===== */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.photo-cell {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+  cursor: grab;
+}
+.photo-cell.sortable-ghost { opacity: 0.4; }
+.photo-cell.sortable-drag {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+.photo-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.photo-cell .del-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+@media (hover: none) {
+  .photo-cell .del-btn { opacity: 0.9; }
+}
+@media (hover: hover) {
+  .photo-cell .del-btn { opacity: 0; transition: opacity 0.2s; }
+  .photo-cell:hover .del-btn { opacity: 1; }
+}
 
-    /* ── Service Card ── */
-    .service-card {
-      background: var(--bg-card);
-      border-radius: 12px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(100,60,20,0.06);
-      overflow: hidden;
-    }
-    .service-header {
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      user-select: none;
-    }
-    .service-header h3 {
-      font-size: 15px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .service-header .count {
-      background: var(--sage-mist);
-      color: var(--sage-dark);
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 400;
-    }
-    .service-header .chevron {
-      color: var(--text-mute);
-      transition: transform 0.2s;
-      font-size: 14px;
-    }
-    .service-header .chevron.open { transform: rotate(180deg); }
-    .service-body { padding: 0 16px 16px; }
+.photo-cell .drag-handle {
+  position: absolute;
+  bottom: 6px; left: 6px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  touch-action: none;
+}
+@media (hover: none) {
+  .photo-cell .drag-handle { opacity: 0.8; }
+}
+@media (hover: hover) {
+  .photo-cell .drag-handle { opacity: 0; transition: opacity 0.2s; }
+  .photo-cell:hover .drag-handle { opacity: 1; }
+}
 
-    /* ── Photo Grid ── */
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .photo-cell {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: 8px;
-      overflow: hidden;
-      background: var(--bg-light);
-    }
-    .photo-cell img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .photo-cell .del-btn {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.55);
-      color: #fff;
-      border: none;
-      font-size: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .photo-cell:hover .del-btn,
-    .photo-cell:active .del-btn { opacity: 1; }
-    @media (hover: none) {
-      .photo-cell .del-btn { opacity: 0.85; }
-    }
+.add-photo-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: none;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.add-photo-btn:active {
+  border-color: var(--bronze);
+  background: var(--bronze-bg);
+  color: var(--bronze);
+}
+.add-photo-btn i { font-size: 18px; }
 
-    .add-photo-cell {
-      aspect-ratio: 1;
-      border-radius: 8px;
-      border: 2px dashed var(--border-light);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text-mute);
-      font-size: 12px;
-      gap: 4px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .add-photo-cell:active {
-      border-color: var(--bronze);
-      background: var(--bg-light);
-    }
-    .add-photo-cell i { font-size: 22px; }
+/* ===== VIDEO LIST ===== */
+.video-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  min-height: 64px;
+}
+.video-item:last-child { border-bottom: none; }
+.video-item.sortable-ghost { opacity: 0.4; }
+.video-item.sortable-drag {
+  background: var(--card);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 12px;
+}
 
-    /* ── Video List ── */
-    .video-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border-light);
-    }
-    .video-item:last-child { border-bottom: none; }
-    .video-thumb {
-      width: 80px;
-      height: 45px;
-      border-radius: 6px;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #000;
-    }
-    .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .video-id {
-      flex: 1;
-      font-size: 13px;
-      color: var(--text-mid);
-      word-break: break-all;
-    }
-    .video-del {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
-      background: var(--danger-light);
-      color: var(--danger);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+.video-drag {
+  width: 32px; height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 16px;
+  flex-shrink: 0;
+  cursor: grab;
+  touch-action: none;
+}
+.video-thumb {
+  width: 88px; height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #000;
+}
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.video-id {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-secondary);
+  word-break: break-all;
+  min-width: 0;
+}
+.video-del {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--danger-bg);
+  color: var(--danger);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
 
-    .add-video-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .add-video-row input {
-      flex: 1;
-      padding: 12px 14px;
-      border: 1.5px solid var(--border-light);
-      border-radius: var(--r);
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-    }
-    .add-video-row input:focus { border-color: var(--bronze); }
-    .add-video-row button {
-      padding: 12px 16px;
-      background: var(--sage);
-      color: #fff;
-      border: none;
-      border-radius: var(--r);
-      font-size: 14px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .add-video-row button:active { background: var(--sage-dark); }
+.add-video-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.add-video-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--card);
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.add-video-row input:focus {
+  border-color: var(--bronze);
+  box-shadow: 0 0 0 3px var(--bronze-bg);
+}
+.add-video-row button {
+  padding: 12px 14px;
+  background: var(--sage);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.add-video-row button:active { background: var(--sage-dark); transform: scale(0.98); }
 
-    .video-count {
-      font-size: 13px;
-      color: var(--text-mute);
-      margin-bottom: 12px;
-    }
+.video-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
 
-    /* ── Save Bar ── */
-    .save-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--bg-card);
-      padding: 12px 16px;
-      box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
-      display: flex;
-      gap: 10px;
-      z-index: 100;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .save-bar .save-btn {
-      flex: 1;
-      padding: 14px;
-      background: var(--bronze);
-      color: #fff;
-      border: none;
-      border-radius: var(--r);
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    .save-bar .save-btn:active { background: var(--bronze-bright); }
-    .save-bar .save-btn:disabled { opacity: 0.6; }
+/* ===== SAVE BAR ===== */
+.save-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 100;
+}
+.save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 14px;
+  background: var(--bronze);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.save-btn:active { transform: scale(0.98); }
+.save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* ── Toast ── */
-    .toast {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--sage-deep);
-      color: #fff;
-      padding: 10px 24px;
-      border-radius: 24px;
-      font-size: 14px;
-      z-index: 200;
-      opacity: 0;
-      transition: opacity 0.3s;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    .toast.show { opacity: 1; }
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-primary);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
 
-    /* ── Loading overlay ── */
-    .loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(255,255,255,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 300;
-    }
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid var(--border-light);
-      border-top-color: var(--bronze);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+/* ===== LOADING ===== */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  gap: 12px;
+}
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--bronze);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.loading-overlay p { font-size: 14px; color: var(--text-secondary); }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Lightbox ── */
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 250;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .lightbox img {
-      max-width: 100%;
-      max-height: 90vh;
-      border-radius: 8px;
-    }
-    .lightbox-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-    }
+/* ===== AUTH SCREEN ===== */
+.auth-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+.auth-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 28px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+.auth-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+.auth-card .sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+.auth-card .spinner-small {
+  width: 28px; height: 28px; margin: 16px auto;
+  border: 3px solid var(--border);
+  border-top-color: var(--bronze);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.auth-card .err-msg { color: var(--danger); font-size: 14px; margin-top: 16px; line-height: 1.5; }
+.pin-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 20px;
+  font-family: inherit;
+  text-align: center;
+  letter-spacing: 6px;
+  color: var(--text-primary);
+  background: var(--bg);
+  outline: none;
+  -webkit-appearance: none;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.pin-input:focus {
+  border-color: var(--bronze);
+  box-shadow: 0 0 0 3px var(--bronze-bg);
+}
+.auth-card .login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  background: var(--bronze);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.auth-card .login-btn:active { transform: scale(0.98); }
+.auth-card .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .empty-hint {
-      text-align: center;
-      color: var(--text-mute);
-      font-size: 13px;
-      padding: 24px 0;
-    }
-    .hidden { display: none !important; }
-    .pb-80 { padding-bottom: 80px; }
-  </style>
+/* ===== LIGHTBOX ===== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 8px;
+}
+.lightbox-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-hint {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding: 40px 0;
+  line-height: 1.8;
+}
+.empty-hint i { font-size: 36px; color: #ddd; margin-bottom: 8px; display: block; }
+
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
 
 <div id="app">
-  <!-- AUTH CHECK (shown while verifying Gmail) -->
+  <!-- LOGIN -->
   <div class="auth-screen" id="authScreen">
     <div class="auth-card">
       <h2>I LUV尹澤鎂研</h2>
       <p class="sub">後台管理系統</p>
-      <div class="spinner-small" id="authSpinner"></div>
-      <div id="authStatus" style="font-size:13px; color:var(--text-mute);">正在驗證 Google 帳號...</div>
+      <div style="margin-top:20px;">
+        <input type="tel" id="pinInput" class="pin-input" placeholder="請輸入 PIN 碼" maxlength="10"
+               inputmode="numeric" autocomplete="off"
+               onkeydown="if(event.key==='Enter') doLogin()">
+        <button class="login-btn" onclick="doLogin()" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i> 登入
+        </button>
+      </div>
       <div class="err-msg hidden" id="authErr"></div>
     </div>
   </div>
 
   <!-- MAIN -->
   <div id="mainScreen" class="hidden">
-    <div class="header">
-      <div>
-        <h1>後台管理</h1>
-        <div class="logo-text">I LUV尹澤鎂研</div>
-        <div class="user-email" id="userEmail"></div>
+    <header class="admin-header">
+      <h1><i class="fas fa-spa"></i> 後台管理</h1>
+      <div class="header-right">
+        <div class="header-brand">I LUV尹澤鎂研</div>
       </div>
-    </div>
+    </header>
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="photos" onclick="switchTab('photos')">
-        <i class="fas fa-images"></i>服務照片
+        <i class="fas fa-images"></i> 服務照片
       </button>
       <button class="tab-btn" data-tab="videos" onclick="switchTab('videos')">
-        <i class="fas fa-video"></i>施作影片
+        <i class="fas fa-video"></i> 施作影片
       </button>
     </div>
 
-    <div class="content pb-80" id="tabPhotos"></div>
-    <div class="content pb-80 hidden" id="tabVideos"></div>
+    <div class="admin-content" id="tabPhotos"></div>
+    <div class="admin-content hidden" id="tabVideos"></div>
 
     <div class="save-bar">
       <button class="save-btn" id="saveBtn" onclick="doSave()">
@@ -442,6 +592,7 @@
 
   <div class="loading-overlay hidden" id="loading">
     <div class="spinner"></div>
+    <p>處理中...</p>
   </div>
 
   <div class="lightbox hidden" id="lightbox" onclick="closeLightbox()">
@@ -454,7 +605,7 @@
 
 <script>
 // ══════════════════════════════════════════
-//  google.script.run Promise 包裝
+//  google.script.run Promise wrapper
 // ══════════════════════════════════════════
 function gasRun(fnName) {
   var args = Array.prototype.slice.call(arguments, 1);
@@ -474,33 +625,61 @@ var videos = [];
 var dirty = false;
 var uploadingServiceIdx = -1;
 var expandedServices = {};
+var sortableInstances = [];
+var currentPin = '';
 
 // ══════════════════════════════════════════
-//  Init — 自動驗證 Gmail
+//  PIN Login
 // ══════════════════════════════════════════
-(function init() {
-  gasRun('clientCheckAuth')
+// 檢查 localStorage 是否有記住的 PIN
+(function autoLogin() {
+  try {
+    var saved = localStorage.getItem('admin_pin');
+    if (saved) {
+      document.getElementById('pinInput').value = saved;
+      doLogin();
+    }
+  } catch(e) {}
+})();
+
+function doLogin() {
+  var pin = document.getElementById('pinInput').value.trim();
+  if (!pin) { showAuthError('請輸入 PIN 碼'); return; }
+
+  var btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 驗證中...';
+  hideAuthError();
+
+  gasRun('clientCheckPin', pin)
     .then(function(result) {
       if (result.status === 'ok') {
-        document.getElementById('userEmail').textContent = result.email;
+        currentPin = pin;
+        try { localStorage.setItem('admin_pin', pin); } catch(e) {}
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('mainScreen').classList.remove('hidden');
         loadData();
       } else {
-        showAuthError(result.message || '驗證失敗');
+        showAuthError(result.message || 'PIN 碼錯誤');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 登入';
       }
     })
     .catch(function(e) {
-      showAuthError('無法連線，請確認已登入 Google 帳號後重新整理');
+      showAuthError('無法連線，請稍後再試');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 登入';
     });
-})();
+}
 
 function showAuthError(msg) {
-  document.getElementById('authSpinner').classList.add('hidden');
-  document.getElementById('authStatus').classList.add('hidden');
   var errEl = document.getElementById('authErr');
   errEl.textContent = msg;
   errEl.classList.remove('hidden');
+}
+
+function hideAuthError() {
+  document.getElementById('authErr').classList.add('hidden');
 }
 
 // ══════════════════════════════════════════
@@ -508,11 +687,15 @@ function showAuthError(msg) {
 // ══════════════════════════════════════════
 function loadData() {
   showLoading(true);
-  gasRun('clientGetConfig')
+  gasRun('clientGetConfig', currentPin)
     .then(function(result) {
       if (result.status === 'ok') {
         services = result.services || [];
         videos = result.videos || [];
+        // 預設展開第一個
+        if (services.length && Object.keys(expandedServices).length === 0) {
+          expandedServices[0] = true;
+        }
         renderPhotos();
         renderVideos();
         dirty = false;
@@ -542,51 +725,81 @@ function switchTab(tab) {
 //  Render: Service Photos
 // ══════════════════════════════════════════
 function renderPhotos() {
+  sortableInstances.forEach(function(s) { s.destroy(); });
+  sortableInstances = [];
+
   var container = document.getElementById('tabPhotos');
   if (!services.length) {
-    container.innerHTML = '<div class="empty-hint"><i class="fas fa-inbox"></i><br>尚無服務項目資料<br>請先在 GAS 執行 migratePhotos()</div>';
+    container.innerHTML = '<div class="empty-hint"><i class="fas fa-inbox"></i>尚無服務項目資料<br>請先在 GAS 執行 migratePhotos()</div>';
     return;
   }
 
   container.innerHTML = services.map(function(svc, si) {
-    var isOpen = expandedServices[si] !== false;
+    var isOpen = expandedServices[si] === true;
     var photos = svc.photos || [];
     return '<div class="service-card">' +
       '<div class="service-header" onclick="toggleExpand(' + si + ')">' +
         '<h3>' + escHtml(svc.title) + ' <span class="count">' + photos.length + ' 張</span></h3>' +
         '<i class="fas fa-chevron-down chevron ' + (isOpen ? 'open' : '') + '"></i>' +
       '</div>' +
-      '<div class="service-body ' + (isOpen ? '' : 'hidden') + '">' +
-        '<div class="photo-grid">' +
+      (isOpen ? '<div class="service-body">' +
+        '<div class="photo-grid" data-si="' + si + '">' +
           photos.map(function(url, pi) {
-            return '<div class="photo-cell" onclick="openLightbox(\'' + escAttr(url) + '\')">' +
-              '<img src="' + escAttr(url) + '" loading="lazy" alt="">' +
-              '<button class="del-btn" onclick="event.stopPropagation(); delPhoto(' + si + ', ' + pi + ')" title="刪除照片">' +
+            return '<div class="photo-cell" data-pi="' + pi + '">' +
+              '<img src="' + escAttr(url) + '" loading="lazy" alt="" onclick="openLightbox(\'' + escAttr(url) + '\')">' +
+              '<button class="del-btn" onclick="event.stopPropagation(); delPhoto(' + si + ', ' + pi + ')" title="刪除">' +
                 '<i class="fas fa-times"></i>' +
               '</button>' +
+              '<div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>' +
             '</div>';
           }).join('') +
-          '<div class="add-photo-cell" onclick="triggerUpload(' + si + ')">' +
-            '<i class="fas fa-plus"></i>新增' +
-          '</div>' +
         '</div>' +
-      '</div>' +
+        '<button class="add-photo-btn" onclick="triggerUpload(' + si + ')">' +
+          '<i class="fas fa-camera"></i> 新增照片' +
+        '</button>' +
+      '</div>' : '') +
     '</div>';
   }).join('');
+
+  // Sortable for each photo grid
+  document.querySelectorAll('.photo-grid').forEach(function(grid) {
+    var si = parseInt(grid.dataset.si);
+    var instance = new Sortable(grid, {
+      animation: 200,
+      delay: 100,
+      delayOnTouchOnly: true,
+      forceFallback: true,
+      handle: '.drag-handle',
+      ghostClass: 'sortable-ghost',
+      dragClass: 'sortable-drag',
+      fallbackClass: 'sortable-drag',
+      onEnd: function(evt) {
+        var oldIdx = evt.oldIndex;
+        var newIdx = evt.newIndex;
+        if (oldIdx === newIdx) return;
+        var arr = services[si].photos;
+        var item = arr.splice(oldIdx, 1)[0];
+        arr.splice(newIdx, 0, item);
+        dirty = true;
+        renderPhotos();
+      }
+    });
+    sortableInstances.push(instance);
+  });
 }
 
 function toggleExpand(si) {
-  expandedServices[si] = expandedServices[si] === false ? true : false;
+  expandedServices[si] = !expandedServices[si];
   renderPhotos();
 }
 
 function delPhoto(si, pi) {
-  var url = services[si].photos[pi];
   if (!confirm('確定要刪除這張照片嗎？')) return;
 
+  var url = services[si].photos[pi];
   var fileId = extractDriveFileId(url);
   if (fileId) {
-    gasRun('clientDeletePhoto', fileId).catch(function() {});
+    gasRun('clientDeletePhoto', currentPin, fileId).catch(function() {});
   }
 
   services[si].photos.splice(pi, 1);
@@ -596,7 +809,7 @@ function delPhoto(si, pi) {
 }
 
 function extractDriveFileId(url) {
-  var m = url.match(/googleusercontent\.com\/d\/([^/?]+)/);
+  var m = url.match(/googleusercontent\.com\/d\/([^/?=]+)/);
   return m ? m[1] : null;
 }
 
@@ -629,7 +842,7 @@ function handleFileSelect(event) {
     var reader = new FileReader();
     reader.onload = function() {
       var base64 = reader.result.split(',')[1];
-      gasRun('clientUploadPhoto', base64, file.name, si)
+      gasRun('clientUploadPhoto', currentPin, base64, file.name, si)
         .then(function(result) {
           if (result.status === 'ok' && result.url) {
             services[si].photos.push(result.url);
@@ -654,10 +867,15 @@ function handleFileSelect(event) {
 // ══════════════════════════════════════════
 //  Render: Videos
 // ══════════════════════════════════════════
+var videoSortable = null;
+
 function renderVideos() {
+  if (videoSortable) { videoSortable.destroy(); videoSortable = null; }
+
   var container = document.getElementById('tabVideos');
   var listHtml = videos.map(function(id, vi) {
-    return '<div class="video-item">' +
+    return '<div class="video-item" data-vi="' + vi + '">' +
+      '<div class="video-drag drag-handle-video"><i class="fas fa-grip-vertical"></i></div>' +
       '<div class="video-thumb">' +
         '<img src="https://i.ytimg.com/vi/' + escAttr(id) + '/hqdefault.jpg" loading="lazy" alt="">' +
       '</div>' +
@@ -672,11 +890,37 @@ function renderVideos() {
       '<button onclick="addVideo()"><i class="fas fa-plus"></i> 新增</button>' +
     '</div>' +
     '<div class="video-count">共 ' + videos.length + ' 部影片</div>' +
-    (videos.length ? listHtml : '<div class="empty-hint">尚無影片</div>');
+    '<div id="videoList">' +
+    (videos.length ? listHtml : '<div class="empty-hint"><i class="fas fa-film"></i>尚無影片</div>') +
+    '</div>';
+
+  var listEl = document.getElementById('videoList');
+  if (listEl && videos.length) {
+    videoSortable = new Sortable(listEl, {
+      animation: 200,
+      delay: 100,
+      delayOnTouchOnly: true,
+      forceFallback: true,
+      handle: '.drag-handle-video',
+      ghostClass: 'sortable-ghost',
+      dragClass: 'sortable-drag',
+      fallbackClass: 'sortable-drag',
+      onEnd: function(evt) {
+        var oldIdx = evt.oldIndex;
+        var newIdx = evt.newIndex;
+        if (oldIdx === newIdx) return;
+        var item = videos.splice(oldIdx, 1)[0];
+        videos.splice(newIdx, 0, item);
+        dirty = true;
+        renderVideos();
+      }
+    });
+  }
 }
 
 function addVideo() {
-  var val = document.getElementById('newVideoId').value.trim();
+  var input = document.getElementById('newVideoId');
+  var val = input.value.trim();
   if (!val) return;
 
   var id = extractYoutubeId(val);
@@ -685,6 +929,7 @@ function addVideo() {
 
   videos.unshift(id);
   dirty = true;
+  input.value = '';
   renderVideos();
   toast('影片已新增');
 }
@@ -723,7 +968,7 @@ function doSave() {
     return { index: s.index, title: s.title, photos: s.photos };
   });
 
-  gasRun('clientSavePhotos', svcData)
+  gasRun('clientSavePhotos', currentPin, svcData)
     .then(function(result) {
       if (result.status !== 'ok') {
         toast('照片儲存失敗：' + (result.message || ''));
@@ -731,7 +976,7 @@ function doSave() {
         btn.disabled = false;
         return;
       }
-      return gasRun('clientSaveVideos', videos);
+      return gasRun('clientSaveVideos', currentPin, videos);
     })
     .then(function(result) {
       if (!result) return;
@@ -773,7 +1018,7 @@ function showLoading(show) {
 function toast(msg) {
   var el = document.getElementById('toast');
   el.textContent = msg;
-  el.classList.add('show');
+  el.className = 'toast show';
   clearTimeout(el._timer);
   el._timer = setTimeout(function() { el.classList.remove('show'); }, 2500);
 }

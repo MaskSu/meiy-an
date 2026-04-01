@@ -24,7 +24,11 @@ const FOLDER_ID = '1h1zv-DhIWaLbAJydxITEmIPAuCrww0M3';
 const SHEET_ID = '1dm_yDTthz6OAWvRS22OobsDgviavEQZDn-gwVJ9lZEs';
 
 // ★ 允許登入後台的 Gmail 帳號
-const ALLOWED_EMAILS = ['chienyuan1126@gmail.com', 'a0938122361@gmail.com'];
+const ALLOWED_EMAILS = [
+  'chienyuan1126@gmail.com',
+  'a0938122361@gmail.com',
+  'arwen10311031@gmail.com'
+];
 
 // ★ 網站服務照片用的 Google Drive 資料夾 ID（新建一個放服務照片）
 const WEBSITE_PHOTOS_FOLDER_ID = '1paTvjuxE44dkxk2xosuZiwASCLAyAOwY'; // ← 填入你的資料夾 ID，留空則用 FOLDER_ID
@@ -41,9 +45,10 @@ function doGet(e) {
     return corsJson(getPublicConfig());
   }
 
-  // 預設：顯示後台管理頁面
+  // 預設：顯示後台管理頁面（addMetaTag 讓 GAS iframe 支援手機 RWD）
   return HtmlService.createHtmlOutputFromFile('admin')
     .setTitle('後台管理 | I LUV尹澤鎂研')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
@@ -88,18 +93,18 @@ function doPost(e) {
 
 
 // ══════════════════════════════════════════
-//  後台驗證（Gmail 登入）
-//  ★ 部署時選「存取權：具有 Google 帳戶的使用者」
+//  後台驗證
+//  ★ 部署時選「執行身分：我」「存取權：所有人」
+//  ★ 安全機制：只有知道網址的人 + 輸入正確 PIN 才能進入
 // ══════════════════════════════════════════
 
-function checkAuth() {
-  const email = Session.getActiveUser().getEmail();
-  if (!email) return { ok: false, message: '無法取得登入資訊，請確認已登入 Google 帳號' };
-  const allowed = ALLOWED_EMAILS.map(function(e) { return e.toLowerCase(); });
-  if (allowed.indexOf(email.toLowerCase()) < 0) {
-    return { ok: false, message: '此帳號（' + email + '）沒有管理權限' };
+var ADMIN_PIN = '2361';  // ← 管理員共用 PIN 碼，可自行修改
+
+function checkPin(pin) {
+  if (pin !== ADMIN_PIN) {
+    return { ok: false, message: 'PIN 碼錯誤' };
   }
-  return { ok: true, email: email };
+  return { ok: true };
 }
 
 
@@ -107,39 +112,41 @@ function checkAuth() {
 //  給 admin.html 用的 google.script.run 包裝
 // ══════════════════════════════════════════
 
-function clientCheckAuth() {
-  var auth = checkAuth();
-  if (!auth.ok) return { status: 'error', message: auth.message };
-  return { status: 'ok', email: auth.email };
+function clientCheckPin(pin) {
+  var result = checkPin(pin);
+  if (!result.ok) return { status: 'error', message: result.message };
+  return { status: 'ok' };
 }
 
-function clientGetConfig() {
-  var auth = checkAuth();
-  if (!auth.ok) return { status: 'error', message: auth.message };
-  return getPublicConfig();
+function clientGetConfig(pin) {
+  var check = checkPin(pin);
+  if (!check.ok) return { status: 'error', message: check.message };
+  var config = getPublicConfig();
+  config.status = 'ok';
+  return config;
 }
 
-function clientSavePhotos(services) {
-  var auth = checkAuth();
-  if (!auth.ok) return { status: 'error', message: auth.message };
+function clientSavePhotos(pin, services) {
+  var check = checkPin(pin);
+  if (!check.ok) return { status: 'error', message: check.message };
   return adminSavePhotos({ services: services });
 }
 
-function clientSaveVideos(videos) {
-  var auth = checkAuth();
-  if (!auth.ok) return { status: 'error', message: auth.message };
+function clientSaveVideos(pin, videos) {
+  var check = checkPin(pin);
+  if (!check.ok) return { status: 'error', message: check.message };
   return adminSaveVideos({ videos: videos });
 }
 
-function clientUploadPhoto(base64, filename, serviceIndex) {
-  var auth = checkAuth();
-  if (!auth.ok) return { status: 'error', message: auth.message };
+function clientUploadPhoto(pin, base64, filename, serviceIndex) {
+  var check = checkPin(pin);
+  if (!check.ok) return { status: 'error', message: check.message };
   return adminUploadPhoto({ base64: base64, filename: filename, serviceIndex: serviceIndex });
 }
 
-function clientDeletePhoto(fileId) {
-  var auth = checkAuth();
-  if (!auth.ok) return { status: 'error', message: auth.message };
+function clientDeletePhoto(pin, fileId) {
+  var check = checkPin(pin);
+  if (!check.ok) return { status: 'error', message: check.message };
   return adminDeletePhoto({ fileId: fileId });
 }
 
