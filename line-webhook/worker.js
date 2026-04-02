@@ -897,6 +897,39 @@ async function handleText(event, env, workerBaseUrl) {
   let carOem = '';
 
   // ────────────────────────────────────────
+  //  取得自己的 User ID（任何人都可用）
+  // ────────────────────────────────────────
+  if (userMsg === '我的ID') {
+    const match = (userId === env.OWNER_USER_ID) ? '✅ 與 OWNER 相符' : '❌ 與 OWNER 不符';
+    await replyMessage(event.replyToken, [{ type: 'text', text: `你的 User ID：\n${userId}\n\nOWNER_USER_ID：\n${env.OWNER_USER_ID || '(未設定)'}\n\n${match}` }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    return;
+  }
+
+  // ────────────────────────────────────────
+  //  測試推播通知（只有 OWNER 能用）
+  // ────────────────────────────────────────
+  if (userMsg === '測試通知' && userId === env.OWNER_USER_ID) {
+    try {
+      const res = await fetch('https://api.line.me/v2/bot/message/push', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${env.LINE_CHANNEL_ACCESS_TOKEN}`,
+        },
+        body: JSON.stringify({
+          to: env.OWNER_USER_ID,
+          messages: [{ type: 'text', text: '🔔 測試通知成功！Push API 正常運作。' }],
+        }),
+      });
+      const body = await res.text();
+      await replyMessage(event.replyToken, [{ type: 'text', text: `Push API 回應：${res.status}\n${body}` }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    } catch (err) {
+      await replyMessage(event.replyToken, [{ type: 'text', text: `Push API 錯誤：${err.message}` }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    }
+    return;
+  }
+
+  // ────────────────────────────────────────
   //  優先級 0：老闆結案（只有老闆能觸發）
   // ────────────────────────────────────────
 
@@ -1249,13 +1282,13 @@ async function handleText(event, env, workerBaseUrl) {
 
     if (reason === '軍職') {
       replyText = '了解！軍職確實不方便拍照也不方便跑一趟 💪\n\n貝菈🌸會請阿永盡快在 LINE 上聯繫你，幫你處理！請放心 😊';
-      notifyOwner(
+      await notifyOwner(
         `🚨 軍職客戶 - 請盡快聯繫！\n👤 ${customerName}\n💬 軍職，無法拍照也無法到現場\n\n⚡ 請立即主動聯繫客戶`,
         env, userId
       );
     } else {
       replyText = '沒問題！你可以直接用文字描述一下車子目前的狀況，貝菈🌸先幫你初步評估～\n\n或者直接開車過來讓阿永現場看也可以哦！\n\n📍 高雄市鳥松區中正路101號\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號';
-      notifyOwner(
+      await notifyOwner(
         `📋 客戶詢問\n👤 ${customerName}\n💬 不方便拍照，需要文字溝通或到店評估`,
         env, userId
       );
@@ -1267,7 +1300,7 @@ async function handleText(event, env, workerBaseUrl) {
   // ────────────────────────────────────────
   else if (userMsg === '直接到店評估') {
     replyText = '歡迎直接過來！😊\n\n📍 高雄市鳥松區中正路101號\n（近文山派出所、長庚醫院）\n\n🕘 營業時間：週一至週日 09:00–18:00\n\n💡 建議來之前先跟貝菈🌸說一聲，確認阿永在店裡哦！\nhttps://maps.google.com/?q=高雄市鳥松區中正路101號';
-    notifyOwner(
+    await notifyOwner(
       `🏪 客戶想到店\n👤 ${customerName}\n💬 想直接到店評估`,
       env, userId
     );
@@ -1360,7 +1393,7 @@ async function handleText(event, env, workerBaseUrl) {
       oem: carOem,
     }, env);
 
-    notifyOwner(
+    await notifyOwner(
       `🔧 車機詢問\n👤 ${customerName}\n🚗 ${carBrand} ${carModel}\n📋 車機：${carOem}\n\n請確認規格後回覆客戶`,
       env, userId
     );
@@ -1421,7 +1454,7 @@ async function handleImageBatch(imageEvents, env) {
 
       // 通知老闆（帶入服務項目）
       const serviceInfo = serviceName ? `\n🔧 服務項目：${serviceName}` : '';
-      notifyOwner(
+      await notifyOwner(
         `📸 客戶照片通知\n👤 ${customerName}${serviceInfo}\n📷 ${imageEvents.length} 張照片\n\n請到 LINE Official Account 查看並回覆`,
         env, userId
       );
@@ -1504,23 +1537,48 @@ async function getUserDisplayName(userId, accessToken) {
 // ══════════════════════════════════════════════════
 
 async function notifyOwner(text, env, customerUserId) {
-  if (!env.OWNER_USER_ID) return;
+  if (!env.OWNER_USER_ID) {
+    console.log('[notifyOwner] OWNER_USER_ID 未設定，跳過');
+    return;
+  }
   // 如果觸發者就是老闆本人，跳過通知（避免推播蓋掉 Quick Reply）
-  if (customerUserId && customerUserId === env.OWNER_USER_ID) return;
+  if (customerUserId && customerUserId === env.OWNER_USER_ID) {
+    console.log('[notifyOwner] 觸發者是老闆本人，跳過通知');
+    return;
+  }
 
-  const messages = [{ type: 'text', text }];
-
-  await fetch('https://api.line.me/v2/bot/message/push', {
-    method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': `Bearer ${env.LINE_CHANNEL_ACCESS_TOKEN}`,
+  const messages = [{
+    type: 'text',
+    text,
+    quickReply: {
+      items: [
+        { type: 'action', action: { type: 'message', label: '📋 結案', text: '結案' } },
+        { type: 'action', action: { type: 'message', label: '📅 約時間', text: '約時間' } },
+      ],
     },
-    body: JSON.stringify({
-      to: env.OWNER_USER_ID,
-      messages,
-    }),
-  });
+  }];
+
+  try {
+    const res = await fetch('https://api.line.me/v2/bot/message/push', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${env.LINE_CHANNEL_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({
+        to: env.OWNER_USER_ID,
+        messages,
+      }),
+    });
+    if (!res.ok) {
+      const errBody = await res.text();
+      console.error(`[notifyOwner] Push 失敗 ${res.status}: ${errBody}`);
+    } else {
+      console.log('[notifyOwner] Push 成功');
+    }
+  } catch (err) {
+    console.error('[notifyOwner] Push 例外:', err.message);
+  }
 }
 
 

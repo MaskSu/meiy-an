@@ -38,7 +38,7 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
 
 function createButtonImage() {
   const { createCanvas } = require('canvas');
-  const W = 2500, H = 422;
+  const W = 2500, H = 506;
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');
 
@@ -46,13 +46,13 @@ function createButtonImage() {
   ctx.fillStyle = '#1A1A2E';
   ctx.fillRect(0, 0, W, H);
 
-  const btnW = 1050, btnH = 200, radius = 40;
+  const btnW = 1050, btnH = 240, radius = 44;
   const btnY = (H - btnH) / 2;
   const gap = 100;
   const totalW = btnW * 2 + gap;
   const startX = (W - totalW) / 2;
 
-  ctx.font = 'bold 64px "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif';
+  ctx.font = 'bold 76px "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
@@ -108,17 +108,17 @@ async function main() {
     method: 'POST',
     headers: { ...headers, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      size: { width: 2500, height: 422 },
+      size: { width: 2500, height: 506 },
       selected: false,
       name: '老闆工具列',
       chatBarText: '📋 管理工具',
       areas: [
         {
-          bounds: { x: 0, y: 0, width: 1250, height: 422 },
+          bounds: { x: 0, y: 0, width: 1250, height: 506 },
           action: { type: 'message', label: '待結案', text: '結案' },
         },
         {
-          bounds: { x: 1250, y: 0, width: 1250, height: 422 },
+          bounds: { x: 1250, y: 0, width: 1250, height: 506 },
           action: { type: 'message', label: '約時間', text: '約時間' },
         },
       ],
