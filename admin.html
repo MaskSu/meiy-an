@@ -4,9 +4,79 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>後台管理 | I LUV尹澤鎂研</title>
-<style>*{margin:0;padding:0}html,body,iframe{width:100%;height:100%;border:none;overflow:hidden;}</style>
+<style>
+*{margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,'Noto Sans TC',sans-serif;background:#f5f5f7;}
+iframe{width:100%;height:100%;border:none;}
+
+#loading {
+  position:fixed;inset:0;z-index:999;
+  background:#f5f5f7;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:opacity 0.4s;
+}
+#loading.hide {opacity:0;pointer-events:none;}
+
+.road {
+  width:160px;height:160px;
+  position:relative;
+  margin-bottom:28px;
+}
+.road-circle {
+  width:100%;height:100%;
+  border:3px dashed #d1d5db;
+  border-radius:50%;
+}
+.car-wrapper {
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  animation:drive 1.8s linear infinite;
+}
+@keyframes drive { to { transform:rotate(360deg); } }
+
+.car {
+  position:absolute;
+  top:-14px;left:50%;
+  transform:translateX(-50%);
+  font-size:28px;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.loading-text {
+  font-size:15px;color:#6b7280;
+  letter-spacing:1px;
+}
+.loading-dots::after {
+  content:'';
+  animation:dots 1.5s steps(4,end) infinite;
+}
+@keyframes dots {
+  0%{content:''}
+  25%{content:'.'}
+  50%{content:'..'}
+  75%{content:'...'}
+}
+</style>
 </head>
 <body>
-<iframe src="https://script.google.com/macros/s/AKfycbxznQ0MR7lOADWFq8lzYuXswU9dspyE9mnPIIfvKl4kQhwPCcz02KxZcWEfi3nGr66j/exec" allow="clipboard-write"></iframe>
+
+<div id="loading">
+  <div class="road">
+    <div class="road-circle"></div>
+    <div class="car-wrapper">
+      <div class="car">🚗</div>
+    </div>
+  </div>
+  <div class="loading-text">載入中<span class="loading-dots"></span></div>
+</div>
+
+<iframe
+  src="https://script.google.com/macros/s/AKfycbxznQ0MR7lOADWFq8lzYuXswU9dspyE9mnPIIfvKl4kQhwPCcz02KxZcWEfi3nGr66j/exec"
+  allow="clipboard-write"
+  onload="document.getElementById('loading').classList.add('hide')"
+></iframe>
+
 </body>
 </html>
