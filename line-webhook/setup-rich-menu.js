@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 一次性腳本：為老闆建立 LINE Rich Menu（雙按鈕：待結案 + 約時間）
+ * 一次性腳本：為老闆建立 LINE Rich Menu（三按鈕：開案 + 結案 + 預約時間）
  *
  * 使用方式：
  *   npm install canvas        （第一次需要安裝）
@@ -46,38 +46,50 @@ function createButtonImage() {
   ctx.fillStyle = '#1A1A2E';
   ctx.fillRect(0, 0, W, H);
 
-  const btnW = 1050, btnH = 240, radius = 44;
+  const btnW = 680, btnH = 240, radius = 44;
   const btnY = (H - btnH) / 2;
-  const gap = 100;
-  const totalW = btnW * 2 + gap;
+  const gap = 80;
+  const totalW = btnW * 3 + gap * 2;
   const startX = (W - totalW) / 2;
 
-  ctx.font = 'bold 76px "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif';
+  ctx.font = 'bold 68px "Noto Sans CJK TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // 左按鈕：待結案（藍色）
+  // 左按鈕：開案（橘色）
   drawRoundedRect(ctx, startX, btnY, btnW, btnH, radius);
   const grad1 = ctx.createLinearGradient(startX, btnY, startX + btnW, btnY + btnH);
-  grad1.addColorStop(0, '#4A90D9');
-  grad1.addColorStop(1, '#357ABD');
+  grad1.addColorStop(0, '#E67E22');
+  grad1.addColorStop(1, '#D35400');
   ctx.fillStyle = grad1;
   ctx.fill();
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.fillText('待結案', startX + btnW / 2, btnY + btnH / 2);
+  ctx.fillText('開案', startX + btnW / 2, btnY + btnH / 2);
 
-  // 右按鈕：約時間（綠色）
+  // 中按鈕：結案（藍色）
   const btn2X = startX + btnW + gap;
   drawRoundedRect(ctx, btn2X, btnY, btnW, btnH, radius);
   const grad2 = ctx.createLinearGradient(btn2X, btnY, btn2X + btnW, btnY + btnH);
-  grad2.addColorStop(0, '#27AE60');
-  grad2.addColorStop(1, '#1E8449');
+  grad2.addColorStop(0, '#4A90D9');
+  grad2.addColorStop(1, '#357ABD');
   ctx.fillStyle = grad2;
   ctx.fill();
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.fillText('約時間', btn2X + btnW / 2, btnY + btnH / 2);
+  ctx.fillText('結案', btn2X + btnW / 2, btnY + btnH / 2);
+
+  // 右按鈕：預約時間（綠色）
+  const btn3X = btn2X + btnW + gap;
+  drawRoundedRect(ctx, btn3X, btnY, btnW, btnH, radius);
+  const grad3 = ctx.createLinearGradient(btn3X, btnY, btn3X + btnW, btnY + btnH);
+  grad3.addColorStop(0, '#27AE60');
+  grad3.addColorStop(1, '#1E8449');
+  ctx.fillStyle = grad3;
+  ctx.fill();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillText('預約時間', btn3X + btnW / 2, btnY + btnH / 2);
 
   return canvas.toBuffer('image/png');
 }
@@ -114,12 +126,16 @@ async function main() {
       chatBarText: '📋 管理工具',
       areas: [
         {
-          bounds: { x: 0, y: 0, width: 1250, height: 506 },
-          action: { type: 'message', label: '待結案', text: '結案' },
+          bounds: { x: 0, y: 0, width: 833, height: 506 },
+          action: { type: 'message', label: '開案', text: '開案' },
         },
         {
-          bounds: { x: 1250, y: 0, width: 1250, height: 506 },
-          action: { type: 'message', label: '約時間', text: '約時間' },
+          bounds: { x: 833, y: 0, width: 834, height: 506 },
+          action: { type: 'message', label: '結案', text: '結案' },
+        },
+        {
+          bounds: { x: 1667, y: 0, width: 833, height: 506 },
+          action: { type: 'message', label: '預約時間', text: '預約時間' },
         },
       ],
     }),
@@ -182,9 +198,10 @@ async function main() {
 
   console.log('4/4 完成！');
   console.log('');
-  console.log('✅ 老闆的 LINE 聊天室底部現在有兩個按鈕：');
-  console.log('   🔵 待結案 — 列出可結案的客戶');
-  console.log('   🟢 約時間 — 為客戶預約時間');
+  console.log('✅ 老闆的 LINE 聊天室底部現在有三個按鈕：');
+  console.log('   🟠 開案 — 列出待開案客戶，手動設為進行中');
+  console.log('   🔵 結案 — 列出可結案的客戶');
+  console.log('   🟢 預約時間 — 為客戶預約時間');
   console.log('');
   console.log('📌 Rich Menu ID:', richMenuId);
 }

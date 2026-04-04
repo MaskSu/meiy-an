@@ -510,6 +510,37 @@ async function removeActiveCase(env, userId) {
 }
 
 
+// ── 待開案名單（idle 狀態有留言但尚未開案的客戶）──
+
+async function getIdleContacts(env) {
+  if (!env.CHAT_STATE) return {};
+  const raw = await env.CHAT_STATE.get('idle_contacts');
+  return raw ? JSON.parse(raw) : {};
+}
+
+async function addIdleContact(env, userId, customerName) {
+  if (!env.CHAT_STATE) return;
+  const contacts = await getIdleContacts(env);
+  // 如果已在 active_cases 就不加
+  const activeCases = await getActiveCases(env);
+  if (activeCases[userId]) return;
+  contacts[userId] = { name: customerName, ts: Date.now() };
+  // 清理超過 7 天的舊記錄
+  const SEVEN_DAYS = 604800000;
+  for (const [uid, info] of Object.entries(contacts)) {
+    if (Date.now() - info.ts > SEVEN_DAYS) delete contacts[uid];
+  }
+  await env.CHAT_STATE.put('idle_contacts', JSON.stringify(contacts));
+}
+
+async function removeIdleContact(env, userId) {
+  if (!env.CHAT_STATE) return;
+  const contacts = await getIdleContacts(env);
+  delete contacts[userId];
+  await env.CHAT_STATE.put('idle_contacts', JSON.stringify(contacts));
+}
+
+
 // ══════════════════════════════════════════════════
 //  處理 Follow 事件（用戶加好友 → 發送歡迎選單）
 // ══════════════════════════════════════════════════
@@ -729,7 +760,7 @@ async function handlePostback(event, env, workerBaseUrl) {
     }
 
     if (!scheduleData || !endDatetime) {
-      await replyMessage(event.replyToken, [{ type: 'text', text: '操作逾時，請重新點「約時間」' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      await replyMessage(event.replyToken, [{ type: 'text', text: '操作逾時，請重新點「預約時間」' }], env.LINE_CHANNEL_ACCESS_TOKEN);
       return;
     }
 
@@ -930,6 +961,44 @@ async function handleText(event, env, workerBaseUrl) {
   }
 
   // ────────────────────────────────────────
+  //  優先級 0-pre：老闆開案功能
+  // ────────────────────────────────────────
+
+  // 老闆輸入「開案」→ 顯示待開案名單（idle 有留言的客戶）
+  if (userMsg === '開案' && userId === env.OWNER_USER_ID) {
+    const contacts = await getIdleContacts(env);
+    const entries = Object.entries(contacts);
+    if (entries.length === 0) {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '目前沒有待開案的客戶哦 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    } else {
+      const options = entries.slice(0, 12).map(([uid, info]) => ({
+        label: info.name.slice(0, 20),
+        text: `開案｜${uid}`,
+      }));
+      options.push({ label: '✖ 取消', text: '開案｜取消' });
+      await replyMessage(event.replyToken, [
+        buildTextMessage('請選擇要開案的客戶 👇', options),
+      ], env.LINE_CHANNEL_ACCESS_TOKEN);
+    }
+    return;
+  }
+
+  // 老闆選了要開案的客戶
+  if (userMsg.startsWith('開案｜') && userId === env.OWNER_USER_ID) {
+    const targetUserId = userMsg.replace('開案｜', '');
+    if (targetUserId === '取消') {
+      await replyMessage(event.replyToken, [{ type: 'text', text: '已取消 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      return;
+    }
+    const targetName = await getUserDisplayName(targetUserId, env.LINE_CHANNEL_ACCESS_TOKEN);
+    await setUserState(env, targetUserId, 'active');
+    await addActiveCase(env, targetUserId, targetName);
+    await removeIdleContact(env, targetUserId);
+    await replyMessage(event.replyToken, [{ type: 'text', text: `✅ 已開案：${targetName}\n客戶後續留言不會再觸發選單` }], env.LINE_CHANNEL_ACCESS_TOKEN);
+    return;
+  }
+
+  // ────────────────────────────────────────
   //  優先級 0：老闆結案（只有老闆能觸發）
   // ────────────────────────────────────────
 
@@ -964,14 +1033,14 @@ async function handleText(event, env, workerBaseUrl) {
     await setUserState(env, targetUserId, 'idle');
     await removeActiveCase(env, targetUserId);
 
-    // 通知客戶：案件已結束，可以開始新的詢問
+    // 通知客戶：案件已結束（純文字，不附選單）
     const targetName = await getUserDisplayName(targetUserId, env.LINE_CHANNEL_ACCESS_TOKEN);
-    const thankYouMsg = buildWelcomeFlexMessage(
-      `${targetName} 感謝你的支持！🎉 案件已完成～\n\n之後有需要歡迎隨時跟貝菈🌸說哦 😊`
-    );
-    await pushMessage(targetUserId, [thankYouMsg], env.LINE_CHANNEL_ACCESS_TOKEN);
+    await pushMessage(targetUserId, [{
+      type: 'text',
+      text: `${targetName} 感謝你的支持！🎉 案件已完成～\n\n之後有需要歡迎隨時跟貝菈🌸說哦 😊`,
+    }], env.LINE_CHANNEL_ACCESS_TOKEN);
 
-    replyText = `✅ 已結案：${targetName}\n客戶會收到感謝通知和新的服務選單`;
+    replyText = `✅ 已結案：${targetName}\n客戶已收到感謝通知`;
 
     // 記錄結案
     await logToSheet({
@@ -989,29 +1058,29 @@ async function handleText(event, env, workerBaseUrl) {
   }
 
   // ────────────────────────────────────────
-  //  優先級 0c：老闆輸入「約時間」→ 選客戶 → 選日期時間
+  //  優先級 0c：老闆輸入「預約時間」→ 選客戶 → 選日期時間
   // ────────────────────────────────────────
-  if (userMsg === '約時間' && userId === env.OWNER_USER_ID) {
+  if ((userMsg === '預約時間' || userMsg === '約時間') && userId === env.OWNER_USER_ID) {
     const cases = await getActiveCases(env);
     const entries = Object.entries(cases);
     if (entries.length === 0) {
-      await replyMessage(event.replyToken, [{ type: 'text', text: '目前沒有進行中的案件，無法約時間哦 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      await replyMessage(event.replyToken, [{ type: 'text', text: '目前沒有進行中的案件，無法預約時間哦 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
     } else {
       const options = entries.slice(0, 12).map(([uid, info]) => ({
         label: info.name.slice(0, 20),
-        text: `約時間｜${uid}`,
+        text: `預約時間｜${uid}`,
       }));
-      options.push({ label: '✖ 取消', text: '約時間｜取消' });
+      options.push({ label: '✖ 取消', text: '預約時間｜取消' });
       await replyMessage(event.replyToken, [
-        buildTextMessage('請選擇要約時間的客戶 👇', options),
+        buildTextMessage('請選擇要預約時間的客戶 👇', options),
       ], env.LINE_CHANNEL_ACCESS_TOKEN);
     }
     return;
   }
 
   // 0d：老闆選了客戶 → 彈出日期時間選擇器
-  if (userMsg.startsWith('約時間｜') && userId === env.OWNER_USER_ID) {
-    const targetUserId = userMsg.replace('約時間｜', '');
+  if ((userMsg.startsWith('預約時間｜') || userMsg.startsWith('約時間｜')) && userId === env.OWNER_USER_ID) {
+    const targetUserId = userMsg.replace(/^(預約時間|約時間)｜/, '');
 
     if (targetUserId === '取消') {
       await replyMessage(event.replyToken, [{ type: 'text', text: '已取消 👌' }], env.LINE_CHANNEL_ACCESS_TOKEN);
@@ -1353,7 +1422,13 @@ async function handleText(event, env, workerBaseUrl) {
     await setUserState(env, userId, newState);
     if (newState === 'active') {
       await addActiveCase(env, userId, customerName);
+      await removeIdleContact(env, userId);
     }
+  }
+
+  // ── 記錄 idle 客戶到待開案名單（排除老闆自己）──
+  if (currentState === 'idle' && userId !== env.OWNER_USER_ID) {
+    await addIdleContact(env, userId, customerName);
   }
 
   // ── 組裝 LINE 回覆訊息 ──
@@ -1552,8 +1627,9 @@ async function notifyOwner(text, env, customerUserId) {
     text,
     quickReply: {
       items: [
+        { type: 'action', action: { type: 'message', label: '📋 開案', text: '開案' } },
         { type: 'action', action: { type: 'message', label: '📋 結案', text: '結案' } },
-        { type: 'action', action: { type: 'message', label: '📅 約時間', text: '約時間' } },
+        { type: 'action', action: { type: 'message', label: '📅 預約時間', text: '預約時間' } },
       ],
     },
   }];
