@@ -150,6 +150,108 @@ function clientDeletePhoto(pin, fileId) {
   return adminDeletePhoto({ fileId: fileId });
 }
 
+// ── 客戶筆記：儲存（以客戶名稱為 key，一人一筆記）──
+function clientSaveNote(pin, customerName, note) {
+  var check = checkPin(pin);
+  if (!check.ok) return { status: 'error', message: check.message };
+
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName('客戶筆記');
+  if (!sheet) {
+    sheet = ss.insertSheet('客戶筆記');
+    sheet.getRange(1, 1, 1, 3).setValues([['客戶名稱', '筆記', '更新時間']]);
+    sheet.getRange(1, 1, 1, 3).setFontWeight('bold');
+  }
+
+  // 找是否已有該客戶的筆記
+  var lastRow = sheet.getLastRow();
+  var existingRow = -1;
+  if (lastRow > 1) {
+    var names = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+    for (var i = 0; i < names.length; i++) {
+      if (String(names[i][0]) === customerName) { existingRow = i + 2; break; }
+    }
+  }
+
+  var now = Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd HH:mm:ss');
+  if (existingRow > 0) {
+    sheet.getRange(existingRow, 2).setValue(note);
+    sheet.getRange(existingRow, 3).setValue(now);
+  } else {
+    sheet.appendRow([customerName, note, now]);
+  }
+  return { status: 'ok' };
+}
+
+// ── 客戶照片：搜尋（照片按客戶分組，一人一筆記）──
+function clientSearchPhotos(pin, keyword) {
+  var check = checkPin(pin);
+  if (!check.ok) return { status: 'error', message: check.message };
+
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+
+  // 讀取照片
+  var photoSheet = ss.getSheetByName('客戶照片');
+  if (!photoSheet || photoSheet.getLastRow() <= 1) return { status: 'ok', customers: [] };
+  var rows = photoSheet.getRange(2, 1, photoSheet.getLastRow() - 1, 7).getValues();
+
+  // 讀取筆記
+  var noteMap = {};
+  var noteSheet = ss.getSheetByName('客戶筆記');
+  if (noteSheet && noteSheet.getLastRow() > 1) {
+    var noteRows = noteSheet.getRange(2, 1, noteSheet.getLastRow() - 1, 2).getValues();
+    for (var n = 0; n < noteRows.length; n++) {
+      noteMap[String(noteRows[n][0])] = String(noteRows[n][1]);
+    }
+  }
+
+  // 按客戶分組
+  var grouped = {};
+  for (var i = 0; i < rows.length; i++) {
+    var time = rows[i][0];
+    var name = String(rows[i][1]);
+    var service = String(rows[i][3]);
+    var photoUrl = String(rows[i][4]);
+    var thumbUrl = String(rows[i][5]);
+
+    var timeStr = '';
+    if (time instanceof Date) {
+      timeStr = Utilities.formatDate(time, 'Asia/Taipei', 'yyyy-MM-dd HH:mm');
+    } else {
+      timeStr = String(time);
+    }
+
+    if (!grouped[name]) {
+      grouped[name] = { name: name, services: [], photos: [], latestTime: timeStr };
+    }
+    grouped[name].photos.push({ thumbUrl: thumbUrl, photoUrl: photoUrl });
+    grouped[name].latestTime = timeStr; // 最後一張的時間
+    if (service && grouped[name].services.indexOf(service) === -1) {
+      grouped[name].services.push(service);
+    }
+  }
+
+  // 轉成陣列，掛上筆記
+  var results = [];
+  for (var key in grouped) {
+    var g = grouped[key];
+    g.note = noteMap[key] || '';
+    g.serviceText = g.services.join('、');
+
+    // 模糊搜尋
+    if (keyword && keyword.trim()) {
+      var kw = keyword.trim().toLowerCase();
+      var searchText = (g.name + ' ' + g.serviceText + ' ' + g.note).toLowerCase();
+      if (searchText.indexOf(kw) === -1) continue;
+    }
+    results.push(g);
+  }
+
+  // 最新的在前面
+  results.sort(function(a, b) { return b.latestTime.localeCompare(a.latestTime); });
+  return { status: 'ok', customers: results };
+}
+
 
 // ══════════════════════════════════════════
 //  公開讀取：取得服務照片 + 影片列表
@@ -502,20 +604,22 @@ function migrateVideos() {
 function savePhoto(data) {
   // 加鎖：防止多張照片同時寫入時產生重複記錄
   const lock = LockService.getScriptLock();
-  lock.waitLock(30000); // 等待最多 30 秒
+  lock.waitLock(30000);
 
   try {
   const folder = DriveApp.getFolderById(FOLDER_ID);
 
-  // 建立日期子資料夾
+  // 用客戶 LINE 暱稱當資料夾名稱
+  const customerName = data.customerName || data.userId;
+  const customerFolder = getOrCreateFolder(folder, customerName);
+
   const dateStr = Utilities.formatDate(
     new Date(data.timestamp),
     'Asia/Taipei',
     'yyyy-MM-dd'
   );
-  const subFolder = getOrCreateFolder(folder, dateStr);
 
-  // 從 LINE API 直接下載照片（由 GAS 處理，不經過 Worker）
+  // 從 LINE API 直接下載照片
   const imgRes = UrlFetchApp.fetch(
     'https://api-data.line.me/v2/bot/message/' + data.messageId + '/content',
     {
@@ -530,71 +634,44 @@ function savePhoto(data) {
   }
 
   const blob = imgRes.getBlob().setName(
-    dateStr + '_' + data.userId + '_' + data.messageId + '.jpg'
+    dateStr + '_' + data.messageId + '.jpg'
   );
-  const file = subFolder.createFile(blob);
-
-  // 設定檔案為「知道連結的人都能檢視」
+  const file = customerFolder.createFile(blob);
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   const fileUrl = file.getUrl();
+  const directUrl = 'https://lh3.googleusercontent.com/d/' + file.getId();
 
-  // 寫入「照片記錄」試算表（同天同客戶合併一筆）
-  const dateOnly = dateStr;
   const timeStr = Utilities.formatDate(
     new Date(data.timestamp),
     'Asia/Taipei',
     'yyyy-MM-dd HH:mm:ss'
   );
 
-  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName('照片記錄');
-  if (sheet) {
-    const lastRow = sheet.getLastRow();
-    let existingRow = -1;
-
-    if (lastRow > 1) {
-      const data2d = sheet.getRange(2, 1, lastRow - 1, 3).getValues();
-
-      for (let i = data2d.length - 1; i >= 0; i--) {
-        let rowDate = '';
-        const cellVal = data2d[i][0];
-        if (cellVal instanceof Date) {
-          rowDate = Utilities.formatDate(cellVal, 'Asia/Taipei', 'yyyy-MM-dd');
-        } else {
-          rowDate = String(cellVal).substring(0, 10);
-        }
-        const rowUserId = String(data2d[i][2]);
-
-        if (rowDate === dateOnly && rowUserId === data.userId) {
-          existingRow = i + 2;
-          break;
-        }
-      }
-    }
-
-    if (existingRow > 0) {
-      // 合併到既有記錄
-      const existingLinks = sheet.getRange(existingRow, 4).getValue();
-      const existingFiles = sheet.getRange(existingRow, 5).getValue();
-      sheet.getRange(existingRow, 4).setValue(existingLinks + '\n' + fileUrl);
-      sheet.getRange(existingRow, 5).setValue(existingFiles + '\n' + file.getName());
-      sheet.getRange(existingRow, 1).setValue(timeStr);
-    } else {
-      // 新增一筆
-      sheet.appendRow([
-        timeStr,
-        data.customerName || data.userId,
-        data.userId,
-        fileUrl,
-        file.getName()
-      ]);
-    }
+  // 寫入「客戶照片」試算表
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sheet = ss.getSheetByName('客戶照片');
+  if (!sheet) {
+    sheet = ss.insertSheet('客戶照片');
+    sheet.getRange(1, 1, 1, 8).setValues([['時間', '客戶名稱', '用戶ID', '服務項目', '照片連結', '縮圖連結', '檔案ID', '老闆筆記']]);
+    sheet.getRange(1, 1, 1, 8).setFontWeight('bold');
   }
 
-  console.log('✅ 照片已儲存：' + file.getName());
+  sheet.appendRow([
+    timeStr,
+    customerName,
+    data.userId,
+    data.serviceName || '',
+    fileUrl,
+    directUrl,
+    file.getId(),
+    ''  // 老闆筆記（預留空白）
+  ]);
+
+  console.log('✅ 照片已儲存：' + file.getName() + ' → ' + customerName + '/');
   return jsonResponse({ status: 'ok', file: file.getName(), url: fileUrl });
 
   } finally {
-    lock.releaseLock(); // 釋放鎖
+    lock.releaseLock();
   }
 }
 

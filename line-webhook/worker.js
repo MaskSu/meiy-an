@@ -1261,7 +1261,7 @@ async function handleText(event, env, workerBaseUrl) {
         replyOptions.push({ label: '以上都沒有', text: '車機｜找不到廠牌' });
       } else if (brand === '找不到廠牌') {
         // 廠牌不在列表 → 跳過車型，直接問 OEM
-        replyText = '沒問題！麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
+        replyText = '沒問題！麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 主機螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
         replyOptions = [
           { label: '原廠車機', text: '車機｜其他｜其他｜原廠車機' },
           { label: '已改裝過', text: '車機｜其他｜其他｜已改裝過' },
@@ -1278,7 +1278,7 @@ async function handleText(event, env, workerBaseUrl) {
         }
       } else {
         // 未知廠牌（防呆）→ 跳過車型，直接問 OEM
-        replyText = '沒問題！麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
+        replyText = '沒問題！麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 主機螢幕\n② 方向盤\n\n另外請問目前的車機是？👇';
         replyOptions = [
           { label: '原廠車機', text: '車機｜其他｜其他｜原廠車機' },
           { label: '已改裝過', text: '車機｜其他｜其他｜已改裝過' },
@@ -1293,14 +1293,14 @@ async function handleText(event, env, workerBaseUrl) {
 
       if (carModel === '找不到車型') {
         // 型號不在列表 → 跳過車型，直接問 OEM
-        replyText = `好的！${carBrand} 的車子 🔧\n\n麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
+        replyText = `好的！${carBrand} 的車子 🔧\n\n麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 主機螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
         replyOptions = [
           { label: '原廠車機', text: `車機｜${carBrand}｜其他｜原廠車機` },
           { label: '已改裝過', text: `車機｜${carBrand}｜其他｜已改裝過` },
           { label: '不確定',   text: `車機｜${carBrand}｜其他｜不確定` },
         ];
       } else {
-        replyText = `好的！${carBrand} ${carModel} 🔧\n\n麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 儀表板螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
+        replyText = `好的！${carBrand} ${carModel} 🔧\n\n麻煩你幫貝菈🌸拍兩張照片傳過來：\n① 主機螢幕\n② 方向盤\n\n另外請問目前的車機是？👇`;
         replyOptions = [
           { label: '原廠車機', text: `車機｜${carBrand}｜${carModel}｜原廠車機` },
           { label: '已改裝過', text: `車機｜${carBrand}｜${carModel}｜已改裝過` },
@@ -1413,7 +1413,18 @@ async function handleText(event, env, workerBaseUrl) {
       replyText = WELCOME_MENU_TEXT;
       useWelcomeFlex = true;
     } else {
-      replyText = '收到你的訊息了！阿永看到會盡快回覆你哦 😊';
+      // active 狀態：不自動回覆客人，只記錄訊息
+      // 記錄到 Google Sheets 後直接 return
+      await logToSheet({
+        action: 'log_conversation',
+        timestamp: event.timestamp,
+        customerName,
+        userId,
+        role: 'customer',
+        msgType: 'text',
+        content: userMsg,
+      }, env);
+      return;
     }
   }
 
@@ -1535,7 +1546,22 @@ async function handleImageBatch(imageEvents, env) {
       );
     }
 
-    // 已停用：不再上傳照片到 Google Drive
+    // 上傳照片到 Google Drive（透過 GAS，用客戶暱稱當資料夾名稱）
+    for (const imgEvent of imageEvents) {
+      try {
+        await postToGas({
+          action: 'save_photo',
+          messageId: imgEvent.message.id,
+          userId,
+          customerName,
+          serviceName: serviceName || '',
+          timestamp: imgEvent.timestamp,
+          accessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
+        }, env);
+      } catch (e) {
+        console.error('照片上傳 GAS 失敗:', e.message);
+      }
+    }
 
     // 記錄對話
     await logToSheet({
@@ -1663,8 +1689,17 @@ async function notifyOwner(text, env, customerUserId) {
 // ══════════════════════════════════════════════════
 
 async function logToSheet(data, env) {
-  // 已停用：不再寫入 Google Sheets
-  return;
+  if (!env.GAS_URL) return;
+  try {
+    await postToGAS(env.GAS_URL, data);
+  } catch (e) {
+    console.error('[logToSheet] 錯誤:', e.message);
+  }
+}
+
+async function postToGas(data, env) {
+  if (!env.GAS_URL) return;
+  return postToGAS(env.GAS_URL, data);
 }
 
 

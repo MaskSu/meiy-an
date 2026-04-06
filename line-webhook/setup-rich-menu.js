@@ -19,7 +19,7 @@ const API = 'https://api.line.me/v2/bot';
 const headers = { Authorization: `Bearer ${TOKEN}` };
 
 // ══════════════════════════════════════
-//  用 canvas 產生雙按鈕圖片
+//  用 canvas 產生三按鈕圖片
 // ══════════════════════════════════════
 
 function drawRoundedRect(ctx, x, y, w, h, r) {
