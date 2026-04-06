@@ -1546,22 +1546,21 @@ async function handleImageBatch(imageEvents, env) {
       );
     }
 
-    // 上傳照片到 Google Drive（透過 GAS，用客戶暱稱當資料夾名稱）
-    for (const imgEvent of imageEvents) {
-      try {
-        await postToGas({
-          action: 'save_photo',
-          messageId: imgEvent.message.id,
-          userId,
-          customerName,
-          serviceName: serviceName || '',
-          timestamp: imgEvent.timestamp,
-          accessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
-        }, env);
-      } catch (e) {
-        console.error('照片上傳 GAS 失敗:', e.message);
-      }
-    }
+    // [暫時停用] 上傳照片到 Google Drive
+    // for (const imgEvent of imageEvents) {
+    //   try {
+    //     await postToGas({
+    //       action: 'save_photo',
+    //       messageId: imgEvent.message.id,
+    //       userId, customerName,
+    //       serviceName: serviceName || '',
+    //       timestamp: imgEvent.timestamp,
+    //       accessToken: env.LINE_CHANNEL_ACCESS_TOKEN,
+    //     }, env);
+    //   } catch (e) {
+    //     console.error('照片上傳 GAS 失敗:', e.message);
+    //   }
+    // }
 
     // 記錄對話
     await logToSheet({

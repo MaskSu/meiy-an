@@ -453,70 +453,6 @@ body {
   cursor: pointer; white-space: nowrap;
   font-family: inherit; flex-shrink: 0;
 }
-.customer-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  margin-bottom: 10px;
-  overflow: hidden;
-}
-.customer-card-header {
-  padding: 12px 16px;
-  display: flex; align-items: center; gap: 10px;
-  font-size: 14px; color: var(--text-secondary);
-}
-.customer-card-header .cname {
-  font-weight: 600; color: var(--text-primary); font-size: 15px;
-}
-.customer-card-header .cphoto-count {
-  font-size: 12px; color: var(--text-secondary);
-}
-.customer-card-header .ctime {
-  margin-left: auto; font-size: 12px; white-space: nowrap;
-}
-.customer-photo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 6px;
-  padding: 0 12px 8px;
-}
-.customer-photo-grid img {
-  width: 100%; aspect-ratio: 1; object-fit: cover;
-  border-radius: 8px; cursor: pointer;
-}
-.customer-card-services {
-  padding: 0 16px 6px;
-  display: flex; flex-wrap: wrap; gap: 4px;
-}
-.customer-card-services .csvc {
-  background: var(--bronze-bg); color: var(--bronze-bright);
-  font-size: 12px; padding: 2px 8px; border-radius: 8px;
-}
-.customer-card-note {
-  padding: 10px 16px;
-}
-.customer-card-note textarea {
-  width: 100%; min-height: 48px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-size: 14px; font-family: inherit;
-  color: var(--text-primary);
-  background: var(--bg);
-  outline: none; resize: vertical;
-}
-.customer-card-note textarea:focus { border-color: var(--bronze); }
-.note-save-btn {
-  margin-top: 6px; padding: 6px 14px;
-  background: var(--bronze); color: #fff;
-  border: none; border-radius: 8px;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: inherit;
-}
-.note-save-btn:disabled { opacity: 0.5; }
-.customer-count {
-  font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;
-}
 .empty-hint {
   text-align: center; padding: 40px 20px;
   color: var(--text-secondary); font-size: 14px; line-height: 2;
@@ -715,14 +651,10 @@ body {
       <button class="tab-btn" data-tab="videos" onclick="switchTab('videos')">
         <i class="fas fa-video"></i> 施作影片
       </button>
-      <button class="tab-btn" data-tab="customer" onclick="switchTab('customer')">
-        <i class="fas fa-folder-open"></i> 客戶照片
-      </button>
     </div>
 
     <div class="admin-content" id="tabPhotos"></div>
     <div class="admin-content hidden" id="tabVideos"></div>
-    <div class="admin-content hidden" id="tabCustomer"></div>
 
     <div class="save-bar">
       <button class="save-btn" id="saveBtn" onclick="doSave()">
@@ -900,13 +832,7 @@ function switchTab(tab) {
   });
   document.getElementById('tabPhotos').classList.toggle('hidden', tab !== 'photos');
   document.getElementById('tabVideos').classList.toggle('hidden', tab !== 'videos');
-  document.getElementById('tabCustomer').classList.toggle('hidden', tab !== 'customer');
-  // 切到客戶照片時自動載入最新資料
-  if (tab === 'customer') {
-    searchCustomerPhotos();
-  }
-  // 切到客戶照片時隱藏儲存按鈕
-  document.querySelector('.save-bar').style.display = (tab === 'customer') ? 'none' : '';
+  document.querySelector('.save-bar').style.display = '';
 }
 
 // ══════════════════════════════════════════
@@ -1219,106 +1145,6 @@ function escHtml(s) {
 
 function escAttr(s) {
   return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ══════════════════════════════════════════
-//  Customer Photos: Search + Notes
-// ══════════════════════════════════════════
-var customerPhotosLoaded = false;
-var customerPhotos = [];
-
-function searchCustomerPhotos() {
-  var keyword = (document.getElementById('customerSearch') || {}).value || '';
-  showLoading(true);
-  gasRun('clientSearchPhotos', currentPin, keyword)
-    .then(function(result) {
-      showLoading(false);
-      if (result.status === 'ok') {
-        customerPhotos = result.customers || [];
-        customerPhotosLoaded = true;
-        renderCustomerPhotos();
-      } else {
-        toast('搜尋失敗：' + (result.message || ''));
-      }
-    })
-    .catch(function(e) {
-      showLoading(false);
-      toast('搜尋錯誤：' + (e.message || e));
-    });
-}
-
-function renderCustomerPhotos() {
-  var container = document.getElementById('tabCustomer');
-  var searchHtml =
-    '<div class="search-bar">' +
-      '<input type="text" id="customerSearch" placeholder="搜尋客戶名稱、服務項目、筆記..." value="' + escAttr((document.getElementById('customerSearch') || {}).value || '') + '" onkeydown="if(event.key===\'Enter\')searchCustomerPhotos()">' +
-      '<button onclick="searchCustomerPhotos()"><i class="fas fa-search"></i> 搜尋</button>' +
-      '<button onclick="customerPhotos=[];renderCustomerPhotos();searchCustomerPhotos()" title="重新整理" style="min-width:auto;padding:8px 12px"><i class="fas fa-sync-alt"></i></button>' +
-    '</div>';
-
-  if (!customerPhotos.length) {
-    container.innerHTML = searchHtml + '<div class="empty-hint"><i class="fas fa-camera"></i>尚無客戶照片</div>';
-    return;
-  }
-
-  var totalPhotos = customerPhotos.reduce(function(s, c) { return s + c.photos.length; }, 0);
-
-  var cardsHtml = customerPhotos.map(function(c) {
-    var photosHtml = c.photos.map(function(ph) {
-      return '<img src="' + escAttr(ph.thumbUrl) + '" data-full="' + escAttr(ph.photoUrl || ph.thumbUrl) + '" loading="lazy" class="zoomable-photo">';
-    }).join('');
-
-    var svcsHtml = c.services.length
-      ? '<div class="customer-card-services">' + c.services.map(function(s) { return '<span class="csvc">' + escHtml(s) + '</span>'; }).join('') + '</div>'
-      : '';
-
-    return '<div class="customer-card">' +
-      '<div class="customer-card-header">' +
-        '<span class="cname">' + escHtml(c.name) + '</span>' +
-        '<span class="cphoto-count">' + c.photos.length + ' 張照片</span>' +
-        '<span class="ctime">' + escHtml(c.latestTime) + '</span>' +
-      '</div>' +
-      svcsHtml +
-      '<div class="customer-photo-grid">' + photosHtml + '</div>' +
-      '<div class="customer-card-note">' +
-        '<textarea data-customer="' + escAttr(c.name) + '" placeholder="新增筆記...">' + escHtml(c.note || '') + '</textarea>' +
-        '<button class="note-save-btn" onclick="saveNote(this,\'' + escAttr(c.name).replace(/'/g, "\\'") + '\')">儲存筆記</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-
-  container.innerHTML = searchHtml +
-    '<div class="customer-count">共 ' + customerPhotos.length + ' 位客戶、' + totalPhotos + ' 張照片</div>' +
-    cardsHtml;
-
-  // 事件委派：點擊照片開啟 lightbox
-  container.querySelectorAll('.zoomable-photo').forEach(function(img) {
-    img.addEventListener('click', function() {
-      openLightbox(this.getAttribute('data-full'));
-    });
-  });
-}
-
-function saveNote(btn, customerName) {
-  var textarea = btn.parentElement.querySelector('textarea');
-  var note = textarea.value;
-  btn.disabled = true;
-  btn.textContent = '儲存中...';
-  gasRun('clientSaveNote', currentPin, customerName, note)
-    .then(function(result) {
-      btn.disabled = false;
-      btn.textContent = '儲存筆記';
-      if (result.status === 'ok') {
-        toast('筆記已儲存');
-      } else {
-        toast('儲存失敗：' + (result.message || ''));
-      }
-    })
-    .catch(function(e) {
-      btn.disabled = false;
-      btn.textContent = '儲存筆記';
-      toast('儲存錯誤');
-    });
 }
 
 window.addEventListener('beforeunload', function(e) {
