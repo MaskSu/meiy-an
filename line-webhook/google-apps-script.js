@@ -211,8 +211,11 @@ function clientSearchPhotos(pin, keyword) {
     var time = rows[i][0];
     var name = String(rows[i][1]);
     var service = String(rows[i][3]);
-    var photoUrl = String(rows[i][4]);
     var thumbUrl = String(rows[i][5]);
+    // 縮圖 URL 加 =s0 取得原尺寸大圖
+    var photoUrl = thumbUrl.indexOf('lh3.googleusercontent.com') > -1
+      ? thumbUrl + '=s0'
+      : thumbUrl;
 
     var timeStr = '';
     if (time instanceof Date) {

@@ -1243,7 +1243,7 @@ function searchCustomerPhotos() {
     })
     .catch(function(e) {
       showLoading(false);
-      toast('搜尋錯誤');
+      toast('搜尋錯誤：' + (e.message || e));
     });
 }
 
@@ -1253,6 +1253,7 @@ function renderCustomerPhotos() {
     '<div class="search-bar">' +
       '<input type="text" id="customerSearch" placeholder="搜尋客戶名稱、服務項目、筆記..." value="' + escAttr((document.getElementById('customerSearch') || {}).value || '') + '" onkeydown="if(event.key===\'Enter\')searchCustomerPhotos()">' +
       '<button onclick="searchCustomerPhotos()"><i class="fas fa-search"></i> 搜尋</button>' +
+      '<button onclick="customerPhotos=[];renderCustomerPhotos();searchCustomerPhotos()" title="重新整理" style="min-width:auto;padding:8px 12px"><i class="fas fa-sync-alt"></i></button>' +
     '</div>';
 
   if (!customerPhotos.length) {
