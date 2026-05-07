@@ -524,7 +524,7 @@ function checkout() {
     return { id: c.id, name: c.name, price: c.price, qty: c.qty };
   });
 
-  fetch('/api/checkout', {
+  fetch('https://line-webhook.chienyuan1126.workers.dev/api/checkout', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ items: items })

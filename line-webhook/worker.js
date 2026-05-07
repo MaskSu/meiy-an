@@ -396,6 +396,17 @@ export default {
       return handleIcsRaw(url.searchParams);
     }
 
+    // ── CORS preflight ──
+    if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      });
+    }
+
     // ── 綠界 ECPay 結帳 ──
     if (request.method === 'POST' && url.pathname === '/api/checkout') {
       return handleCheckout(request, env);
