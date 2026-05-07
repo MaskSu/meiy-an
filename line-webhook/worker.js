@@ -396,6 +396,17 @@ export default {
       return handleIcsRaw(url.searchParams);
     }
 
+    // ── 綠界 ECPay 結帳 ──
+    if (request.method === 'POST' && url.pathname === '/api/checkout') {
+      return handleCheckout(request, env);
+    }
+    if (request.method === 'POST' && url.pathname === '/api/ecpay/notify') {
+      return handleEcpayNotify(request, env);
+    }
+    if (request.method === 'GET' && url.pathname === '/api/ecpay/return') {
+      return handleEcpayReturn(request, env);
+    }
+
     if (request.method !== 'POST') {
       return new Response('Method Not Allowed', { status: 405 });
     }
@@ -1762,4 +1773,188 @@ async function pushMessage(userId, messages, accessToken) {
   } catch (e) {
     console.error('pushMessage exception:', e.message);
   }
+}
+
+
+// ══════════════════════════════════════════════════
+//  ECPay 綠界金流（測試環境）
+// ══════════════════════════════════════════════════
+
+const ECPAY_TEST = {
+  MerchantID: '3002607',
+  HashKey: 'pwFHCqoQZGmho4w6',
+  HashIV: 'EkRm7iFT261dpevs',
+  PaymentURL: 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5',
+};
+
+// 產生結帳表單
+async function handleCheckout(request, env) {
+  const cors = {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json',
+  };
+  try {
+    const { items } = await request.json();
+    if (!items || !items.length) {
+      return new Response(JSON.stringify({ error: '購物車是空的' }), { headers: cors });
+    }
+
+    // 計算金額
+    let totalAmount = 0;
+    const itemNames = [];
+    for (const item of items) {
+      totalAmount += item.price * item.qty;
+      itemNames.push(item.name + ' x' + item.qty);
+    }
+
+    // 產生訂單編號
+    const now = new Date();
+    const tw = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+    const tradeNo = 'YZ' + tw.toISOString().replace(/[-T:\.Z]/g, '').slice(0, 14) + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+    const tradeDate = tw.getFullYear() + '/' +
+      String(tw.getMonth() + 1).padStart(2, '0') + '/' +
+      String(tw.getDate()).padStart(2, '0') + ' ' +
+      String(tw.getHours()).padStart(2, '0') + ':' +
+      String(tw.getMinutes()).padStart(2, '0') + ':' +
+      String(tw.getSeconds()).padStart(2, '0');
+
+    const workerUrl = new URL(request.url);
+    const baseUrl = workerUrl.origin;
+
+    // 綠界必要參數
+    const params = {
+      MerchantID: ECPAY_TEST.MerchantID,
+      MerchantTradeNo: tradeNo,
+      MerchantTradeDate: tradeDate,
+      PaymentType: 'aio',
+      TotalAmount: String(totalAmount),
+      TradeDesc: 'YINZE Shop',
+      ItemName: itemNames.join('#'),
+      ReturnURL: baseUrl + '/api/ecpay/notify',
+      ClientBackURL: baseUrl + '/api/ecpay/return',
+      ChoosePayment: 'ALL',
+      EncryptType: '1',
+    };
+
+    // 產生檢查碼
+    params.CheckMacValue = await generateCheckMacAsync(params, ECPAY_TEST.HashKey, ECPAY_TEST.HashIV);
+
+    // 產生自動提交的 HTML 表單
+    let formInputs = '';
+    for (const key in params) {
+      formInputs += '<input type="hidden" name="' + key + '" value="' + escapeHtml(params[key]) + '">';
+    }
+    const html = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>' +
+      '<form id="ecpay" method="POST" action="' + ECPAY_TEST.PaymentURL + '">' +
+      formInputs +
+      '</form>' +
+      '<script>document.getElementById("ecpay").submit();<\/script>' +
+      '</body></html>';
+
+    // 儲存訂單到 KV
+    await env.CHAT_STATE.put('order:' + tradeNo, JSON.stringify({
+      tradeNo, items, totalAmount,
+      status: 'pending',
+      createdAt: tw.toISOString(),
+    }), { expirationTtl: 86400 * 7 }); // 7 天過期
+
+    return new Response(JSON.stringify({ html }), { headers: cors });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), { headers: cors });
+  }
+}
+
+// 綠界付款結果通知（Server to Server）
+async function handleEcpayNotify(request, env) {
+  try {
+    const formData = await request.formData();
+    const params = {};
+    for (const [key, value] of formData.entries()) {
+      params[key] = value;
+    }
+
+    // 驗證 CheckMacValue
+    const receivedMac = params.CheckMacValue;
+    delete params.CheckMacValue;
+    const expectedMac = await generateCheckMacAsync(params, ECPAY_TEST.HashKey, ECPAY_TEST.HashIV);
+
+    if (receivedMac !== expectedMac) {
+      console.error('ECPay CheckMacValue 驗證失敗');
+      return new Response('0|ErrorMessage=CheckMacValue Error');
+    }
+
+    const tradeNo = params.MerchantTradeNo;
+    const rtnCode = params.RtnCode; // 1 = 付款成功
+
+    // 更新訂單狀態
+    const orderData = await env.CHAT_STATE.get('order:' + tradeNo);
+    if (orderData) {
+      const order = JSON.parse(orderData);
+      order.status = rtnCode === '1' ? 'paid' : 'failed';
+      order.ecpayTradeNo = params.TradeNo;
+      order.paymentDate = params.PaymentDate;
+      order.paymentType = params.PaymentType;
+      await env.CHAT_STATE.put('order:' + tradeNo, JSON.stringify(order), { expirationTtl: 86400 * 30 });
+
+      // [暫時停用] 付款成功：通知老闆 LINE
+      // if (rtnCode === '1' && env.OWNER_USER_ID) {
+      //   const itemList = order.items.map(i => i.name + ' x' + i.qty).join('\n');
+      //   await pushMessage(env.OWNER_USER_ID, [{
+      //     type: 'text',
+      //     text: '🛒 新訂單付款成功！\n\n' +
+      //       '訂單編號：' + tradeNo + '\n' +
+      //       '付款金額：NT$' + order.totalAmount + '\n' +
+      //       '商品：\n' + itemList + '\n\n' +
+      //       '付款方式：' + (params.PaymentType || '') + '\n' +
+      //       '付款時間：' + (params.PaymentDate || ''),
+      //   }], env.LINE_CHANNEL_ACCESS_TOKEN);
+      // }
+    }
+
+    return new Response('1|OK');
+  } catch (e) {
+    console.error('ECPay notify error:', e.message);
+    return new Response('0|ErrorMessage=' + e.message);
+  }
+}
+
+// 綠界付款完成後導回頁面
+async function handleEcpayReturn(request, env) {
+  const html = `<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>付款完成｜I LUV尹澤鎂研</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; background: #FAF7F2; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .box { text-align: center; background: #fff; padding: 3rem 2rem; border-radius: 20px; box-shadow: 0 4px 24px rgba(100,60,20,0.1); max-width: 400px; }
+    .icon { font-size: 3rem; margin-bottom: 1rem; }
+    h1 { font-size: 1.3rem; margin-bottom: 0.5rem; color: #2A1E10; }
+    p { color: #5A4028; font-size: 0.95rem; margin-bottom: 1.5rem; }
+    a { display: inline-block; padding: 12px 28px; background: #C8906B; color: #fff; text-decoration: none; border-radius: 12px; font-weight: 600; }
+    a:hover { background: #B87A4A; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="icon">✅</div>
+    <h1>感謝您的購買！</h1>
+    <p>訂單已成立，我們會盡快為您出貨。<br>如有任何問題歡迎透過 LINE 聯繫我們。</p>
+    <a href="https://www.yinzemy.com/">回到首頁</a>
+  </div>
+</body>
+</html>`;
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+}
+
+// 綠界 CheckMacValue 產生（非同步，使用 Web Crypto）
+async function generateCheckMacAsync(params, hashKey, hashIV) {
+  const sorted = Object.keys(params).sort().map(k => k + '=' + params[k]).join('&');
+  const raw = 'HashKey=' + hashKey + '&' + sorted + '&HashIV=' + hashIV;
+  let encoded = encodeURIComponent(raw).toLowerCase();
+  encoded = encoded.replace(/%2d/g, '-').replace(/%5f/g, '_').replace(/%2e/g, '.').replace(/%21/g, '!').replace(/%2a/g, '*').replace(/%28/g, '(').replace(/%29/g, ')').replace(/%20/g, '+');
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(encoded));
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
 }

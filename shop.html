@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>線上商城｜I LUV尹澤鎂研</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bronze:        #C8906B;
+      --bronze-light:  #D4A87A;
+      --bronze-bright: #B87A4A;
+      --bronze-pale:   #8B5A2B;
+      --bronze-deep:   #6B3E1A;
+      --bronze-glow:   rgba(200,144,107,0.15);
+      --sage:          #8FA48E;
+      --sage-dark:     #5F7560;
+      --bg-darkest:    #2E2418;
+      --bg-dark:       #3D2E1E;
+      --bg-mid:        #FAF7F2;
+      --bg-card:       #FFFFFF;
+      --bg-light:      #F5F0E8;
+      --bg-cream:      #FDFAF5;
+      --text:          #2A1E10;
+      --text-mid:      #5A4028;
+      --text-mute:     #8A7060;
+      --text-inv:      #F7F2EB;
+      --border-light:  rgba(184,120,80,0.18);
+      --shadow:        0 4px 24px rgba(100,60,20,0.10);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: var(--bg-mid);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══ NAVBAR ═══ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center;
+      padding: 0 2rem; height: 68px;
+      background: rgba(250,247,242,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      transition: box-shadow 0.3s;
+      box-shadow: 0 2px 12px rgba(100,60,20,0.08);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+    .nav-logo .brand { font-weight: 700; font-size: 1rem; letter-spacing: 0.5px; }
+    .nav-logo .sub { font-size: 0.65rem; color: var(--text-mute); letter-spacing: 1px; }
+    .nav-links {
+      list-style: none; display: flex; gap: 1.6rem;
+      margin-left: auto; margin-right: 1.5rem;
+    }
+    .nav-links a {
+      text-decoration: none; color: var(--text-mid);
+      font-size: 0.88rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--bronze); }
+    .nav-cart {
+      position: relative;
+      background: var(--bronze); color: #fff;
+      border: none; border-radius: 12px;
+      padding: 8px 18px; font-size: 0.88rem;
+      font-weight: 600; cursor: pointer;
+      font-family: inherit; display: flex; align-items: center; gap: 6px;
+      transition: background 0.2s;
+    }
+    .nav-cart:hover { background: var(--bronze-bright); }
+    .cart-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: #E74C3C; color: #fff;
+      font-size: 11px; font-weight: 700;
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-mobile {
+      display: none; background: none; border: none;
+      font-size: 1.4rem; color: var(--text); cursor: pointer;
+      margin-left: auto;
+    }
+
+    /* ═══ DEV BANNER ═══ */
+    .dev-banner {
+      position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+      background: #E74C3C; color: #fff;
+      text-align: center; padding: 6px; font-size: 13px; font-weight: 600;
+    }
+
+    /* ═══ MAIN ═══ */
+    .shop-main {
+      max-width: 1100px; margin: 0 auto;
+      padding: 140px 1.5rem 3rem;
+    }
+    .shop-header {
+      text-align: center; margin-bottom: 2.5rem;
+    }
+    .shop-header h1 {
+      font-size: 1.8rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.4rem;
+    }
+    .shop-header p {
+      color: var(--text-mute); font-size: 0.95rem;
+    }
+
+    /* ═══ PRODUCT GRID ═══ */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+    .product-img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover; display: block;
+      background: var(--bg-light);
+    }
+    .product-info { padding: 1.2rem; }
+    .product-name {
+      font-size: 1.05rem; font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .product-desc {
+      font-size: 0.85rem; color: var(--text-mute);
+      margin-bottom: 0.8rem; line-height: 1.6;
+    }
+    .product-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .product-price {
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--bronze-bright);
+    }
+    .product-price small {
+      font-size: 0.75rem; font-weight: 400; color: var(--text-mute);
+    }
+    .btn-add {
+      background: var(--bronze); color: #fff;
+      border: none; border-radius: 10px;
+      padding: 8px 16px; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer;
+      font-family: inherit;
+      display: flex; align-items: center; gap: 5px;
+      transition: background 0.2s;
+    }
+    .btn-add:hover { background: var(--bronze-bright); }
+    .btn-add:active { transform: scale(0.96); }
+    .btn-add.added {
+      background: var(--sage); pointer-events: none;
+    }
+
+    /* ═══ CART DRAWER ═══ */
+    .cart-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.5);
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+    .cart-drawer {
+      position: fixed; top: 0; right: -420px; z-index: 201;
+      width: 400px; max-width: 90vw; height: 100vh;
+      background: var(--bg-card);
+      box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+      display: flex; flex-direction: column;
+      transition: right 0.3s ease;
+    }
+    .cart-drawer.open { right: 0; }
+    .cart-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-header h2 { font-size: 1.1rem; font-weight: 700; }
+    .cart-close {
+      background: none; border: none; font-size: 1.3rem;
+      color: var(--text-mute); cursor: pointer;
+    }
+    .cart-body {
+      flex: 1; overflow-y: auto; padding: 1rem 1.5rem;
+    }
+    .cart-empty {
+      text-align: center; padding: 3rem 0;
+      color: var(--text-mute); font-size: 0.95rem;
+    }
+    .cart-item {
+      display: flex; gap: 12px; padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .cart-item-img {
+      width: 70px; height: 70px; border-radius: 10px;
+      object-fit: cover; background: var(--bg-light);
+    }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 0.9rem; font-weight: 600; }
+    .cart-item-price { font-size: 0.85rem; color: var(--bronze-bright); margin-top: 2px; }
+    .cart-item-qty {
+      display: flex; align-items: center; gap: 8px; margin-top: 6px;
+    }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-light); color: var(--text);
+      font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qty-btn:hover { background: var(--bronze-glow); }
+    .qty-num { font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center; }
+    .cart-item-remove {
+      background: none; border: none; color: var(--text-mute);
+      font-size: 0.8rem; cursor: pointer; align-self: flex-start;
+    }
+    .cart-item-remove:hover { color: #E74C3C; }
+    .cart-footer {
+      padding: 1.2rem 1.5rem;
+      border-top: 1px solid var(--border-light);
+    }
+    .cart-total {
+      display: flex; justify-content: space-between;
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .cart-total .total-price { color: var(--bronze-bright); }
+    .btn-checkout {
+      width: 100%; padding: 14px;
+      background: var(--bronze); color: #fff;
+      border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.2s;
+    }
+    .btn-checkout:hover { background: var(--bronze-bright); }
+    .btn-checkout:disabled {
+      background: #ccc; cursor: not-allowed;
+    }
+
+    /* ═══ FOOTER ═══ */
+    .footer {
+      background: var(--bg-darkest); color: var(--text-inv);
+      padding: 2rem 0;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 1.5rem; text-align: center;
+    }
+    .footer-logo {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 0.8rem;
+    }
+    .footer-logo img { height: 32px; width: 32px; border-radius: 50%; }
+    .footer-logo span { font-weight: 600; font-size: 0.95rem; }
+    .footer-copy { font-size: 0.78rem; color: rgba(247,242,235,0.5); }
+
+    /* ═══ TOAST ═══ */
+    .toast {
+      position: fixed; bottom: -60px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-dark); color: var(--text-inv);
+      padding: 10px 24px; border-radius: 12px;
+      font-size: 0.9rem; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: bottom 0.3s ease; z-index: 300;
+    }
+    .toast.show { bottom: 24px; }
+
+    /* ═══ MOBILE ═══ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-mobile { display: block; }
+      .shop-main { padding: 120px 1rem 2rem; }
+      .shop-header h1 { font-size: 1.4rem; }
+      .products { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="I LUV尹澤鎂研 Logo">
+      <div>
+        <div class="brand">I LUV尹澤鎂研</div>
+        <div class="sub">Interior Detailing Expert</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="index.html#services">服務項目</a></li>
+      <li><a href="index.html#contact">聯絡我們</a></li>
+    </ul>
+    <button class="nav-cart" id="cartBtn" onclick="toggleCart()">
+      <i class="fas fa-shopping-cart"></i> 購物車
+      <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-mobile" onclick="toggleCart()">
+      <i class="fas fa-shopping-cart"></i>
+    </button>
+  </nav>
+
+  <!-- ═══ DEV BANNER ═══ -->
+  <div class="dev-banner">
+    <i class="fas fa-flask"></i> 測試模式 — 此頁面尚未公開，使用綠界測試環境
+  </div>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="shop-main">
+    <div class="shop-header">
+      <h1><i class="fas fa-store"></i> YINZE 線上商城</h1>
+      <p>尹澤鎂研自有品牌 · 讓保養成為玩家的日常生活</p>
+    </div>
+
+    <div class="products" id="productGrid">
+      <!-- 商品由 JS 動態渲染 -->
+    </div>
+  </main>
+
+  <!-- ═══ CART OVERLAY ═══ -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2><i class="fas fa-shopping-cart"></i> 購物車</h2>
+      <button class="cart-close" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-body" id="cartBody"></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total">
+        <span>合計</span>
+        <span class="total-price" id="cartTotal">NT$0</span>
+      </div>
+      <button class="btn-checkout" id="checkoutBtn" onclick="checkout()">
+        <i class="fas fa-credit-card"></i> 前往結帳
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="logo.png" alt="Logo">
+        <span>I LUV尹澤鎂研</span>
+      </div>
+      <p class="footer-copy">© 2026 I LUV尹澤鎂研 · 版權所有 · 用心守護每一段旅程</p>
+    </div>
+  </footer>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+//  商品資料（之後改為從後台 API 讀取）
+// ══════════════════════════════════════
+var PRODUCTS = [
+  {
+    id: 'deodorizer-100ml',
+    name: '植物精油除臭劑 100ml',
+    price: 250,
+    image: 'product-deodorizer.jpg',
+    desc: '奈米銀+植物精油配方，不含漂白水與化學香料。適用於車內、鞋櫃、衛浴等異味環境，噴灑後數分鐘即可分解臭味。',
+    spec: '100ml',
+    stock: 20
+  }
+];
+
+// ══════════════════════════════════════
+//  購物車狀態
+// ══════════════════════════════════════
+var cart = [];
+
+function getCart() {
+  try {
+    var saved = sessionStorage.getItem('yinze_cart');
+    if (saved) cart = JSON.parse(saved);
+  } catch(e) {}
+  return cart;
+}
+function saveCart() {
+  try { sessionStorage.setItem('yinze_cart', JSON.stringify(cart)); } catch(e) {}
+}
+
+// ══════════════════════════════════════
+//  渲染商品
+// ══════════════════════════════════════
+function renderProducts() {
+  var grid = document.getElementById('productGrid');
+  grid.innerHTML = PRODUCTS.map(function(p) {
+    var inCart = cart.some(function(c) { return c.id === p.id; });
+    return '<div class="product-card">' +
+      '<img class="product-img" src="' + p.image + '" alt="' + p.name + '" onerror="this.style.background=\'var(--bg-light)\';this.alt=\'商品圖片\'">' +
+      '<div class="product-info">' +
+        '<div class="product-name">' + p.name + '</div>' +
+        '<div class="product-desc">' + p.desc + '</div>' +
+        '<div class="product-bottom">' +
+          '<div class="product-price">NT$' + p.price + ' <small>/ ' + p.spec + '</small></div>' +
+          '<button class="btn-add' + (inCart ? ' added' : '') + '" onclick="addToCart(\'' + p.id + '\')">' +
+            '<i class="fas ' + (inCart ? 'fa-check' : 'fa-cart-plus') + '"></i> ' +
+            (inCart ? '已加入' : '加入購物車') +
+          '</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════
+//  購物車操作
+// ══════════════════════════════════════
+function addToCart(productId) {
+  var product = PRODUCTS.find(function(p) { return p.id === productId; });
+  if (!product) return;
+  var existing = cart.find(function(c) { return c.id === productId; });
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, qty: 1 });
+  }
+  saveCart();
+  renderProducts();
+  renderCart();
+  showToast('已加入購物車 🛒');
+}
+
+function updateQty(productId, delta) {
+  var item = cart.find(function(c) { return c.id === productId; });
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    cart = cart.filter(function(c) { return c.id !== productId; });
+  }
+  saveCart();
+  renderProducts();
+  renderCart();
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(function(c) { return c.id !== productId; });
+  saveCart();
+  renderProducts();
+  renderCart();
+}
+
+function renderCart() {
+  var body = document.getElementById('cartBody');
+  var footer = document.getElementById('cartFooter');
+  var badge = document.getElementById('cartBadge');
+  var totalCount = cart.reduce(function(s, c) { return s + c.qty; }, 0);
+  var totalPrice = cart.reduce(function(s, c) { return s + c.price * c.qty; }, 0);
+
+  badge.textContent = totalCount;
+  badge.style.display = totalCount > 0 ? 'flex' : 'none';
+
+  if (!cart.length) {
+    body.innerHTML = '<div class="cart-empty"><i class="fas fa-shopping-cart" style="font-size:2rem;margin-bottom:12px;display:block;opacity:0.3"></i>購物車是空的</div>';
+    footer.style.display = 'none';
+    return;
+  }
+
+  body.innerHTML = cart.map(function(item) {
+    return '<div class="cart-item">' +
+      '<img class="cart-item-img" src="' + item.image + '" alt="' + item.name + '" onerror="this.style.background=\'var(--bg-light)\'">' +
+      '<div class="cart-item-info">' +
+        '<div class="cart-item-name">' + item.name + '</div>' +
+        '<div class="cart-item-price">NT$' + item.price + '</div>' +
+        '<div class="cart-item-qty">' +
+          '<button class="qty-btn" onclick="updateQty(\'' + item.id + '\',-1)">−</button>' +
+          '<span class="qty-num">' + item.qty + '</span>' +
+          '<button class="qty-btn" onclick="updateQty(\'' + item.id + '\',1)">+</button>' +
+        '</div>' +
+      '</div>' +
+      '<button class="cart-item-remove" onclick="removeFromCart(\'' + item.id + '\')"><i class="fas fa-trash-alt"></i></button>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('cartTotal').textContent = 'NT$' + totalPrice;
+  footer.style.display = 'block';
+}
+
+function toggleCart() {
+  var overlay = document.getElementById('cartOverlay');
+  var drawer = document.getElementById('cartDrawer');
+  var isOpen = drawer.classList.contains('open');
+  overlay.classList.toggle('open', !isOpen);
+  drawer.classList.toggle('open', !isOpen);
+}
+
+// ══════════════════════════════════════
+//  結帳（綠界 ECPay 測試環境）
+// ══════════════════════════════════════
+function checkout() {
+  if (!cart.length) return;
+  var btn = document.getElementById('checkoutBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 處理中...';
+
+  var items = cart.map(function(c) {
+    return { id: c.id, name: c.name, price: c.price, qty: c.qty };
+  });
+
+  fetch('/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items: items })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.html) {
+      // 綠界回傳的是自動提交表單 HTML
+      document.open();
+      document.write(data.html);
+      document.close();
+    } else {
+      showToast('結帳失敗：' + (data.error || '未知錯誤'));
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-credit-card"></i> 前往結帳';
+    }
+  })
+  .catch(function(e) {
+    showToast('結帳錯誤，請稍後再試');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-credit-card"></i> 前往結帳';
+  });
+}
+
+// ══════════════════════════════════════
+//  Toast
+// ══════════════════════════════════════
+var toastTimer;
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove('show'); }, 2000);
+}
+
+// ══════════════════════════════════════
+//  Init
+// ══════════════════════════════════════
+getCart();
+renderProducts();
+renderCart();
+</script>
+</body>
+</html>
